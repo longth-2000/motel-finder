@@ -3,12 +3,11 @@
     <component :is="layout">
       <router-view></router-view>
     </component>
-    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import DefaultLayout from "../src/layouts/dafault.vue";
+import DefaultLayout from "./layouts/default.vue";
 export default {
   name: "App",
   components: {
@@ -27,11 +26,18 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.router-link {
+  text-decoration: none;
+}
+img{
+  object-fit: cover;
+}
+ul {
+  list-style: none;
 }
 </style>

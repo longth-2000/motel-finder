@@ -7,28 +7,37 @@ export default new Router({
             path: "/",
             name: "home",
             meta: {
-                layout: 'defaults'
+                layout: 'default'
             },
             component: () =>
                 import ("../views/HomeView.vue"),
         },
         {
-            path: "/about",
-            name: "about",
+            path: "/lien-he",
+            name: "Contact",
             component: () =>
                 import ("../views/AboutView.vue"),
         },
         {
-            path: "/film",
-            name: "film",
+            path: "/phong-tro/:motelName",
+            name: "MotelDetail",
             component: () =>
-                import ("../views/Buyer/FilmView.vue"),
+                import ("../views/MotelDetailView.vue"),
         },
         {
-            path: "/film/:id",
-            name: "anime",
+            path: "/bai-dang",
+            name: "MotelSearch",
             component: () =>
-                import ("../views/Buyer/FilmDetail.vue"),
+                import ("../views/SearchMotelView.vue"),
+        },
+        {
+            path: "*",
+            name: "Remain",
+            meta: {
+                layout: 'error'
+            },
+            component: () =>
+                import ("../views/PageNotFoundView.vue"),
         },
     ],
 })

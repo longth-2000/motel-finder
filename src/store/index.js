@@ -1,14 +1,13 @@
+import Vue from 'vue'
 import Vuex from 'vuex'
-import FilmModule from './components/film/film.module'
+Vue.use(Vuex)
+import UserModule from './components/user/user.module'
 const modules = {
-    film: FilmModule,
+    user: UserModule,
 }
 
-const createStore = () => {
-    return new Vuex.Store({
-        namespaced: true,
-        modules,
-    })
-}
+const store = new Vuex.Store({
+    modules
+})
 
-export default createStore
+export default store
