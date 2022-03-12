@@ -134,23 +134,26 @@
                     ></a-menu-item
                   >
                   <a-menu-item
+                    style="
+                      font-weight: bold;
+                      color: #da102f;
+                      border-top: 1px solid #f2f2f2;
+                    "
                     @click="LOG_OUT(false)"
                     ><font-awesome-icon
-                        class="icon-user"
-                        icon="fa-solid fa-arrow-right-from-bracket"
-                      />Đăng xuất
-                    </a-menu-item
-                  >
+                      class="icon-user"
+                      icon="fa-solid fa-arrow-right-from-bracket"
+                    />Đăng xuất
+                  </a-menu-item>
                 </a-menu>
               </a-dropdown>
             </div>
           </li>
-          <li class="menu-items menu-action" @click="showModal('post')">
+          <li class="menu-items menu-action" id="create-post" @click="showModal('post')">
             <div
               style="
                 width: 90px;
-                border: 1px solid #e03c31;
-                color: #e03c31;
+                border: 1px solid #ccc;
                 border-radius: 8px;
                 text-align: center;
                 padding: 15px 0;
@@ -222,6 +225,7 @@ img {
   margin-left: auto;
   margin-right: auto;
 }
+
 @media screen and (min-width: 800px) {
   .header-left {
     flex: 7;

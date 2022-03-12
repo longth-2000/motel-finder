@@ -1,0 +1,1 @@
+export const DISTRICT_URL = "https://provinces.open-api.vn/api"

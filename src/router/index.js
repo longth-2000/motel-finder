@@ -31,6 +31,12 @@ export default new Router({
                 import ("../views/SearchMotelView.vue"),
         },
         {
+            path: "/ho-so",
+            name: "Profile",
+            component: () =>
+                import ("../views/Seller/ProfileView.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {
