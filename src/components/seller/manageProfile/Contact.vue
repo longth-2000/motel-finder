@@ -33,25 +33,5 @@ export default {
 }
 </script>
 <style scoped>
-.change-title {
-  width: 100%;
-  padding: 5px 10px;
-  background: #d4ebfd;
-  border-bottom: 2px solid #055699;
-  font-family: Tahoma;
-  font-size: 12px;
-  font-weight: bold;
-  color: #055699;
-}
-.table {
-  margin: 20px 20px;
-}
-.table .form input {
-  width: 300px;
-}
-.table .label {
-  width: 150px;
-  font-size: 12px;
-  font-family: Tahoma;
-}
+
 </style>

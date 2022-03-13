@@ -58,4 +58,15 @@ export default {
     align-items: center;
     padding-bottom: 20px;
 }
+
+::v-deep .change-title {
+  width: 100%;
+  padding: 5px 10px;
+  background: #d4ebfd;
+  border-bottom: 2px solid #055699;
+  font-family: Tahoma;
+  font-size: 12px;
+  font-weight: bold;
+  color: #055699;
+}
 </style>

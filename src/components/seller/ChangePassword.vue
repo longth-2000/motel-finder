@@ -52,16 +52,4 @@
 #content {
   margin-top: 20px;
 }
-.table {
-  margin-left: 20px;
-}
-.table .form input {
-  width: 300px;
-}
-.table .label {
-  width: 150px;
-  font-size: 12px;
-  font-family: Tahoma;
-}
-
 </style>

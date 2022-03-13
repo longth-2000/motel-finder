@@ -37,6 +37,12 @@ export default new Router({
                 import ("../views/Seller/ProfileView.vue"),
         },
         {
+            path: "/dang-tin",
+            name: "CreatePost",
+            component: () =>
+                import ("../views/Seller/CreatePostView.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {

@@ -55,9 +55,6 @@
 .state-notification:hover{
     cursor: pointer;
 }
-#notification {
-  
-}
 .notify-content {
   font-family: Tahoma;
   font-size: 12px;

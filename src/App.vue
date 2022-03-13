@@ -33,6 +33,7 @@ export default {
 }
 .router-link {
   text-decoration: none;
+  color:black
 }
 img{
   object-fit: cover;
@@ -40,16 +41,5 @@ img{
 ul {
   list-style: none;
 }
-#title-component-profile {
-  width: 100%;
-  background: #055699;
-  height: 30px;
-  color: white;
-  font-weight: bold;
-  padding-left: 10px;
-  line-height: 30px;
-  font-family: Tahoma;
-  font-size: 12px;
-  margin-bottom: 20px;
-}
+
 </style>

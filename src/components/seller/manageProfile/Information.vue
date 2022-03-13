@@ -58,7 +58,7 @@
                   </a-select>
                 </div>
                 <div>
-                  <a-input class="address" placeholder="Địa chỉ" />
+                  <a-input class="address" placeholder="Địa chỉ cụ thể" />
                 </div>
               </div>
             </td>
@@ -69,56 +69,21 @@
   </div>
 </template>
 <script>
-import { RepositoryFactory } from "../../../repository/factory";
+import adddressMixin from "../../../mixins/address"
 export default {
   props: ["title"],
+  mixins:[adddressMixin],
   data() {
     return {
       plainOptions: ["Nam", "Nữ"],
-      districts: [],
-      wards: {},
     };
   },
-  created() {
-    this.fetchDistrict();
-  },
   methods: {
-    async fetchDistrict() {
-      const { data } = await RepositoryFactory.get("address").getDistrict();
-      this.districts = data.districts;
-    },
-    async getWard(districtID) {
-      const { data } = await RepositoryFactory.get("address").getWard(
-        districtID
-      );
-      this.wards = data.wards;
-      console.log(data);
-    },
+    
   },
 };
 </script>
 <style scoped>
-.change-title {
-  width: 100%;
-  padding: 5px 10px;
-  background: #d4ebfd;
-  border-bottom: 2px solid #055699;
-  font-family: Tahoma;
-  font-size: 12px;
-  font-weight: bold;
-  color: #055699;
-}
-.table {
-  margin: 20px 20px;
-}
-.table .form input {
-  width: 300px;
-}
-.table .label {
-  width: 150px;
-  font-size: 12px;
-  font-family: Tahoma;
-}
 .address {
   margin-right: 20px;
 }

@@ -28,59 +28,111 @@
           <div class="choice-infor">
             <div id="title">Quản lí thông tin cá nhân</div>
             <ul>
-              <li @click="component = 'ManageProfile'">Thay đổi thông tin cá nhân</li>
-              <li @click="component = 'ChangePassword'">Thay đổi mật khẩu</li>
+              <li
+                :class="{ active: isActive.ManageProfile }"
+                @click="changeComponent('ManageProfile', 'manage-profile')"
+              >
+                Thay đổi thông tin cá nhân
+              </li>
+              <li
+                :class="{ active: isActive.ChangePassword }"
+                @click="changeComponent('ChangePassword', 'change-password')"
+              >
+                Thay đổi mật khẩu
+              </li>
             </ul>
           </div>
           <div class="choice-infor">
             <div id="title">Quản lí bài đăng</div>
             <ul>
-              <li>Đăng tin</li>
-              <li @click="component = 'ManagePost'">Tin đã đăng</li>
+              <li>
+                <router-link class="router-link" to="/dang-tin"
+                  >Đăng tin</router-link
+                >
+              </li>
+              <li
+                :class="{ active: isActive.ManagePost }"
+                @click="changeComponent('ManagePost', 'manage-post')"
+              >
+                Tin đã đăng
+              </li>
               <li>Tin nháp</li>
             </ul>
           </div>
           <div class="choice-infor">
             <div id="title">Tiện ích</div>
             <ul>
-              <li @click="component = 'Notification'">Thông báo</li>
+              <li
+                :class="{ active: isActive.Notification }"
+                @click="changeComponent('Notification', 'notification')"
+              >
+                Thông báo
+              </li>
             </ul>
           </div>
         </div>
       </div>
       <div class="manage-content">
-          <component :is="component"></component>
+        <component :is="component"></component>
       </div>
     </div>
   </div>
 </template>
 <script>
-import ChangePassword from "../../components/seller/ChangePassword.vue"
-import ManageProfile from "../../components/seller/ManageProfile.vue"
-import Notification from "../../components/seller/Notification.vue"
-import ManagePost from "../../components/seller/ManagePost.vue"
+import ChangePassword from "../../components/seller/ChangePassword.vue";
+import ManageProfile from "../../components/seller/ManageProfile.vue";
+import Notification from "../../components/seller/Notification.vue";
+import ManagePost from "../../components/seller/ManagePost.vue";
 
 export default {
-    components:{
-        ChangePassword,
-        ManageProfile,
-        Notification,
-        ManagePost
+  components: {
+    ChangePassword,
+    ManageProfile,
+    Notification,
+    ManagePost,
+  },
+  data() {
+    return {
+      component: "",
+      isActive: {
+        ChangePassword: false,
+        ManageProfile: false,
+        Notification: false,
+        ManagePost: false,
+      },
+      urlParams: "",
+    };
+  },
+  created() {
+    var urlParams = this.$route.query.type;
+    this.urlParams = urlParams.split("-").map(this.capitalize).join("");
+    this.component = this.urlParams
+  },
+  watch: {
+    urlParams(newVal, oldVal) {
+      this.isActive[newVal] = true;
+      this.isActive[oldVal] = false;
     },
-    data() {
-        return{
-          component:'ManageProfile'
-        }
-    }
-}
+  },
+  methods: {
+    changeComponent(component, params) {
+      window.scrollTo(0,0);
+      this.$router.push(`/ho-so?type=${params}`);
+      this.component = component;
+      this.urlParams = params.split("-").map(this.capitalize).join("");
+    },
+    capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+  },
+};
 </script>
 <style scoped>
-
 .manage-profile {
   background: #f2f2f280;
 }
 .profile-content {
-  width: 75%;
+  width: 1200px;
   height: 900px;
   margin: 0 auto;
   display: flex;
@@ -151,7 +203,33 @@ export default {
   list-style: square;
 }
 .choice-infor li:hover {
-  color:#069;
+  color: #069;
   cursor: pointer;
+}
+::v-deep #title-component-profile {
+  width: 100%;
+  background: #055699;
+  height: 30px;
+  color: white;
+  font-weight: bold;
+  padding-left: 10px;
+  line-height: 30px;
+  font-family: Tahoma;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+::v-deep .table {
+  margin: 20px 20px;
+}
+::v-deep .table .form input {
+  width: 300px;
+}
+::v-deep .table .label {
+  width: 150px;
+  font-size: 12px;
+  font-family: Tahoma;
+}
+.active {
+  color: red;
 }
 </style>
