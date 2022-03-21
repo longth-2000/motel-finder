@@ -1,8 +1,13 @@
 <template>
   <div class="button">
-    <a-button type="danger"> Đăng bài </a-button>
+    <a-button type="danger" @click="createPost()"> Đăng bài </a-button>
   </div>
 </template>
+<script>
+export default {
+  props:["createPost"]
+}
+</script>
 <style scoped>
 .button {
   width: 90%;

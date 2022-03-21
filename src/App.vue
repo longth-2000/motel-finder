@@ -41,5 +41,17 @@ img{
 ul {
   list-style: none;
 }
+.require-sign {
+  color:red
+}
+.condition {
+  font-family: Roboto;
+  font-size: 12px;
+  margin-top: 10px;
+  color: red;
+}
+.is-invalid-form .ant-select-selection--single {
+  border-color:red
+}
 
 </style>

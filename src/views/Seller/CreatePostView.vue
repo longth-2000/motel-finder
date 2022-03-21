@@ -1,38 +1,75 @@
 <template>
   <div class="create-post">
     <div class="create-post-content">
-      <div class="basic-infor post-infor">
-        <BasicInfor title="Thông tin cơ bản" />
-      </div>
-      <div class="detail-infor post-infor">
-        <DetailInfor title="Thông tin phòng trọ" />
-      </div>
-      <div class="main-infor post-infor">
-        <MainInfor title="Thông tin bài viết" />
-      </div>
-      <div class="image-infor post-infor">
-        <ImageInfor title="Hình ảnh" />
-      </div>
-      <div class="image-infor post-infor">
-        <ButtonInfor />
-      </div>
+      <a-form action="">
+        <div class="basic-infor post-infor">
+          <BasicInfor
+            title="Thông tin cơ bản"
+            :isSubmit="isSubmit"
+            v-model="formValidation.basic"
+            :validation="$v.formValidation.basic"
+          />
+        </div>
+        <div class="detail-infor post-infor">
+          <DetailInfor
+            title="Thông tin phòng trọ"
+            :isSubmit="isSubmit"
+            v-model="formValidation.detail"
+            :validation="$v.formValidation.detail"
+          />
+        </div>
+        <div class="main-infor post-infor">
+          <ArticalInfor
+            title="Thông tin bài viết"
+            :isSubmit="isSubmit"
+            v-model="formValidation.article"
+            :validation="$v.formValidation.article"
+          />
+        </div>
+        <div class="image-infor post-infor">
+          <ImageInfor title="Hình ảnh" />
+        </div>
+        <div class="image-infor post-infor">
+          <ButtonInfor :createPost="createPost" />
+        </div>
+      </a-form>
     </div>
   </div>
 </template>
 <script>
 import BasicInfor from "../../components/seller/createPost/basicInfor.vue";
 import DetailInfor from "../../components/seller/createPost/detailInfor.vue";
-import MainInfor from "../../components/seller/createPost/mainInfor.vue";
+import ArticalInfor from "../../components/seller/createPost/articalInfor.vue";
 import ImageInfor from "../../components/seller/createPost/imageInfor.vue";
 import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
-
+import parentValidationMixin from "../../mixins/validation/parentValidation";
+  /* import { RepositoryFactory } from "../../repository/factory";
+ */
 export default {
   components: {
     BasicInfor,
     DetailInfor,
-    MainInfor,
+    ArticalInfor,
     ImageInfor,
     ButtonInfor,
+  },
+  mixins:[parentValidationMixin],
+  data() {
+    return {
+      formData: {},
+      isSubmit: false,
+      
+    };
+  },
+  methods: {
+    async createPost() {
+      console.log(this.formValidation);
+      this.isSubmit = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      }
+    }
   },
 };
 </script>
@@ -59,7 +96,6 @@ export default {
   font-weight: 700;
   padding-top: 20px;
   margin-bottom: 30px;
- 
 }
 ::v-deep .label {
   font-family: Roboto;
@@ -67,12 +103,16 @@ export default {
   font-weight: bold;
   margin-bottom: 10px;
 }
-::v-deep .content-items{
-    margin-top: 20px;
+::v-deep .content-items {
+  margin-top: 40px;
 }
 .information-post {
   width: 90%;
   margin: 0px auto;
   padding: 20px 0;
+}
+::v-deep .is-invalid-form {
+  border-color: red;
+  box-shadow: none;
 }
 </style>

@@ -5,25 +5,25 @@
       <table class="table table-borderless">
         <tbody>
           <tr>
-            <td class="label">Họ và tên</td>
+            <td class="label">Họ và tên <span class="require-sign">(*)</span></td>
             <td class="form">
               <a-input />
             </td>
           </tr>
           <tr>
-            <td class="label">Ngày sinh</td>
+            <td class="label">Ngày sinh <span class="require-sign">(*)</span></td>
             <td class="form">
               <a-date-picker />
             </td>
           </tr>
           <tr>
-            <td class="label">Giới tính</td>
+            <td class="label">Giới tính <span class="require-sign">(*)</span></td>
             <td class="form">
               <a-radio-group :options="plainOptions" />
             </td>
           </tr>
           <tr>
-            <td class="label">Địa chỉ</td>
+            <td class="label">Địa chỉ <span class="require-sign">(*)</span></td>
             <td class="form">
               <div style="display: flex; padding-right: 20px">
                 <div>

@@ -43,6 +43,12 @@ export default new Router({
                 import ("../views/Seller/CreatePostView.vue"),
         },
         {
+            path: "/draft",
+            name: "Draft",
+            component: () =>
+                import ("../views/DraftView.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {

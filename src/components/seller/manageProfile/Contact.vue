@@ -5,13 +5,13 @@
       <table class="table table-borderless">
         <tbody>
           <tr>
-            <td class="label">Số điện thoại</td>
+            <td class="label">Số điện thoại <span class="require-sign">(*)</span></td>
             <td class="form">
               <a-input  />
             </td>
           </tr>
           <tr>
-            <td class="label">Căn cước công dân</td>
+            <td class="label">Căn cước công dân <span class="require-sign">(*)</span></td>
             <td class="form">
               <a-input  />
             </td>
