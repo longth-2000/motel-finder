@@ -1,1 +1,1 @@
-export const DISTRICT_URL = "https://provinces.open-api.vn/api"
+export const DISTRICT_URL = "https://backend-api-production.up.railway.app"
