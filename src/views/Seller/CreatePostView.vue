@@ -5,7 +5,7 @@
         <div class="basic-infor post-infor">
           <BasicInfor
             title="Thông tin cơ bản"
-            :isSubmit="isSubmit"
+            :isSubmit="check.isSubmit"
             v-model="formValidation.basic"
             :validation="$v.formValidation.basic"
           />
@@ -13,7 +13,7 @@
         <div class="detail-infor post-infor">
           <DetailInfor
             title="Thông tin phòng trọ"
-            :isSubmit="isSubmit"
+            :isSubmit="check.isSubmit"
             v-model="formValidation.detail"
             :validation="$v.formValidation.detail"
           />
@@ -21,7 +21,7 @@
         <div class="main-infor post-infor">
           <ArticalInfor
             title="Thông tin bài viết"
-            :isSubmit="isSubmit"
+            :isSubmit="check.isSubmit"
             v-model="formValidation.article"
             :validation="$v.formValidation.article"
           />
@@ -42,9 +42,8 @@ import DetailInfor from "../../components/seller/createPost/detailInfor.vue";
 import ArticalInfor from "../../components/seller/createPost/articalInfor.vue";
 import ImageInfor from "../../components/seller/createPost/imageInfor.vue";
 import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
-import parentValidationMixin from "../../mixins/validation/parentValidation";
-  /* import { RepositoryFactory } from "../../repository/factory";
- */
+import parentValidationMixin from "../../mixins/validation/postValidation/parentValidation";
+
 export default {
   components: {
     BasicInfor,
@@ -57,18 +56,17 @@ export default {
   data() {
     return {
       formData: {},
-      isSubmit: false,
+      check: {
+        isSubmit:false
+      }
       
     };
   },
   methods: {
     async createPost() {
-      console.log(this.formValidation);
-      this.isSubmit = true;
-      this.$v.$touch();
-      if (this.$v.$invalid) {
-        return;
-      }
+      let validation = this.checkValidation(this.check, this.$v)
+      if(!validation) return;
+
     }
   },
 };

@@ -1,6 +1,6 @@
-import Repository from "../repository";
+import BaseRepository from "../BaseRepository";
 export default {
     postArticle(article) {
-        return Repository.post('/bvjkbdkvbdkjs', article);
+        return BaseRepository.post('/bvjkbdkvbdkjs', article);
     },
 }

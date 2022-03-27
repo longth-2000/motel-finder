@@ -24,7 +24,6 @@
           <a-input
             class="price"
             placeholder="Nhập giá"
-            style="width: 64%"
             v-model="value.price"
             :class="{ 'is-invalid-form': isSubmit && validation.price.$error }"
           ></a-input>
@@ -39,7 +38,7 @@
             class="price"
             id="time-price"
             default-value="Tháng"
-            style="width: 34%; margin-left: 10px"
+            style="width: 34%; margin-top:10px"
           >
             <a-select-option value="month">Tháng</a-select-option>
             <a-select-option value="quarter">Quý</a-select-option>

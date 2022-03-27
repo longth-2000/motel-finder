@@ -8,7 +8,9 @@
         <div class="menu">
           <ul class="menu-list">
             <li class="menu-items">
-              <router-link to="/"> <span>Trang chủ</span></router-link>
+              <router-link to="/">
+                <span>Trang chủ</span></router-link
+              >
             </li>
             <li class="menu-items">
               <router-link to="/lien-he"> <span>Giới thiệu</span></router-link>
@@ -59,7 +61,7 @@
             class="menu-items menu-action"
             @click="showModal('login')"
             id="login"
-            v-if="!isLogged"
+            v-if="!isLogin"
           >
             Đăng nhập
             <a-modal v-model="isVisible.login" :footer="null">
@@ -71,10 +73,11 @@
             class="menu-items menu-action"
             @click="showModal('register')"
             id="register"
-            v-if="!isLogged"
+            
+            v-if="!isLogin"
           >
             Đăng kí
-            <a-modal v-model="isVisible.register" :footer="null">
+            <a-modal  v-model="isVisible.register" :footer="null">
               <Register />
             </a-modal>
           </li>
@@ -82,7 +85,7 @@
           <li
             class="menu-items"
             style="position: relative; margin-top: 10px"
-            v-if="isLogged"
+            v-if="isLogin"
           >
             <font-awesome-icon
               icon="fa-regular fa-bell"
@@ -90,7 +93,7 @@
             />
             <div class="nofifycation-data">1</div>
           </li>
-          <li class="menu-items" style="display: flex" v-if="isLogged">
+          <li class="menu-items" style="display: flex" v-if="isLogin">
             <div class="abbreviation-username">H</div>
             <div class="fullwrite-username">
               <p>Long Truong Hoang luong thien</p>
@@ -103,34 +106,34 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item style="padding-left: 10px"
-                    ><router-link
-                      to="/bai-dang?type=nha-nguyen-can"
+                    ><a
+                      href="/ho-so?type=manage-post"
                       class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
                         class="icon-user"
-                      />Quản lí tin đăng</router-link
+                      />Quản lí tin đăng</a
                     ></a-menu-item
                   >
 
                   <a-menu-item
-                    ><router-link
-                      to="/bai-dang?type=nha-nguyen-can"
+                    ><a
+                      href="/ho-so?type=manage-profile"
                       class="router-link"
                       ><font-awesome-icon
                         class="icon-user"
                         icon="fa-solid fa-user"
-                      />Quản lí thông tin cá nhân</router-link
+                      />Quản lí thông tin cá nhân</a
                     ></a-menu-item
                   >
                   <a-menu-item
-                    ><router-link
-                      to="/bai-dang?type=nha-nguyen-can"
+                    ><a
+                      href="/ho-so?type=change-password"
                       class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-key"
                         class="icon-user"
-                      />Đổi mật khẩu</router-link
+                      />Đổi mật khẩu</a
                     ></a-menu-item
                   >
                   <a-menu-item
@@ -139,7 +142,7 @@
                       color: #da102f;
                       border-top: 1px solid #f2f2f2;
                     "
-                    @click="LOG_OUT(false)"
+                    @click="isLogout()"
                     ><font-awesome-icon
                       class="icon-user"
                       icon="fa-solid fa-arrow-right-from-bracket"
@@ -149,7 +152,11 @@
               </a-dropdown>
             </div>
           </li>
-          <li class="menu-items menu-action" id="create-post" @click="showModal('post')">
+          <li
+            class="menu-items menu-action"
+            id="create-post"
+            @click="showModal('post')"
+          >
             <div
               style="
                 width: 90px;
@@ -162,7 +169,7 @@
               Đăng tin
             </div>
           </li>
-          <a-modal v-model="isVisible.post" :footer="null">
+          <a-modal :footer="null">
             <Login />
           </a-modal>
         </ul>
@@ -176,19 +183,21 @@
 <script>
 import Login from "../Login.vue";
 import Register from "../Register.vue";
-import { mapGetters, mapMutations } from "vuex";
-
+import { mapGetters } from "vuex";
+import authenticationMixin from "../../mixins/authentication"
 export default {
   props: ["openNav"],
+  mixins:[authenticationMixin],
   components: {
     Login,
     Register,
   },
   computed: {
-    ...mapGetters("user", ["isLogged"]),
+    ...mapGetters("modal", ["isVisible"]),
   },
   methods: {
-    ...mapMutations("user", ["LOG_OUT"]),
+    
+    
   },
 };
 </script>

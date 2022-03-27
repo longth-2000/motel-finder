@@ -36,6 +36,8 @@ export default {
   color:black
 }
 img{
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 ul {
@@ -53,5 +55,9 @@ ul {
 .is-invalid-form .ant-select-selection--single {
   border-color:red
 }
+.is-invalid-form .ant-calendar-picker-input  {
+  border-color:red
+}
+
 
 </style>

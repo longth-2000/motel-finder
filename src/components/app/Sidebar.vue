@@ -3,7 +3,7 @@
     <div @click="closeNav" class="close-icon">
       <font-awesome-icon icon="fa-solid fa-xmark" />
     </div>
-    <div class="user-infor">
+    <div class="user-infor" v-if="isLogin">
       <div id="avatar">H</div>
       <div id="username">
         <p>Truong Hoang Long dep trai</p>
@@ -17,21 +17,33 @@
       </div>
     </div>
     <div class="action-items">
-      <div class="action" id="login" @click="showModal('login')">Đăng nhập</div>
-      <a-modal v-model="isVisible.login" :footer="null">
+      <div
+        v-if="!isLogin"
+        class="action"
+        id="login"
+        @click="showModal('login')"
+      >
+        Đăng nhập
+      </div>
+      <a-modal :footer="null">
         <Login />
       </a-modal>
-      <div class="action" id="register" @click="showModal('register')">
+      <div
+        v-if="!isLogin"
+        class="action"
+        id="register"
+        @click="showModal('register')"
+      >
         Đăng kí
       </div>
-      <a-modal v-model="isVisible.register" :footer="null">
+      <a-modal :footer="null">
         <Register />
       </a-modal>
     </div>
     <div class="action" id="create-post" @click="showModal('post')">
       Đăng tin
     </div>
-    <a-modal v-model="isVisible.post" :footer="null">
+    <a-modal :footer="null">
       <Login />
     </a-modal>
     <div class="menu">
@@ -65,6 +77,12 @@
             icon="fa-solid fa-house-chimney"
           /><span>Chung cư nguyên căn</span>
         </li>
+        <li v-if="isLogin" class="menu-items" @click="isLogout()" style="color: #da102f">
+          <font-awesome-icon
+            class="icon"
+            icon="fa-solid fa-arrow-right-from-bracket"
+          /><span style="color: #da102f">Đăng xuất</span>
+        </li>
       </ul>
     </div>
   </div>
@@ -72,8 +90,11 @@
 <script>
 import Login from "../Login.vue";
 import Register from "../Register.vue";
+import authenticationMixin from "../../mixins/authentication";
+
 export default {
   props: ["closeNav"],
+  mixins: [authenticationMixin],
   components: {
     Login,
     Register,
@@ -202,9 +223,5 @@ export default {
   position: absolute;
   top: 5px;
   left: 44px;
-}
-#login,
-#register {
-  display: none;
 }
 </style>
