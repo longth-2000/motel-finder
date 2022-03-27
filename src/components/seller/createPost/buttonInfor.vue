@@ -4,8 +4,26 @@
   </div>
 </template>
 <script>
+import {mapGetters, mapMutations} from 'vuex'
+import { RepositoryFactory } from "../../../repository/factory";
+
 export default {
-  props:["createPost"]
+  props:["createPost"],
+  computed:{
+    ...mapGetters('app', ['imageMotel'])
+  },
+  methods:{
+    ...mapMutations('app', ['uploadImageMotel', 'uploadLinkMotel']),
+    async createArticle() {
+      let formData = new FormData();
+      this.imageMotel.forEach(image => {
+        formData.append('file', image)
+      });
+      const { data } = await RepositoryFactory.get('app').uploadImage(formData) 
+      console.log(data)
+      this.uploadLinkMotel(data)
+    }
+  }
 }
 </script>
 <style scoped>

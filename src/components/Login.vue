@@ -4,12 +4,14 @@
       <h3>Đăng nhập</h3>
     </div>
     <div class="login-form">
-      <a-form id="components-form-demo-normal-login" class="login-form">
+      <a-form>
         <a-form-item>
           <a-input
             v-model="user.email"
             placeholder="Email"
-            class="is-invalid-forms"
+            :class="{
+              'is-invalid-form': check.isSubmit && $v.user.email.$error,
+            }"
           >
             <a-icon
               slot="prefix"
@@ -17,15 +19,21 @@
               style="color: rgba(0, 0, 0, 0.25)"
             />
           </a-input>
-          <div v-if="isSubmit && !$v.user.email.required" class="condition">
-            hvdhsvjdhsvkjdhsvhdsklv
-          </div>
+          <p v-if="check.isSubmit && !$v.user.email.required" class="condition">
+            {{ validationMessage.require }}
+          </p>
+          <p v-if="check.isSubmit && !$v.user.email.email" class="condition">
+            {{ validationMessage.email }}
+          </p>
         </a-form-item>
         <a-form-item style="margin-bottom: 10px">
           <a-input
             type="password"
             placeholder="Password"
             v-model="user.password"
+            :class="{
+              'is-invalid-form': check.isSubmit && $v.user.password.$error,
+            }"
           >
             <a-icon
               slot="prefix"
@@ -33,6 +41,24 @@
               style="color: rgba(0, 0, 0, 0.25)"
             />
           </a-input>
+          <p
+            v-if="check.isSubmit && !$v.user.password.required"
+            class="condition"
+          >
+            {{ validationMessage.require }}
+          </p>
+          <p
+            v-if="check.isSubmit && !$v.user.password.minLength"
+            class="condition"
+          >
+            Mật khẩu phải có ít nhất 6 kí tự
+          </p>
+          <p
+            v-if="check.isSubmit && !$v.user.password.alphaNum"
+            class="condition"
+          >
+            Mật khẩu chỉ bao gồm chữ cái và số
+          </p>
         </a-form-item>
         <a-form-item>
           <a-checkbox> Nhớ tài khoản </a-checkbox>
@@ -47,9 +73,9 @@
           <a-button
             type="primary"
             style="width: 100%; height: 38px"
-            @click="handleSubmit()"
+            @click="handleLogin()"
           >
-            Log in
+            Đăng nhập
           </a-button>
         </a-form-item>
       </a-form>
@@ -70,49 +96,63 @@
     </div>
     <div class="login-register" style="text-align: center">
       Chưa có tài khoản?
-      <router-link to="" class="router-link" style="color: red"
-        >Đăng kí</router-link
+      <span style="color: red; cursor: pointer" @click="redirectTo('register')"
+        >Đăng ký</span
       >
+      <a-modal v-model="isVisible.register" :footer="null">
+        <Register />
+      </a-modal>
       tại đây
     </div>
   </div>
 </template>
 <script>
-import { mapMutations, mapGetters } from "vuex";
 import { RepositoryFactory } from "../repository/factory";
-import { required } from "vuelidate/lib/validators";
+import VueJwtDecode from "vue-jwt-decode";
+import signMixin from "../mixins/sign";
+import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
+
 export default {
+  mixins: [signMixin],
+  components: {
+    Register: () => import("./Register.vue"),
+  },
   data() {
     return {
-      user: {},
-      isSubmit: false,
+      name: "login",
     };
-  },
-  methods: {
-    ...mapMutations("user", ["LOG_IN"]),
-    async handleSubmit() {
-      try {
-        const { data } = await RepositoryFactory.get("user").login(this.user);
-        console.log(data.message);
-        this.$router.push("/dang-tin");
-      } catch (error) {
-        console.log(error.response);
-        this.openNotification('Error', error.response.data.message, 'error')
-      }
-    },
-  },
-  computed: {
-    ...mapGetters("user", ["isLogged"]),
   },
   validations: {
     user: {
-      email: { required },
-      password: { required },
+      email: { required, email },
+      password: { required, minLength: minLength(6), alphaNum },
+    },
+  },
+
+  methods: {
+    async handleLogin() {
+      let validation = this.checkValidation(this.check, this.$v);
+      console.log(validation);
+      if (!validation) return;
+      else {
+        try {
+          const { data } = await RepositoryFactory.get("user").login(this.user);
+          var accessToken = data.data.accessToken;
+          var decodeToken = VueJwtDecode.decode(accessToken);
+          document.cookie = `accessToken=${accessToken}`;
+          localStorage.setItem("id", decodeToken.id);
+
+          window.location.href = "/ho-so";
+        } catch (error) {
+          console.log(error.response);
+          this.openNotification("Error", error.response.data.message, "error");
+        }
+      }
     },
   },
 };
 </script>
-<style scoped>
+<style>
 .login-title h3 {
   font-size: 18px;
 }
@@ -169,11 +209,12 @@ export default {
   top: calc(50% - 0.5px);
   background: darkgray;
 }
-.is-invalid-forms {
+.login-form .is-invalid-form .ant-input {
   border-color: red;
   box-shadow: none;
 }
-.condition {
+.login-form .condition {
   margin-top: -10px;
+  margin-bottom: 0;
 }
 </style>

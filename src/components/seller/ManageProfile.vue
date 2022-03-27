@@ -7,16 +7,29 @@
       <div class="change-infor">
         <a-form>
           <div id="information">
-            <Information title="Thông tin cá nhân" />
+            <Information
+              title="Thông tin cá nhân"
+              :isSubmit="check.isSubmit"
+              v-model="manageProfile"
+              :validation="$v.manageProfile"
+            />
           </div>
           <div id="contact">
-            <Contact title="Thông tin liên hệ" />
+            <Contact
+              title="Thông tin liên hệ"
+              :isSubmit="check.isSubmit"
+              v-model="manageProfile"
+              :validation="$v.manageProfile"
+              :email="email"
+            />
           </div>
           <div id="Avatar">
             <Avatar title="Avatar" />
           </div>
           <div id="button">
-            <a-button type="primary"> Primary </a-button>
+            <a-button type="primary" @click="createProfile()">
+              Primary
+            </a-button>
           </div>
         </a-form>
       </div>
@@ -27,12 +40,143 @@
 import Information from "./manageProfile/Information.vue";
 import Contact from "./manageProfile/Contact.vue";
 import Avatar from "./manageProfile/Avatar.vue";
-
+import { required, numeric } from "vuelidate/lib/validators";
+import { mapMutations, mapGetters } from "vuex";
+import { RepositoryFactory } from "../../repository/factory";
+import moment from "moment";
 export default {
   components: {
     Information,
     Contact,
     Avatar,
+  },
+  data() {
+    return {
+      manageProfile: {
+        phoneNumber: "",
+        CCCD: "",
+        zalo: "",
+        name: "",
+        address: {},
+        sex: true,
+        birthDay: null,
+      },
+      email: "",
+      check: {
+        isSubmit: false,
+      },
+      formData: {},
+    };
+  },
+  computed: {
+    ...mapGetters("app", ["imageAvatar"]),
+  },
+  validations: {
+    manageProfile: {
+      phoneNumber: {
+        required,
+        numeric,
+      },
+      CCCD: {
+        required,
+        numeric,
+      },
+      name: { required },
+      address: {
+        district: { required },
+        ward: { required },
+        detail: { required },
+      },
+      birthDay: { required },
+    },
+  },
+  created() {
+    this.getUserInfor();
+  },
+  methods: {
+    moment,
+    ...mapMutations("app", [
+      "uploadImageAvatar",
+      "uploadLinkAvatar",
+      "onSpinning",
+      "offSpinning",
+    ]),
+    async createProfile() {
+      let validation = this.checkValidation(this.check, this.$v);
+      if (!validation) return;
+      else {
+        this.onSpinning();
+        let formData = new FormData();
+        formData.append("file", this.imageAvatar);
+        let accessToken = this.getCookie("accessToken");
+        this.manageProfile.id = localStorage.getItem("id");
+
+        const headers = {
+          Authorization: "Bearer " + accessToken,
+        };
+        try {
+          const ImageResponse = await RepositoryFactory.get("app").uploadImage(
+            formData
+          );
+          this.manageProfile.avatar = ImageResponse.data;
+          const dataResponse = await RepositoryFactory.get("user").updateUser(
+            this.manageProfile,
+            headers
+          );
+          console.log(dataResponse);
+        } catch (error) {
+           this.manageProfile.avatar = {
+               public_id: "empty",
+               url:"https://file4.batdongsan.com.vn/images/default-user-avatar-blue.jpg"
+           }
+        } finally {
+          const dataResponse = await RepositoryFactory.get("user").updateUser(
+            this.manageProfile,
+            headers
+          );
+          console.log(dataResponse);
+          window.location.href = "/ho-so";
+        }
+      }
+    },
+    async getUserInfor() {
+      let accessToken = this.getCookie("accessToken");
+      let userID = localStorage.getItem("id");
+      const headers = {
+        Authorization: "Bearer " + accessToken,
+      };
+      const { data } = await RepositoryFactory.get("user").getUser(
+        userID,
+        headers
+      );
+      console.log(data);
+      this.$emit("setAvatar", data);
+      this.email = data.email;
+      let deletedArray = [
+        "isApproved",
+        "_id",
+        "email",
+        "role",
+        "__v",
+        "createdAt",
+        "updatedAt",
+      ];
+      deletedArray.forEach((item) => {
+        delete data[item];
+      });
+      for (let property in data) {
+        if (property === "birthDay") {
+          this.manageProfile.birthDay = moment(
+            data.birthDay,
+            "YYYY-MM-DD"
+          );
+        }
+        else {
+          this.manageProfile[property] = data[property]
+        }
+      }
+      console.log(this.manageProfile)
+    },
   },
 };
 </script>
@@ -53,10 +197,10 @@ export default {
   background: white;
 }
 #button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
 }
 
 ::v-deep .change-title {
@@ -68,5 +212,9 @@ export default {
   font-size: 12px;
   font-weight: bold;
   color: #055699;
+}
+::v-deep .is-invalid-form {
+  border-color: red;
+  box-shadow: none;
 }
 </style>

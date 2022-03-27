@@ -1,81 +1,80 @@
 <template>
   <div class="manage-profile">
-    <div class="profile-content">
-      <div class="manage-column">
-        <div id="title-column">
-          <span>TRANG CÁ NHÂN</span>
-        </div>
-        <div id="infor-column">
-          <div id="avatar">
-            <img
-              src="https://file4.batdongsan.com.vn/images/default-user-avatar-blue.jpg"
-              alt=""
-            />
+    <a-spin tip="Loading..." :spinning="isSpinning">
+      <div class="profile-content">
+        <div class="manage-column">
+          <div id="title-column">
+            <span>TRANG CÁ NHÂN</span>
           </div>
-          <div id="username">
-            <span>TRUONG HOANG LONG</span>
+          <div id="infor-column">
+            <div id="avatar">
+              <img :src="avatar" alt="" />
+            </div>
+            <div id="username">
+              <span>{{ name.toUpperCase() }}</span>
+            </div>
+            <div id="post">
+              <ul>
+                <li>Số bài đã đăng: <span>0</span></li>
+                <li>Số lượt yêu thích: <span>0</span></li>
+                <li>Bài đăng được duyệt: <span>0</span></li>
+                <li>Bài đăng bị từ chối: <span>0</span></li>
+              </ul>
+            </div>
           </div>
-          <div id="post">
-            <ul>
-              <li>Số bài đã đăng: <span>0</span></li>
-              <li>Số lượt yêu thích: <span>0</span></li>
-              <li>Bài đăng được duyệt: <span>0</span></li>
-              <li>Bài đăng bị từ chối: <span>0</span></li>
-            </ul>
-          </div>
-        </div>
-        <div id="choice-column">
-          <div class="choice-infor">
-            <div id="title">Quản lí thông tin cá nhân</div>
-            <ul>
-              <li
-                :class="{ active: isActive.ManageProfile }"
-                @click="changeComponent('ManageProfile', 'manage-profile')"
-              >
-                Thay đổi thông tin cá nhân
-              </li>
-              <li
-                :class="{ active: isActive.ChangePassword }"
-                @click="changeComponent('ChangePassword', 'change-password')"
-              >
-                Thay đổi mật khẩu
-              </li>
-            </ul>
-          </div>
-          <div class="choice-infor">
-            <div id="title">Quản lí bài đăng</div>
-            <ul>
-              <li>
-                <router-link class="router-link" to="/dang-tin"
-                  >Đăng tin</router-link
+          <div id="choice-column">
+            <div class="choice-infor">
+              <div id="title">Quản lí thông tin cá nhân</div>
+              <ul>
+                <li
+                  :class="{ active: isActive.ManageProfile }"
+                  @click="changeComponent('ManageProfile', 'manage-profile')"
                 >
-              </li>
-              <li
-                :class="{ active: isActive.ManagePost }"
-                @click="changeComponent('ManagePost', 'manage-post')"
-              >
-                Tin đã đăng
-              </li>
-              <li>Tin nháp</li>
-            </ul>
-          </div>
-          <div class="choice-infor">
-            <div id="title">Tiện ích</div>
-            <ul>
-              <li
-                :class="{ active: isActive.Notification }"
-                @click="changeComponent('Notification', 'notification')"
-              >
-                Thông báo
-              </li>
-            </ul>
+                  Thay đổi thông tin cá nhân
+                </li>
+                <li
+                  :class="{ active: isActive.ChangePassword }"
+                  @click="changeComponent('ChangePassword', 'change-password')"
+                >
+                  Thay đổi mật khẩu
+                </li>
+              </ul>
+            </div>
+            <div class="choice-infor">
+              <div id="title">Quản lí bài đăng</div>
+              <ul>
+                <li>
+                  <router-link class="router-link" to="/dang-tin"
+                    >Đăng tin</router-link
+                  >
+                </li>
+                <li
+                  :class="{ active: isActive.ManagePost }"
+                  @click="changeComponent('ManagePost', 'manage-post')"
+                >
+                  Tin đã đăng
+                </li>
+                <li>Tin nháp</li>
+              </ul>
+            </div>
+            <div class="choice-infor">
+              <div id="title">Tiện ích</div>
+              <ul>
+                <li
+                  :class="{ active: isActive.Notification }"
+                  @click="changeComponent('Notification', 'notification')"
+                >
+                  Thông báo
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
+        <div class="manage-content">
+          <component :is="component" @setAvatar="setAvatar"></component>
+        </div>
       </div>
-      <div class="manage-content">
-        <component :is="component"></component>
-      </div>
-    </div>
+    </a-spin>
   </div>
 </template>
 <script>
@@ -84,6 +83,9 @@ import ManageProfile from "../../components/seller/ManageProfile.vue";
 import Notification from "../../components/seller/Notification.vue";
 import ManagePost from "../../components/seller/ManagePost.vue";
 
+import { mapGetters } from "vuex";
+import moment from "moment";
+
 export default {
   components: {
     ChangePassword,
@@ -91,6 +93,7 @@ export default {
     Notification,
     ManagePost,
   },
+
   data() {
     return {
       component: "",
@@ -101,12 +104,15 @@ export default {
         ManagePost: false,
       },
       urlParams: "",
+      avatar:"",
+      name:""
     };
   },
+  computed: {
+    ...mapGetters("app", ["isSpinning"]),
+  },
   created() {
-    var urlParams = this.$route.query.type;
-    this.urlParams = urlParams.split("-").map(this.capitalize).join("");
-    this.component = this.urlParams
+    this.setURL();
   },
   watch: {
     urlParams(newVal, oldVal) {
@@ -115,14 +121,32 @@ export default {
     },
   },
   methods: {
+    moment,
+    setURL() {
+      var query = this.$route.query;
+      var emptyObject = Object.keys(query).length === 0;
+      var urlParams = "";
+      if (emptyObject) {
+        urlParams = "manage-profile";
+      } else {
+        urlParams = this.$route.query.type;
+      }
+      this.urlParams = urlParams.split("-").map(this.capitalize).join("");
+      console.log(this.urlParams);
+      this.component = this.urlParams;
+    },
     changeComponent(component, params) {
-      window.scrollTo(0,0);
+      window.scrollTo(0, 0);
       this.$router.push(`/ho-so?type=${params}`);
       this.component = component;
       this.urlParams = params.split("-").map(this.capitalize).join("");
     },
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+    setAvatar(mes) {
+      this.avatar = mes.avatar.url;
+      this.name = (mes.name) ? mes.name : ""
     },
   },
 };
@@ -228,6 +252,14 @@ export default {
   width: 150px;
   font-size: 12px;
   font-family: Tahoma;
+}
+#avatar {
+  width: 120px;
+  height: 120px;
+  margin: -10px auto 20px;
+}
+#avatar img {
+  border-radius: 120px;
 }
 .active {
   color: red;

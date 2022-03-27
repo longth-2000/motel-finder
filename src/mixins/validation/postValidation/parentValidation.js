@@ -30,8 +30,8 @@ var parentValidationMixin = {
                         balcony: true,
                     },
                 },
-            },
-        };
+            }
+        }
     },
 
     validations: {
@@ -61,6 +61,17 @@ var parentValidationMixin = {
                 },
             },
         },
+        profileValidation: {
+            manageProfile: {
+                contact: {},
+                information: {}
+            },
+            chagePassword: {
+                oldPassword: {},
+                newPassword: {},
+                confirmPassword: {}
+            }
+        }
     },
 
 }
