@@ -1,82 +1,11 @@
 <template>
   <div class="footer">
-    <div class="footer-content">
-      <div class="footer-contact">
-        <div class="footer-logo">
-          <img src="../../assets/logo.png" alt="" />
-        </div>
-        <div class="footer-name">WEBSITE TÌM NHÀ TRỌ SINH VIÊN UET</div>
-        <div class="footer-infor">
-          <div class="information">
-            <font-awesome-icon class="icon" icon="fa-solid fa-location-dot" />
-            <div>144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội</div>
-          </div>
-          <div class="information">
-            <font-awesome-icon class="icon" icon="fa-solid fa-phone" />
-            <div>(084)123456789</div>
-          </div>
-        </div>
-      </div>
-      <div class="footer-hotline">
-        <div id="footer-help">
-          <div class="help">
-            <font-awesome-icon class="icon" icon="fa-solid fa-user" />
-            <div class="content">
-              <p class="title">Hỗ trợ khách hàng</p>
-              <p class="own">18020853@vnu.edu.vn</p>
-            </div>
-          </div>
-          <div class="help">
-            <font-awesome-icon class="icon" icon="fa-solid fa-headphones" />
-            <div class="content">
-              <p class="title">Chăm sóc khách hàng</p>
-              <p class="own">18020853@vnu.edu.vn</p>
-            </div>
-          </div>
-        </div>
-        <div id="footer-tutorial">
-          <div class="tutorial">
-            <ul>
-              <li style="font-weight: bold">CHÍNH SÁCH</li>
-              <li>Báo giá và hỗ trợ</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-            </ul>
-          </div>
-          <div class="tutorial">
-            <ul>
-              <li style="font-weight: bold">HƯỚNG DẪN</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-            </ul>
-          </div>
-          <div class="tutorial">
-            <ul>
-              <li style="font-weight: bold">QUY ĐỊNH</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-              <li>Hướng dẫn</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <style scoped>
 .footer {
   width: 100%;
-  background: lavender;
+  background: red;
 }
 .footer-content {
   width: 80%;

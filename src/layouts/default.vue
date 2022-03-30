@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div >
     <div class="header">
       <Header :openNav="openNav"></Header>
     </div>
     <div class="sidebar">
       <Sidebar id="sidebar" :closeNav="closeNav"></Sidebar>
     </div>
-    <div class="main">
+    <div class="main" style="background:#E0E0E0">
       <slot></slot>
     </div>
     <div class="footer">

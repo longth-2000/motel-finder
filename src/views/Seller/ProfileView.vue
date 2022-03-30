@@ -8,10 +8,12 @@
           </div>
           <div id="infor-column">
             <div id="avatar">
-              <img :src="avatar" alt="" />
+              <img :src="userInfor.avatar.url" alt="" />
             </div>
             <div id="username">
-              <span>{{ name.toUpperCase() }}</span>
+              <span v-if="userInfor.hasOwnProperty('name')">{{
+                userInfor.name.toUpperCase()
+              }}</span>
             </div>
             <div id="post">
               <ul>
@@ -54,7 +56,12 @@
                 >
                   Tin đã đăng
                 </li>
-                <li>Tin nháp</li>
+                <li
+                  :class="{ active: isActive.DraftPost }"
+                  @click="changeComponent('DraftPost', 'draft-post')"
+                >
+                  Tin nháp
+                </li>
               </ul>
             </div>
             <div class="choice-infor">
@@ -71,11 +78,7 @@
           </div>
         </div>
         <div class="manage-content">
-          <component
-            :is="component"
-            @setAvatar="setAvatar"
-            @setAvatarAfterSave="setAvatarAfterSave"
-          ></component>
+          <component :is="component"></component>
         </div>
       </div>
     </a-spin>
@@ -86,6 +89,7 @@ import ChangePassword from "../../components/seller/ChangePassword.vue";
 import ManageProfile from "../../components/seller/ManageProfile.vue";
 import Notification from "../../components/seller/Notification.vue";
 import ManagePost from "../../components/seller/ManagePost.vue";
+import DraftPost from "../../components/seller/DraftPost.vue";
 
 import { mapGetters } from "vuex";
 import moment from "moment";
@@ -96,6 +100,7 @@ export default {
     ManageProfile,
     Notification,
     ManagePost,
+    DraftPost,
   },
 
   data() {
@@ -106,14 +111,14 @@ export default {
         ManageProfile: false,
         Notification: false,
         ManagePost: false,
+        DraftPost:false
       },
       urlParams: "",
-      avatar: "",
-      name: "",
     };
   },
   computed: {
     ...mapGetters("app", ["isSpinning"]),
+    ...mapGetters("user", ["userInfor"]),
   },
   created() {
     this.setURL();
@@ -148,15 +153,6 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    setAvatar(mes) {
-      this.avatar = mes.avatar.url;
-      this.name = mes.name ? mes.name : "";
-    },
-    setAvatarAfterSave(message) {
-      console.log(message)
-      this.avatar = message.avatar.url;
-      this.name = message.name ? message.name : "";
-    }
   },
 };
 </script>
@@ -165,7 +161,7 @@ export default {
   background: #f2f2f280;
 }
 .profile-content {
-  width: 1200px;
+  width: 80%;
   height: 900px;
   margin: 0 auto;
   display: flex;
@@ -178,7 +174,7 @@ export default {
   background: #fff;
 }
 .manage-content {
-  width: 100%;
+  width: 100%-270px;
   height: 100%;
   margin-left: 20px;
   background: #fff;

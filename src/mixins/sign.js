@@ -15,12 +15,5 @@ var signMixin = {
     computed: {
         ...mapGetters('modal', ['isVisible'])
     },
-
-    methods: {
-        redirectTo(nextpoint) {
-            this.closeModal(this.name);
-            this.showModal(nextpoint)
-        }
-    }
 }
 export default signMixin

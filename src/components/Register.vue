@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="register-title">
+    <div class="register-title modal-title">
       <h3>Đăng kí tài khoản</h3>
     </div>
     <div class="register-form">
@@ -31,7 +31,7 @@
             <div>
               <a-input
                 type="password"
-                placeholder="Nhập lại mật khẩu"
+                placeholder="Mật khẩu"
                 v-model="user.password"
                 :class="{
                   'is-invalid-form': check.isSubmit && $v.user.password.$error,
@@ -197,9 +197,7 @@ export default {
 };
 </script>
 <style>
-.register-title h3 {
-  font-size: 18px;
-}
+
 .register-form {
   margin-top: 30px;
 }

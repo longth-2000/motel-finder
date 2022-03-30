@@ -24,21 +24,20 @@
           <a-input
             class="price"
             placeholder="Nhập giá"
-            v-model="value.price"
+            v-model="value.price.quantity"
             :class="{ 'is-invalid-form': isSubmit && validation.price.$error }"
           ></a-input>
           <div v-if="isSubmit && !validation.price.required" class="condition">
             {{ validation_message.require }}
           </div>
-          <div v-if="isSubmit && !validation.price.decimal" class="condition">
-            {{ validation_message.numeric }}
-          </div>
+         
           <div id="price-condition"></div>
           <a-select
             class="price"
             id="time-price"
             default-value="Tháng"
             style="width: 34%; margin-top:10px"
+            v-model="value.price.unit"
           >
             <a-select-option value="month">Tháng</a-select-option>
             <a-select-option value="quarter">Quý</a-select-option>
@@ -52,8 +51,8 @@
         </p>
         <a-input
           placeholder="Nhập các địa điểm công cộng gần nhà trọ"
-          v-model="value.public"
-          :class="{ 'is-invalid-form': isSubmit && validation.public.$error }"
+          v-model="value.public_location"
+          :class="{ 'is-invalid-form': isSubmit && validation.public_location.$error }"
         ></a-input>
         <div v-if="isSubmit && !validation.price.required" class="condition">
           {{ validation_message.require }}
@@ -63,7 +62,7 @@
         <p class="label">
           Tình trạng chủ <span class="require-sign">(*)</span>
         </p>
-        <a-radio-group v-model="value.owner">
+        <a-radio-group v-model="value.sameOwner">
           <a-radio :value="true">Chung chủ</a-radio>
           <a-radio :value="false">Không chung chủ</a-radio>
         </a-radio-group>
@@ -82,22 +81,22 @@
                     placeholder="Chon"
                     id="inputNumber"
                     :min="1"
-                    v-model="value.infrastructure.bedroom"
+                    v-model="value.bedRoom"
                     :class="{
                       'is-invalid-form':
-                        isSubmit && validation.infrastructure.bedroom.$error,
+                        isSubmit && validation.bedRoom.$error,
                     }"
                   />
                   <div
                     v-if="
-                      isSubmit && !validation.infrastructure.bedroom.required
+                      isSubmit && !validation.bedRoom.required
                     "
                     class="condition"
                   >
                     {{ validation_message.require }}
                   </div>
                   <div
-                    v-if="isSubmit && !validation.infrastructure.bedroom.numeric"
+                    v-if="isSubmit && !validation.bedRoom.numeric"
                     class="condition"
                   >
                     {{ validation_message.numeric }}
@@ -107,16 +106,17 @@
               <tr>
                 <th scope="row">Phòng tắm</th>
                 <td>
-                  <a-radio-group v-model="value.infrastructure.bathroom">
+                  <a-radio-group v-model="value.bathRoom">
                     <a-radio :value="true">Chung </a-radio>
                     <a-radio :value="false">Khép kín</a-radio>
                   </a-radio-group>
                 </td>
+
               </tr>
               <tr>
                 <th scope="row">Phòng bếp</th>
                 <td>
-                  <a-radio-group v-model="value.infrastructure.kitchen">
+                  <a-radio-group v-model="value.kitchen">
                     <a-radio :value="true">Chung </a-radio>
                     <a-radio :value="false">Riêng</a-radio>
                   </a-radio-group>
@@ -125,7 +125,7 @@
               <tr>
                 <th scope="row">Điều hòa</th>
                 <td>
-                  <a-radio-group v-model="value.infrastructure.airC">
+                  <a-radio-group v-model="value.aircondition">
                     <a-radio :value="true">Có </a-radio>
                     <a-radio :value="false">Không</a-radio>
                   </a-radio-group>
@@ -134,7 +134,7 @@
               <tr>
                 <th scope="row">Ban công</th>
                 <td>
-                  <a-radio-group v-model="value.infrastructure.balcony">
+                  <a-radio-group v-model="value.balcony">
                     <a-radio :value="true">Có </a-radio>
                     <a-radio :value="false">Không</a-radio>
                   </a-radio-group>

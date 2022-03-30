@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="login-title">
-      <h3>Đăng nhập</h3>
+  <div :class="{ 'authenticated': isAuthenticated }">
+    <div class="login-title modal-title">
+      <h3></h3>
     </div>
     <div class="login-form">
       <a-form>
@@ -62,12 +62,15 @@
         </a-form-item>
         <a-form-item>
           <a-checkbox> Nhớ tài khoản </a-checkbox>
-          <router-link
+          <span
             to=""
-            class="router-link"
-            style="float: right; color: red"
-            >Quên mật khẩu</router-link
+            style="float: right; color: red; cursor: pointer"
+            @click="redirectTo('changePassword')"
+            >Quên mật khẩu</span
           >
+          <a-modal v-model="isVisible.changePassword" :footer="null">
+            <ChangePassword />
+          </a-modal>
         </a-form-item>
         <a-form-item>
           <a-button
@@ -113,9 +116,16 @@ import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
 
 export default {
+  props: {
+    isAuthenticated: {
+      default: false,
+      type: Boolean,
+    },
+  },
   mixins: [signMixin],
   components: {
     Register: () => import("./Register.vue"),
+    ChangePassword: () => import("./password/ChangePassword.vue"),
   },
   data() {
     return {
@@ -140,8 +150,9 @@ export default {
           var accessToken = data.data.accessToken;
           var decodeToken = VueJwtDecode.decode(accessToken);
           document.cookie = `accessToken=${accessToken}`;
-          localStorage.setItem("id", decodeToken.id);
-
+          const { id, email } = decodeToken
+          localStorage.setItem("user" , JSON.stringify({id,email}));
+ 
           window.location.href = "/ho-so";
         } catch (error) {
           console.log(error.response);
@@ -152,10 +163,7 @@ export default {
   },
 };
 </script>
-<style>
-.login-title h3 {
-  font-size: 18px;
-}
+<style scoped>
 .login-form {
   margin-top: 30px;
 }
@@ -209,12 +217,18 @@ export default {
   top: calc(50% - 0.5px);
   background: darkgray;
 }
-.login-form .is-invalid-form .ant-input {
+::v-deep .is-invalid-form .ant-input {
   border-color: red;
   box-shadow: none;
 }
-.login-form .condition {
+.condition {
   margin-top: -10px;
   margin-bottom: 0;
+}
+.authenticated {
+  margin: 20px;
+  background: white;
+  border-radius: 5px;
+  padding: 15px;
 }
 </style>

@@ -9,57 +9,47 @@ var parentValidationMixin = {
     data() {
         return {
             formValidation: {
-                article: {
+                detailedPost: {
                     title: "",
-                    content: "",
+                    content: ""
                 },
-                basic: {
-                    type: {},
-                    address: {},
-                },
-                detail: {
-                    area: "",
-                    price: "",
-                    public: "",
-                    owner: true,
-                    infrastructure: {
-                        bedroom: "",
-                        bathroom: true,
-                        kitchen: true,
-                        airC: true,
-                        balcony: true,
-                    },
-                },
+                address: {},
+                area: null,
+                price: {},
+                public_location: "",
+                sameOwner: true,
+                bedRoom: "",
+                bathRoom: true,
+                kitchen: true,
+                aircondition: true,
+                balcony: true,
+
             }
         }
     },
 
     validations: {
         formValidation: {
-            basic: {
-                type: { required },
-                address: {
-                    district: { required },
-                    ward: { required },
-                    detail: { required },
-                },
+            type: { required },
+            address: {
+                district: { required },
+                ward: { required },
+                detail: { required },
             },
-            detail: {
-                area: { required, decimal },
-                price: { required, decimal },
-                public: { required },
-                infrastructure: {
-                    bedroom: { required, numeric },
-                },
-            },
-            article: {
+            area: { required, decimal },
+            price: { required },
+            public_location: { required },
+            bedRoom: { required, numeric },
+            detailedPost: {
                 title: { required, maxLength: maxLength(90), minLength: minLength(30) },
                 content: {
                     required,
                     maxLength: maxLength(3000),
                     minLength: minLength(30),
+
                 },
             },
+
         },
         profileValidation: {
             manageProfile: {

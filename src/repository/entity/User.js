@@ -1,4 +1,5 @@
 import BaseRepository from "../BaseRepository";
+import authHeader from "../../helper/authHeader";
 export default {
     login(user) {
         return BaseRepository.post('/user/log-in', user);
@@ -6,13 +7,17 @@ export default {
     register(user) {
         return BaseRepository.post('/user/sign-in', user);
     },
-    getUser(userID, headers) {
-        return BaseRepository.get(`/user/${userID}`, {
-            headers
+    getUser() {
+        const { id } = JSON.parse(localStorage.getItem('user'))
+        return BaseRepository.get(`/user/${id}`, {
+            headers: authHeader()
         });
     },
-    updateUser(user, headers) {
-        return BaseRepository.put('/user/update', user, { headers });
+    updateUser(user) {
+        return BaseRepository.put('/user/update', user, { headers: authHeader() });
+    },
+    updatePassword(password) {
+        return BaseRepository.post('/user/update-password', password, { headers: authHeader() });
     }
 
 }

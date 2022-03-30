@@ -51,7 +51,7 @@ export default {
 .avatar-upload .upload-button {
   position: absolute;
   top: 40px;
-  left: 430px;
+  left: 480px;
 }
 ::v-deep .ant-upload-list-item {
    width: 300px;

@@ -27,9 +27,7 @@
             <Avatar title="Avatar" />
           </div>
           <div id="button">
-            <a-button type="primary" @click="createProfile()">
-              Primary
-            </a-button>
+            <a-button type="primary" @click="createProfile()"> Lưu </a-button>
           </div>
         </a-form>
       </div>
@@ -41,7 +39,7 @@ import Information from "./manageProfile/Information.vue";
 import Contact from "./manageProfile/Contact.vue";
 import Avatar from "./manageProfile/Avatar.vue";
 import { required, numeric } from "vuelidate/lib/validators";
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations, mapGetters, mapActions } from "vuex";
 import { RepositoryFactory } from "../../repository/factory";
 import moment from "moment";
 export default {
@@ -91,16 +89,13 @@ export default {
     },
   },
   created() {
-    this.getUserInfor();
+    this.getUser();
   },
   methods: {
     moment,
-    ...mapMutations("app", [
-      "uploadImageAvatar",
-      "uploadLinkAvatar",
-      "onSpinning",
-      "offSpinning",
-    ]),
+    ...mapMutations("app", ["onSpinning", "offSpinning"]),
+    ...mapMutations("user", ["GET_USER"]),
+    ...mapActions("user", ["getUserInfor"]),
     async createProfile() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
@@ -108,11 +103,7 @@ export default {
         this.onSpinning();
         let formData = new FormData();
         formData.append("file", this.imageAvatar);
-        let accessToken = this.getCookie("accessToken");
-        this.manageProfile.id = localStorage.getItem("id");
-        const headers = {
-          Authorization: "Bearer " + accessToken,
-        };
+        this.manageProfile.id = JSON.parse(localStorage.getItem("user")).id;
         try {
           const { public_id } = this.manageProfile.avatar;
           const ImageResponse = await RepositoryFactory.get("app").uploadImage(
@@ -123,7 +114,6 @@ export default {
           }
           this.manageProfile.avatar = ImageResponse.data;
         } catch (error) {
-          // trong truong hop khong co file nao duoc up ken
           const { public_id, url } = this.manageProfile.avatar;
           this.manageProfile.avatar =
             public_id === "" || public_id === "null"
@@ -136,30 +126,18 @@ export default {
                   url,
                 };
         } finally {
-          const dataResponse = await RepositoryFactory.get("user").updateUser(
-            this.manageProfile,
-            headers
+          const { data } = await RepositoryFactory.get("user").updateUser(
+            this.manageProfile
           );
-          console.log(dataResponse);
-          this.offSpinning()
-          this.openNotification("Thành công", "Hồ sơ của bạn đã được cập nhật", "success")
-           this.$emit("setAvatarAfterSave", this.manageProfile);
+          console.log(data);
+          this.GET_USER(this.manageProfile);
+          this.offSpinning();
+          this.openNotification("Thành công", data.message, "success");
         }
       }
     },
-    async getUserInfor() {
-      let accessToken = this.getCookie("accessToken");
-      let userID = localStorage.getItem("id");
-      const headers = {
-        Authorization: "Bearer " + accessToken,
-      };
-      const { data } = await RepositoryFactory.get("user").getUser(
-        userID,
-        headers
-      );
-      console.log(data);
-      this.$emit("setAvatar", data);
-      this.email = data.email;
+    async getUser() {
+      const data = await this.getUserInfor();
       let deletedArray = [
         "isApproved",
         "_id",
@@ -179,7 +157,7 @@ export default {
           this.manageProfile[property] = data[property];
         }
       }
-      console.log(this.manageProfile);
+      console.log(data)
     },
   },
 };

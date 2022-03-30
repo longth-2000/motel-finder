@@ -8,9 +8,7 @@
         <div class="menu">
           <ul class="menu-list">
             <li class="menu-items">
-              <router-link to="/">
-                <span>Trang chủ</span></router-link
-              >
+              <router-link to="/"> <span>Trang chủ</span></router-link>
             </li>
             <li class="menu-items">
               <router-link to="/lien-he"> <span>Giới thiệu</span></router-link>
@@ -73,11 +71,10 @@
             class="menu-items menu-action"
             @click="showModal('register')"
             id="register"
-            
             v-if="!isLogin"
           >
             Đăng kí
-            <a-modal  v-model="isVisible.register" :footer="null">
+            <a-modal v-model="isVisible.register" :footer="null">
               <Register />
             </a-modal>
           </li>
@@ -94,9 +91,18 @@
             <div class="nofifycation-data">1</div>
           </li>
           <li class="menu-items" style="display: flex" v-if="isLogin">
-            <div class="abbreviation-username">H</div>
+            <div class="abbreviation-username">
+              <span v-if="user.hasOwnProperty('email')">{{
+                  user.email.charAt(0).toUpperCase()
+              }}</span>
+            </div>
             <div class="fullwrite-username">
-              <p>Long Truong Hoang luong thien</p>
+              <p>
+                <a-tooltip>
+                  <template slot="title"> {{ user.email }}</template>
+                  <span class="email-title-tooltip">{{ user.email }}</span>
+                </a-tooltip>
+              </p>
               <a-dropdown>
                 <a class="ant-dropdown-link">
                   <font-awesome-icon
@@ -106,9 +112,7 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item style="padding-left: 10px"
-                    ><a
-                      href="/ho-so?type=manage-post"
-                      class="router-link"
+                    ><a href="/ho-so?type=manage-post" class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
                         class="icon-user"
@@ -117,9 +121,7 @@
                   >
 
                   <a-menu-item
-                    ><a
-                      href="/ho-so?type=manage-profile"
-                      class="router-link"
+                    ><a href="/ho-so?type=manage-profile" class="router-link"
                       ><font-awesome-icon
                         class="icon-user"
                         icon="fa-solid fa-user"
@@ -127,9 +129,7 @@
                     ></a-menu-item
                   >
                   <a-menu-item
-                    ><a
-                      href="/ho-so?type=change-password"
-                      class="router-link"
+                    ><a href="/ho-so?type=change-password" class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-key"
                         class="icon-user"
@@ -155,7 +155,7 @@
           <li
             class="menu-items menu-action"
             id="create-post"
-            @click="showModal('post')"
+            @click="createPost()"
           >
             <div
               style="
@@ -169,9 +169,6 @@
               Đăng tin
             </div>
           </li>
-          <a-modal :footer="null">
-            <Login />
-          </a-modal>
         </ul>
       </div>
       <div class="icon" style="cursor: pointer" @click="openNav">
@@ -184,10 +181,24 @@
 import Login from "../Login.vue";
 import Register from "../Register.vue";
 import { mapGetters } from "vuex";
-import authenticationMixin from "../../mixins/authentication"
+import authenticationMixin from "../../mixins/authentication";
+import { subject } from "@casl/ability";
+import { mapActions } from "vuex";
 export default {
   props: ["openNav"],
-  mixins:[authenticationMixin],
+  mixins: [authenticationMixin],
+
+  data() {
+    const regexEmail = /(\w)+(?=@gmail.com)/;
+    return {
+      user: {},
+      regexEmail: regexEmail,
+      isLogged: false,
+    };
+  },
+  created() {
+    this.getUser();
+  },
   components: {
     Login,
     Register,
@@ -196,8 +207,29 @@ export default {
     ...mapGetters("modal", ["isVisible"]),
   },
   methods: {
-    
-    
+    ...mapActions("user", ["getUserInfor"]),
+    async getUser() {
+      try {
+        const user = await this.getUserInfor();
+        console.log(user);
+        this.user = user;
+        this.isLogged = true;
+      } catch (error) {
+        console.log(error.response);
+      }
+    },
+    createPost() {
+      let checkPermission = this.$can("create", subject("User", this.user));
+      if (!this.isLogged) {
+        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "error");
+      } else if (!checkPermission) {
+        this.openNotification(
+          "Cảnh báo",
+          "Bạn không có quyền đăng bài",
+          "error"
+        );
+      } else window.location.href = "/dang-tin";
+    },
   },
 };
 </script>
@@ -233,6 +265,13 @@ img {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+.email-title-tooltip {
+  display: inline-block;
+  width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media screen and (min-width: 800px) {

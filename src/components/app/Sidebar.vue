@@ -4,9 +4,14 @@
       <font-awesome-icon icon="fa-solid fa-xmark" />
     </div>
     <div class="user-infor" v-if="isLogin">
-      <div id="avatar">H</div>
+      <div id="avatar">{{ email.charAt(0).toUpperCase() }}</div>
       <div id="username">
-        <p>Truong Hoang Long dep trai</p>
+        <p>
+          <a-tooltip>
+            <template slot="title"> {{ email }} </template>
+            {{ email }}
+          </a-tooltip>
+        </p>
       </div>
       <div id="icon" style="position: relative">
         <font-awesome-icon
@@ -77,7 +82,12 @@
             icon="fa-solid fa-house-chimney"
           /><span>Chung cư nguyên căn</span>
         </li>
-        <li v-if="isLogin" class="menu-items" @click="isLogout()" style="color: #da102f">
+        <li
+          v-if="isLogin"
+          class="menu-items"
+          @click="isLogout()"
+          style="color: #da102f"
+        >
           <font-awesome-icon
             class="icon"
             icon="fa-solid fa-arrow-right-from-bracket"
@@ -98,6 +108,11 @@ export default {
   components: {
     Login,
     Register,
+  },
+  data() {
+    return {
+      email: JSON.parse(localStorage.getItem("user")).email,
+    };
   },
   methods: {
     redirectPage(endpoint) {

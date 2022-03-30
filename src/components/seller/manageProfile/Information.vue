@@ -154,6 +154,20 @@ export default {
       plainOptions: ["Nam", "Nữ"],
     };
   },
+  computed:{
+    getDistrict() {
+      return this.value.address.district
+    }
+  },
+  watch:{
+    getDistrict(newVal, oldVal) {
+      if(oldVal !== undefined) {
+        this.value.address = {
+          district:newVal
+        }
+      }
+    }
+  }
   
   
 };

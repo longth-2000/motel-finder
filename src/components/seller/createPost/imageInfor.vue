@@ -7,7 +7,7 @@
       <div id="condition">
         Hãy dùng ảnh thật, không trùng, không chèn số điện thoại. Mỗi ảnh kích
         thước tối thiểu 400x400, tối đa 15 MB. Số lượng ảnh tối đa tuỳ theo loại
-        tin
+        tin. Bạn không thể sửa ảnh khi đã đăng tin
       </div>
       <div id="frame-image">
         <div id="button-image clear-fix">
@@ -44,7 +44,6 @@ export default {
   methods: {
     ...mapMutations("app", ["uploadImageMotel"]),
     handleChange(infor) {
-      console.log(infor);
       const MAX_SIZE = 1024 * 1024 * 5;
       let checkSize =
         infor.fileList.filter((item) => item.originFileObj.size >= MAX_SIZE)
