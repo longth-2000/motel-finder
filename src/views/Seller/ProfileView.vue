@@ -73,6 +73,12 @@
                 >
                   Thông báo
                 </li>
+                <li
+                  :class="{ active: isActive.Payment }"
+                  @click="changeComponent('Payment', 'payment')"
+                >
+                  Thanh toán
+                </li>
               </ul>
             </div>
           </div>
@@ -90,7 +96,7 @@ import ManageProfile from "../../components/seller/ManageProfile.vue";
 import Notification from "../../components/seller/Notification.vue";
 import ManagePost from "../../components/seller/ManagePost.vue";
 import DraftPost from "../../components/seller/DraftPost.vue";
-
+import Payment from "../PurchaseView.vue"
 import { mapGetters } from "vuex";
 import moment from "moment";
 
@@ -101,6 +107,7 @@ export default {
     Notification,
     ManagePost,
     DraftPost,
+    Payment
   },
 
   data() {
@@ -111,7 +118,8 @@ export default {
         ManageProfile: false,
         Notification: false,
         ManagePost: false,
-        DraftPost:false
+        DraftPost: false,
+        Payment:false
       },
       urlParams: "",
     };
@@ -161,11 +169,11 @@ export default {
   background: #f2f2f280;
 }
 .profile-content {
-  width: 80%;
+  width: 90%;
   height: 900px;
   margin: 0 auto;
-  display: flex;
   padding: 50px 0;
+  display: flex;
 }
 .manage-column {
   width: 250px;
@@ -174,8 +182,8 @@ export default {
   background: #fff;
 }
 .manage-content {
-  width: 100%-270px;
   height: 100%;
+  width: 95%;
   margin-left: 20px;
   background: #fff;
 }
@@ -251,12 +259,15 @@ export default {
   margin: 20px 20px;
 }
 ::v-deep .table .form input {
-  width: 300px;
+  width: 50%;
 }
 ::v-deep .table .label {
   width: 150px;
   font-size: 12px;
   font-family: Tahoma;
+}
+::v-deep .ant-tabs-nav-scroll {
+  text-align:center
 }
 #avatar {
   width: 120px;

@@ -5,7 +5,6 @@
 <style scoped>
 .footer {
   width: 100%;
-  background: red;
 }
 .footer-content {
   width: 80%;

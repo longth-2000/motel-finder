@@ -50,11 +50,15 @@ export const router = new Router({
         {
             path: "/auth",
             name: "Auth",
-
             component: () =>
                 import ("../views/AuthView.vue"),
 
 
+        },
+        {
+            path: "/purchase",
+            component: () =>
+                import ("../views/PurchaseView.vue"),
         },
         {
             path: "*",

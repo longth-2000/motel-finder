@@ -32,8 +32,8 @@
           </div>
           <div class="image-infor post-infor">
             <ButtonInfor
-              :handlePost="[idArticle === undefined ? createPost : updatePost]"
-              :title="[idArticle === undefined ? 'Đăng tin' : 'Sửa tin']"
+              :handlePost="idArticle === undefined ? createPost : updatePost"
+              :title="idArticle === undefined ? 'Đăng tin' : 'Sửa tin'"
             />
           </div>
         </a-form>

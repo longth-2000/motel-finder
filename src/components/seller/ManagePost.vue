@@ -4,7 +4,14 @@
       <span>TIN ĐÃ ĐĂNG</span>
     </div>
     <div id="filter-post">
-      <div style="float: right; display: flex; margin-right: 25px">
+      <div
+        style="
+          float: right;
+          display: flex;
+          justify-content: space-evenly;
+          width: 40%;
+        "
+      >
         <div class="action" id="search">
           <a-input placeholder="Tìm theo mã tin, tiêu đề">
             <a-tooltip slot="suffix" title="Tìm kiếm theo tiêu đề">
@@ -12,14 +19,39 @@
             </a-tooltip>
           </a-input>
         </div>
-        <div class="action action-button" id="filter">
-          <div><font-awesome-icon icon="fa-solid fa-filter" /></div>
-          <div><span>Lọc</span></div>
-        </div>
-        <div class="action action-button" id="sort">
-          <font-awesome-icon icon="fa-solid fa-sort" />
-          <span>Sắp xếp</span>
-        </div>
+        <a-dropdown-button>
+          Lọc
+          <a-menu slot="overlay" @click="handleFilter">
+            <a-menu-item key="stateExpired"> Theo thời hạn </a-menu-item>
+            <a-menu-item key="stateMotel"> Theo tình trạng phòng </a-menu-item>
+            <a-menu-item key="stateApproved">
+              Theo trạng thái phê duyệt
+            </a-menu-item>
+          </a-menu>
+          <a-icon slot="icon" type="filter" />
+        </a-dropdown-button>
+        <a-modal
+          v-model="isVisible[stateFilter]"
+          ok-text="Chọn"
+          :title="
+            stateFilter === 'stateExpired'
+              ? 'Trạng thái hết hạn'
+              : stateFilter === 'stateMotel'
+              ? 'Trạng thái phòng trọ'
+              : 'Trạng thái phê duyệt'
+          "
+          cancel-text="Quay lại"
+        >
+          <FilterPost :type="this.stateFilter" />
+        </a-modal>
+        <a-dropdown-button>
+          Sắp xếp
+          <a-menu slot="overlay">
+            <a-menu-item key="1"> Theo ngày đăng </a-menu-item>
+            <a-menu-item key="2"> Theo tiêu đề </a-menu-item>
+          </a-menu>
+          <a-icon slot="icon" type="sort-descending" />
+        </a-dropdown-button>
       </div>
     </div>
     <div id="content">
@@ -29,7 +61,7 @@
             <th><a-checkbox></a-checkbox></th>
             <th>Tiêu đề</th>
             <th>Phê duyệt</th>
-            <th>Đã có người thuê</th>
+            <th>Đã cho thuê</th>
             <th>Thời hạn đăng</th>
             <th>Ngày đăng</th>
             <th></th>
@@ -42,13 +74,21 @@
               <span class="title-article">{{ post.detailedPost.title }}</span>
             </td>
             <td>
-              <a-tag :color="post.isApproved ? 'green' : 'red'">
+              <a-tag
+                :color="
+                  post.isApproved === 1
+                    ? 'orange'
+                    : post.isApproved === 2
+                    ? 'green'
+                    : 'red'
+                "
+              >
                 {{
-                  post.status === "posted"
-                    ? "Đang xem xét"
-                    : post.isApproved
-                    ? "Từ chối"
-                    : "Đang xem xét"
+                  post.isApproved === 1
+                    ? "Chưa duyệt"
+                    : post.isApproved === 2
+                    ? "Chấp nhận"
+                    : "Từ chối"
                 }}
               </a-tag>
             </td>
@@ -69,35 +109,29 @@
               >
               <a-modal
                 v-model="isVisible.purchase"
-                title="Thông báo thanh toán"
-                ok-text="Đồng ý gia hạn"
+                title="Thông báo gia hạn"
+                ok-text="Thanh toán"
+                @ok="redirectPayment"
                 cancel-text="Quay lại"
               >
-                <div>
-                  <table class="table">
-                    <tbody>
-                      <tr>
-                        <td>Thời hạn</td>
-                        <td>2 Tháng</td>
-                      </tr>
-                      <tr>
-                        <td>Giá tiền</td>
-                        <td>1000000</td>
-                      </tr>
-                      <tr>
-                        <td>Só tài khoản</td>
-                        <td>12345678</td>
-                      </tr>
-                      <tr>
-                        <td>Ngân hàng</td>
-                        <td>BIDV</td>
-                      </tr>
-                      <tr>
-                        <td>Chủ tài khoản</td>
-                        <td>bvbsdvdksbvdsvdv</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div style="display: flex">
+                  <div class="modal-icon-alert">
+                    <font-awesome-icon
+                      icon="fa-solid fa-money-check-dollar"
+                      style="color: darkorange; font-size: 50px"
+                    />
+                  </div>
+                  <div class="modal-content-alert">
+                    <a-select style="width: 80%" v-model="paymentMoney">
+                      <a-select-option :value="1"> 1 tuần </a-select-option>
+                      <a-select-option :value="2"> 1 tháng </a-select-option>
+                      <a-select-option :value="3"> 2 tháng </a-select-option>
+                    </a-select>
+                    <div style="margin-top: 10px">
+                      Số tiền cần thanh toán:
+                      <span>{{ countPayment(paymentMoney) }}</span>
+                    </div>
+                  </div>
                 </div>
               </a-modal>
             </td>
@@ -113,9 +147,9 @@
               </a-popconfirm>
               <a :href="'/dang-tin?id=' + post._id">
                 <a-button
+                  id="edit-post-btn"
                   type="primary"
-                  style="margin-left: 10px"
-                  :disabled="post.isApproved ? false : true"
+                  :disabled="post.isApproved == 1 ? true : false"
                 >
                   Sửa
                 </a-button>
@@ -130,10 +164,16 @@
 <script>
 import { RepositoryFactory } from "../../repository/factory";
 import { mapGetters } from "vuex";
+import FilterPost from "../filter/FilterPost.vue";
 export default {
+  components: {
+    FilterPost,
+  },
   data() {
     return {
       articleArray: [],
+      stateFilter: "",
+      paymentMoney: 1,
     };
   },
   computed: {
@@ -161,6 +201,9 @@ export default {
       this.openNotification("Thành công", "Nhà trọ đã được xóa", "success");
       console.log(data);
     },
+    countPayment(time) {
+      return time === 1 ? "1000000" : time === 2 ? "2000000" : "3000000";
+    },
     setExpiredState(expiredTime) {
       return new Date(expiredTime).getTime() < Date.now()
         ? {
@@ -174,11 +217,18 @@ export default {
             color: "red",
           };
     },
+    handleFilter(event) {
+      this.stateFilter = event.key;
+      this.showModal(event.key);
+    },
     alertPurchase(event) {
       let value = event.target.getAttribute("value");
       if (value === "false") {
         this.showModal("purchase");
       }
+    },
+    redirectPayment() {
+      window.location.href = "/ho-so?type=payment";
     },
     async changeStateArticle(articleID) {
       const { data } = await RepositoryFactory.get(
@@ -212,31 +262,40 @@ tbody td {
   height: 35px;
   line-height: 35px;
 }
-.action {
-  margin: 20px 5px;
-}
+
 .action-button {
   border: 1px solid #ccc;
   height: 30px;
-  margin-top: 21px;
   padding: 0 10px;
   border-radius: 4px;
   font-family: Calibri;
-  font-weight: bold;
   display: flex;
+  width: 100px;
   align-items: center;
 }
 .action-button:hover {
   cursor: pointer;
 }
-.action-button span {
-  margin-left: 10px;
+
+#edit-post-btn {
+  margin-left: 20px;
 }
-.title-article {
-  width: 300px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: normal;
-  display: inline-block;
+::v-deep
+  .ant-dropdown-button.ant-btn-group
+  > .ant-btn:last-child:not(:first-child) {
+  padding-bottom: 5px;
+}
+.modal-icon-alert {
+  flex: 1;
+  padding: 5px 30px;
+}
+.modal-content-alert {
+  flex: 7;
+  color: black;
+}
+@media screen and (max-width: 1024px) {
+  #edit-post-btn {
+    margin-left: 0;
+  }
 }
 </style>

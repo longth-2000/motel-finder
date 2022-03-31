@@ -6,6 +6,9 @@ export const state = () => ({
         changePassword: false,
         notifyPassword: false,
         alert: false,
-        purchase: false
+        purchase: false,
+        stateExpired: false,
+        stateMotel: false,
+        stateApproved: false
     }
 })

@@ -33,6 +33,7 @@ Vue.use(VueNotifycation)
 Vue.use(VueValidation)
 Vue.use(VueCookie)
 Vue.use(VueImage)
+
 Vue.config.productionTip = false
 
 

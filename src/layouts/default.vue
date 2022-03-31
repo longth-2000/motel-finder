@@ -6,7 +6,7 @@
     <div class="sidebar">
       <Sidebar id="sidebar" :closeNav="closeNav"></Sidebar>
     </div>
-    <div class="main" style="background:#E0E0E0">
+    <div class="main" >
       <slot></slot>
     </div>
     <div class="footer">
