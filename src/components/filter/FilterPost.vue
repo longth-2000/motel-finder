@@ -1,11 +1,12 @@
 <template>
   <div>
-    <a-radio-group v-model="value">
+    <a-radio-group v-model="value[type]" @change="handleFilter">
       <a-radio
         :style="radioStyle"
         v-for="(radio, index) in getArrayFilter()"
         :key="index"
-        :value="radio.id"
+        :value="radio.value"
+        
       >
         {{ radio.name }}
       </a-radio>
@@ -14,17 +15,17 @@
 </template>
 <script>
 const stateExpired = [
-  { name: "Hết hạn", id: 1 },
-  { name: "Chưa hết hạn", id: 2 },
+  { name: "Hết hạn", value: true },
+  { name: "Chưa hết hạn", value: false },
 ];
 const stateMotel = [
-  { name: "Chưa cho thuê", id: 1 },
-  { name: "Đã cho thuê", id: 2 },
+  { name: "Chưa cho thuê", value: false },
+  { name: "Đã cho thuê", value:true },
 ];
 const stateApproved = [
-  { name: "Chấp nhận", id: 1 },
-  { name: "Từ chối", id: 2 },
-  { name: "Đợi duyệt", id: 3 },
+  { name: "Chấp nhận", value: 2 },
+  { name: "Từ chối", value: 3 },
+  { name: "Đợi duyệt", value: 1 },
 ];
 
 export default {
@@ -36,7 +37,11 @@ export default {
 
   data() {
     return {
-      value: 1,
+      value:{
+        stateExpired: true,
+        stateMotel:true,
+        stateApproved:1
+      },
       radioStyle: {
         display: "block",
         height: "30px",
@@ -52,6 +57,12 @@ export default {
         ? stateMotel
         : stateApproved;
     },
+    handleFilter() {
+      this.$emit('filter', {
+        type: this.type,
+        value:this.value[this.type]
+      })
+    }
   },
 };
 </script>

@@ -9,6 +9,7 @@
               :isSubmit="check.isSubmit"
               v-model="formValidation"
               :validation="$v.formValidation"
+              @timeExpired="setEXpiredDate"
             />
           </div>
           <div class="detail-infor post-infor">
@@ -27,8 +28,12 @@
               :validation="$v.formValidation.detailedPost"
             />
           </div>
-          <div class="image-infor post-infor" v-if="idArticle === undefined">
-            <ImageInfor title="Hình ảnh" />
+          <div class="image-infor post-infor">
+            <ImageInfor
+              title="Hình ảnh"
+              @delete-image="deleteImage"
+              :images="images"
+            />
           </div>
           <div class="image-infor post-infor">
             <ButtonInfor
@@ -85,6 +90,10 @@ export default {
         isSubmit: false,
       },
       idArticle: this.$route.query.id,
+      status: this.$route.query.status,
+      deletedImageList: [],
+      images: [],
+      needUnload: true,
     };
   },
   created() {
@@ -104,62 +113,105 @@ export default {
     async getArticleByID() {
       let articleID = this.$route.query.id;
       const response = await this.getArticle(articleID);
-      console.log(response);
       this.formValidation = { ...response };
-      let deletedArray = ["_id", "__v"];
+      let deletedArray = ["_id", "__v", "district", "ward"];
       deletedArray.forEach((item) => {
-        delete this.formValidation[item];
+        if (item === "district" || item === "ward") {
+          if (this.formValidation.address[item] === "") {
+            delete this.formValidation.address[item];
+          }
+        } else delete this.formValidation[item];
       });
+      this.images = JSON.parse(JSON.stringify(this.formValidation.images))
     },
-    async callApi() {
-      let formData = new FormData();
-      this.imageMotel.forEach((image) => formData.append("file", image));
-      const { data } = await RepositoryFactory.get("app").uploadImage(formData);
-      this.formValidation.images = data;
-      this.formValidation.status = "posted";
-      const MotelRes = await RepositoryFactory.get("article").createArticle(
-        this.formValidation
-      );
-      console.log(MotelRes);
+    async callApi(status, message) {
+      try {
+        this.formValidation.status = status;
+        this.onSpinning();
+        let formData = new FormData();
+        this.imageMotel.forEach((image) => formData.append("file", image));
+        const { data } = await RepositoryFactory.get("app").uploadImage(
+          formData
+        );
+        this.formValidation.images = data;
+        const MotelRes = await RepositoryFactory.get("article").createArticle(
+          this.formValidation
+        );
+        console.log(MotelRes);
+        this.openNotification("Thành công", message, "success");
+      } catch (error) {
+        if (status == "posted") {
+          this.openNotification(
+            "Cảnh báo",
+            "Bạn phải tải từ hai ảnh trở lên",
+            "warn"
+          );
+        }
+        else {
+          const MotelRes = await RepositoryFactory.get("article").createArticle(
+            this.formValidation
+          );
+          console.log(MotelRes);          
+        }
+      } finally {
+        if(status === 'draft') window.location.href = "ho-so?type=draft-post";
+        this.offSpinning();
+      }
     },
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      try {
-        this.onSpinning();
-        this.callApi();
-        this.openNotification(
-          "Thành công",
-          "Bạn đã tạo bài đăng thành công",
-          "warning"
-        );
-      } catch (error) {
-        this.openNotification(
-          "Cảnh báo",
-          "Bạn phải tải từ hai ảnh trở lên",
-          "success"
-        );
-      } finally {
-        this.offSpinning();
-      }
+      this.callApi("posted", "Tin đã được đăng");
     },
     async updatePost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
       try {
+        this.formValidation.status = "posted";
+        let formData = new FormData();
+        this.imageMotel.forEach((image) => formData.append("file", image));
+        const image = await RepositoryFactory.get("app").uploadImage(formData);
+        if (image.data.public_id !== undefined) {
+          this.formValidation.images.push(image.data);
+        } else {
+          image.data.forEach((element) => {
+            this.formValidation.images.push(element);
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.formValidation.images = this.formValidation.images.filter(
+          (image) =>
+            !this.deletedImageList.some((item) => item === image.public_id)
+        );
+        if (this.deletedImageList.length !== 0) {
+          const deletedImage = await RepositoryFactory.get("app").deleteImage(
+            this.deletedImageList
+          );
+          console.log(deletedImage);
+        }
+        delete this.formValidation.isApproved;
+        delete this.formValidation.createdAt;
+        delete this.formValidation.updatedAt;
         const { data } = await RepositoryFactory.get("article").updateArticle(
           this.formValidation,
           this.idArticle
         );
-        console.log(data);
-        this.openNotification("Thành công", data.message, "success"); 
-      } catch (error) {
-        console.log(error.response);
+        this.openNotification("Thành công", data.message, "success");
       }
     },
     createDraft() {
-      this.callApi();
-      /*  window.location.href = "ho-so?type=draft-post" */
+      this.needUnload = false;
+      this.callApi("draft", "Bài viết đã được lưu vào tin nháp");
+    },
+    setEXpiredDate(time) {
+      const DATE = 60 * 60 * 1000 * 24;
+      let duration = time === 1 ? DATE : time === 2 ? 30 * DATE : 60 * DATE;
+      this.formValidation.postExpired = new Date(Date.now() + duration);
+    },
+    deleteImage(public_id) {
+      this.deletedImageList.push(public_id);
     },
   },
 

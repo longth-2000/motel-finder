@@ -168,6 +168,15 @@ export default {
           district: newVal,
         };
       }
+      this.getWard(newVal);
+    },
+    getWards(newVal, oldVal) {
+      if (oldVal !== undefined) {
+        this.value.address = {
+          district: this.value.address.district,
+          ward:newVal
+        };
+      }
     },
   },
 };

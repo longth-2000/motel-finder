@@ -52,8 +52,6 @@ export const router = new Router({
             name: "Auth",
             component: () =>
                 import ("../views/AuthView.vue"),
-
-
         },
         {
             path: "/purchase",
@@ -72,9 +70,16 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
+    console.log(from)
     const publicPages = ['/lien-he', '/', '/auth'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
+    if (to.path === "/ho-so") {
+        const id = JSON.parse(localStorage.getItem("user")).id;
+        to.query.id = id;
+        to.query.limit = 6;
+        next();
+    }
     if (authRequired && !loggedIn) {
         next('/auth');
     } else {

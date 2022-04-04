@@ -25,10 +25,13 @@
             class="price"
             placeholder="Nhập giá"
             v-model="value.price.quantity"
-            :class="{ 'is-invalid-form': isSubmit && validation.price.$error }"
+            :class="{ 'is-invalid-form': isSubmit && validation.price.quantity.$error }"
           ></a-input>
-          <div v-if="isSubmit && !validation.price.required" class="condition">
+          <div v-if="isSubmit && !validation.price.quantity.required" class="condition">
             {{ validation_message.require }}
+          </div>
+            <div v-if="isSubmit && !validation.price.quantity.numeric" class="condition">
+            {{ validation_message.numeric }}
           </div>
          
           <div id="price-condition"></div>
@@ -54,7 +57,7 @@
           v-model="value.public_location"
           :class="{ 'is-invalid-form': isSubmit && validation.public_location.$error }"
         ></a-input>
-        <div v-if="isSubmit && !validation.price.required" class="condition">
+        <div v-if="isSubmit && !validation.public_location.required" class="condition">
           {{ validation_message.require }}
         </div>
       </div>

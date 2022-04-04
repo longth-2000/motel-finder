@@ -19,5 +19,19 @@ export default {
     },
     updateStateArticle(articleID) {
         return BaseRepository.put(`/accomodations/update-state/${articleID}`, {}, { headers: authHeader() });
+    },
+    filterArticle(page, query) {
+        let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id
+        let paramsArray = ['isRented', 'isApproved', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
+        paramsArray.forEach(element => {
+            if (query[element] !== undefined)
+                endpoint += '&' + element + '=' + query[element]
+        })
+        return BaseRepository.get(endpoint, { headers: authHeader() });
+    },
+    deleteMultiple(idArr) {
+        return BaseRepository.post('accomodations/delete-multiple', {
+            ids: idArr
+        }, { headers: authHeader() });
     }
 }

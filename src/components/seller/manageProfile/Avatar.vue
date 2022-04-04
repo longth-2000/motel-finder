@@ -56,11 +56,5 @@ export default {
 ::v-deep .ant-upload-list-item {
    width: 300px;
 }
-::v-deep .ant-upload-list-item-error {
-  border-color:green !important;
-  color:green !important
-}
-::v-deep .ant-upload-list-item-error .anti-icon {
-  color: green !important;
-}
+
 </style>

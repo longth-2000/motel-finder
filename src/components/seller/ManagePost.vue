@@ -41,24 +41,59 @@
               : 'Trạng thái phê duyệt'
           "
           cancel-text="Quay lại"
+          @ok="startFilter"
         >
-          <FilterPost :type="this.stateFilter" />
+          <FilterPost :type="this.stateFilter" @filter="handleResultFilter" />
         </a-modal>
         <a-dropdown-button>
-          Sắp xếp
-          <a-menu slot="overlay">
-            <a-menu-item key="1"> Theo ngày đăng </a-menu-item>
-            <a-menu-item key="2"> Theo tiêu đề </a-menu-item>
+          {{ setSortTitle() }}
+          <a-menu slot="overlay" @click="handleSort">
+            <a-menu-item key="sortByDate/1"> Ngày đăng sớm nhất</a-menu-item>
+            <a-menu-item key="sortByDate/-1"> Ngày đăng muộn nhất</a-menu-item>
+            <a-menu-item key="sortByTitle/1">
+              Tiêu đề ( từ A -> Z )
+            </a-menu-item>
+            <a-menu-item key="sortByTitle/-1">
+              Tiêu đề ( từ Z -> A )
+            </a-menu-item>
           </a-menu>
           <a-icon slot="icon" type="sort-descending" />
         </a-dropdown-button>
       </div>
     </div>
-    <div id="content">
+    <div style="position: absolute; margin-left: 20px">
+      <div v-if="postArr.length > 0">
+        <a-popconfirm
+          title="Bạn có muốn xóa tất cả các tin này?"
+          ok-text="Có"
+          cancel-text="Quay lại"
+          @confirm="deleteMultiple"
+        >
+          <a-button style="margin: 10px 0">
+            Xóa
+            {{
+              postArr.length === articleArray.length ? "tất cả" : postArr.length
+            }}
+            tin đã chọn
+          </a-button>
+        </a-popconfirm>
+      </div>
+      <div v-else>
+        <span style="font-size: 25px; font-weight: bold">Tin đã đăng</span>
+      </div>
+    </div>
+    <div id="content" style="margin: 60px 0 0 0" v-if="articleArray.length > 0">
       <table class="table">
         <thead>
           <tr>
-            <th><a-checkbox></a-checkbox></th>
+            <th>
+              <a-checkbox
+                :checked="
+                  postArr.length === articleArray.length && postArr.length > 0
+                "
+                @change="handleCheckAll"
+              ></a-checkbox>
+            </th>
             <th>Tiêu đề</th>
             <th>Phê duyệt</th>
             <th>Đã cho thuê</th>
@@ -68,8 +103,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(post, index) in this.articleArray" :key="index">
-            <td><a-checkbox></a-checkbox></td>
+          <tr v-for="(post, index) in articleArray" :key="index">
+            <td>
+              <a-checkbox
+                class="check-post"
+                @change="(checked) => handleCheck(post._id, checked)"
+                :checked="postArr.includes(post._id)"
+              ></a-checkbox>
+            </td>
             <td>
               <span class="title-article">{{ post.detailedPost.title }}</span>
             </td>
@@ -77,7 +118,7 @@
               <a-tag
                 :color="
                   post.isApproved === 1
-                    ? 'orange'
+                    ? 'blue'
                     : post.isApproved === 2
                     ? 'green'
                     : 'red'
@@ -95,9 +136,10 @@
             <td>
               <a-switch
                 @change="changeStateArticle(post._id)"
-                :default-checked="post.isRented ? true : false"
+                :defaultChecked="post.isRented ? true : false"
               />
             </td>
+
             <td>
               <a-tag
                 style="cursor: pointer"
@@ -135,7 +177,7 @@
                 </div>
               </a-modal>
             </td>
-            <td>30/5/2000</td>
+            <td>{{ formatDate(post.createdAt) }}</td>
             <td>
               <a-popconfirm
                 title="Bạn có chăc chắn muốn xóa bài đăng này?"
@@ -145,19 +187,22 @@
               >
                 <a-button type="danger"> Xóa </a-button>
               </a-popconfirm>
-              <a :href="'/dang-tin?id=' + post._id">
-                <a-button
-                  id="edit-post-btn"
-                  type="primary"
-                  :disabled="post.isApproved == 1 ? true : false"
-                >
-                  Sửa
-                </a-button>
+              <a :href="'/dang-tin?id=' + post._id + '&status=posted'">
+                <a-button id="edit-post-btn" type="primary"> Sửa </a-button>
               </a>
             </td>
           </tr>
         </tbody>
       </table>
+      <a-pagination
+        v-model="current"
+        :total="50"
+        @change="getMultipleArticle"
+        style="float: right"
+      />
+    </div>
+    <div v-else class="empty-post-notify">
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -165,47 +210,38 @@
 import { RepositoryFactory } from "../../repository/factory";
 import { mapGetters } from "vuex";
 import FilterPost from "../filter/FilterPost.vue";
+import managePostMixin from "../../mixins/managePost";
 export default {
   components: {
     FilterPost,
   },
+  mixins: [managePostMixin],
   data() {
     return {
-      articleArray: [],
       stateFilter: "",
       paymentMoney: 1,
+      state: "posted",
+      articleArray: [],
+      postArr: [],
+      resultFilter: {},
+      sortTitle: "Sắp xếp",
     };
   },
   computed: {
     ...mapGetters("modal", ["isVisible"]),
   },
-  created() {
-    this.getMultipleArticle();
+  watch: {
+    $route() {
+      this.getMultipleArticle(this.current);
+    },
   },
+
   methods: {
-    async getMultipleArticle() {
-      const { data } = await RepositoryFactory.get(
-        "article"
-      ).getMultipleArticle();
-      console.log(data);
-      this.articleArray = data;
-      console.log(this.articleArray);
-    },
-    async confirmDelete(articleID) {
-      const { data } = await RepositoryFactory.get("article").deleteArticle(
-        articleID
-      );
-      this.articleArray = this.articleArray.filter(
-        (article) => article._id !== articleID
-      );
-      this.openNotification("Thành công", "Nhà trọ đã được xóa", "success");
-      console.log(data);
-    },
     countPayment(time) {
       return time === 1 ? "1000000" : time === 2 ? "2000000" : "3000000";
     },
     setExpiredState(expiredTime) {
-      return new Date(expiredTime).getTime() < Date.now()
+      return new Date(expiredTime).getTime() > Date.now()
         ? {
             state: "true",
             mess: "Còn hạn",
@@ -220,6 +256,19 @@ export default {
     handleFilter(event) {
       this.stateFilter = event.key;
       this.showModal(event.key);
+    },
+    handleResultFilter(result) {
+      console.log(result);
+      let type =
+        result.type === "stateMotel"
+          ? "isRented"
+          : result.type === "stateApproved"
+          ? "isApproved"
+          : "isExpired";
+      this.resultFilter = {
+        type: type,
+        value: result.value,
+      };
     },
     alertPurchase(event) {
       let value = event.target.getAttribute("value");
@@ -237,13 +286,71 @@ export default {
       console.log(data);
       this.openNotification("Thành công", "Cập nhật thành công", "success");
     },
+    startFilter() {
+      let queryFilter =
+        this.resultFilter.type === "isRented"
+          ? {
+              isRented: this.resultFilter.value,
+            }
+          : this.resultFilter.type === "isApproved"
+          ? {
+              isApproved: this.resultFilter.value,
+            }
+          : {
+              isExpired: this.resultFilter.value,
+            };
+      console.log(queryFilter);
+      this.$router.push({
+        path: "/ho-so?type=manage-post",
+        query: queryFilter,
+      });
+      this.closeModal(this.stateFilter);
+    },
+    handleSort(event) {
+      console.log(event);
+      let key = event.key.split("/");
+      let title = key[0];
+      let index = key[1];
+      this.sortTitle = key[2];
+      let queryFilter =
+        title === "sortByTitle"
+          ? {
+              sortByTitle: index,
+            }
+          : {
+              sortByDate: index,
+            };
+      this.$router.push({
+        path: "/ho-so?type=manage-post",
+        query: queryFilter,
+      });
+    },
+    setSortTitle() {
+      let query = this.$route.query;
+
+      if (query.sortByTitle) {
+        this.sortTitle =
+          query.sortByTitle === "1"
+            ? "Tiêu đề (Từ A -> Z)"
+            : "Tiêu đề (Từ Z -> A)";
+      }
+      if (query.sortByDate) {
+        this.sortTitle =
+          query.sortByDate === "1"
+            ? "Ngaỳ đăng sớm nhất"
+            : "Ngày đăng muộn nhất";
+      }
+      console.log(this.sortTitle);
+
+      return this.sortTitle;
+    },
   },
 };
 </script>
 <style scoped>
 #filter-post {
   width: 100%;
-  height: 80px;
+  height: 50px;
 }
 thead th {
   font-family: Roboto;
@@ -293,7 +400,7 @@ tbody td {
   flex: 7;
   color: black;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1214px) {
   #edit-post-btn {
     margin-left: 0;
   }

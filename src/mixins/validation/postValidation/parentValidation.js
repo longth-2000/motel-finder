@@ -15,7 +15,10 @@ var parentValidationMixin = {
                 },
                 address: {},
                 area: null,
-                price: {},
+                price: {
+                    quantity: null,
+                    unit: "month"
+                },
                 public_location: "",
                 sameOwner: true,
                 bedRoom: "",
@@ -23,7 +26,6 @@ var parentValidationMixin = {
                 kitchen: true,
                 aircondition: true,
                 balcony: true,
-
             }
         }
     },
@@ -37,7 +39,9 @@ var parentValidationMixin = {
                 detail: { required },
             },
             area: { required, decimal },
-            price: { required },
+            price: {
+                quantity: { required, numeric }
+            },
             public_location: { required },
             bedRoom: { required, numeric },
             detailedPost: {
