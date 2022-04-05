@@ -77,7 +77,7 @@ router.beforeEach((to, from, next) => {
     if (to.path === "/ho-so") {
         const id = JSON.parse(localStorage.getItem("user")).id;
         to.query.id = id;
-        to.query.limit = 6;
+        to.query.limit = 5;
         next();
     }
     if (authRequired && !loggedIn) {

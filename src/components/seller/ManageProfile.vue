@@ -25,6 +25,7 @@
           </div>
           <div id="Avatar">
             <Avatar title="Avatar" />
+            
           </div>
           <div id="button">
             <a-button type="primary" @click="createProfile()"> Lưu </a-button>
@@ -126,6 +127,8 @@ export default {
                   url,
                 };
         } finally {
+          this.manageProfile.birthDay = moment(this.manageProfile.birthDay).toString()
+          console.log(this.manageProfile.birthDay)
           const { data } = await RepositoryFactory.get("user").updateUser(
             this.manageProfile
           );
@@ -147,6 +150,7 @@ export default {
         "createdAt",
         "updatedAt",
       ];
+      console.log(data)
       deletedArray.forEach((item) => {
         delete data[item];
       });
@@ -179,10 +183,8 @@ export default {
   background: white;
 }
 #button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 20px;
+  margin-left: 47.5%;
+  padding: 20px 0 20px 0;
 }
 
 ::v-deep .change-title {

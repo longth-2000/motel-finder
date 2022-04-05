@@ -13,8 +13,12 @@
         "
       >
         <div class="action" id="search">
-          <a-input placeholder="Tìm theo mã tin, tiêu đề">
-            <a-tooltip slot="suffix" title="Tìm kiếm theo tiêu đề">
+          <a-input
+            placeholder="Tìm kiếm theo tiêu đề"
+            v-model="searchTitle"
+            @change="searchByTitle"
+          >
+            <a-tooltip slot="suffix" title="Click để bắt đầu tìm kiếm">
               <a-icon type="search" />
             </a-tooltip>
           </a-input>
@@ -135,9 +139,15 @@
             </td>
             <td>
               <a-switch
+                v-if="$route.query.isRented === undefined"
                 @change="changeStateArticle(post._id)"
                 :defaultChecked="post.isRented ? true : false"
               />
+              <a-tag v-else :color="$route.query.isRented ? 'green' : 'red'">
+                {{
+                  $route.query.isRented ? "Đã cho thuê" : "Chưa cho thuê"
+                }}</a-tag
+              >
             </td>
 
             <td>
@@ -225,6 +235,7 @@ export default {
       postArr: [],
       resultFilter: {},
       sortTitle: "Sắp xếp",
+      searchTitle: "",
     };
   },
   computed: {
@@ -234,6 +245,9 @@ export default {
     $route() {
       this.getMultipleArticle(this.current);
     },
+  },
+  created() {
+    console.log(this.$route);
   },
 
   methods: {
@@ -258,7 +272,6 @@ export default {
       this.showModal(event.key);
     },
     handleResultFilter(result) {
-      console.log(result);
       let type =
         result.type === "stateMotel"
           ? "isRented"
@@ -272,7 +285,7 @@ export default {
     },
     alertPurchase(event) {
       let value = event.target.getAttribute("value");
-      if (value === "false") {
+      if (value === "true") {
         this.showModal("purchase");
       }
     },
@@ -299,7 +312,6 @@ export default {
           : {
               isExpired: this.resultFilter.value,
             };
-      console.log(queryFilter);
       this.$router.push({
         path: "/ho-so?type=manage-post",
         query: queryFilter,
@@ -307,7 +319,6 @@ export default {
       this.closeModal(this.stateFilter);
     },
     handleSort(event) {
-      console.log(event);
       let key = event.key.split("/");
       let title = key[0];
       let index = key[1];
@@ -340,9 +351,17 @@ export default {
             ? "Ngaỳ đăng sớm nhất"
             : "Ngày đăng muộn nhất";
       }
-      console.log(this.sortTitle);
 
       return this.sortTitle;
+    },
+    searchByTitle(value) {
+      console.log(value.data);
+      this.$router.push({
+        path: "/ho-so?type=manage-post",
+        query: {
+          title: this.searchTitle,
+        },
+      });
     },
   },
 };
@@ -399,6 +418,15 @@ tbody td {
 .modal-content-alert {
   flex: 7;
   color: black;
+}
+.title-article {
+  display: -webkit-box;
+max-width: 200px;
+height: 100px;
+-webkit-line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 @media screen and (max-width: 1214px) {
   #edit-post-btn {

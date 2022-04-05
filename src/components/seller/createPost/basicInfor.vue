@@ -100,7 +100,7 @@
       </div>
       <div id="duration" class="content-items">
         <p class="label">
-          Thời hạn đăng bài<span class="require-sign">(*)</span>
+          Thời hạn đăng bài <span class="require-sign">(*)</span>
         </p>
         <a-select
           @change="handleExpire"
@@ -115,6 +115,11 @@
             {{ time.name }}
           </a-select-option>
         </a-select>
+      </div>
+      <div v-if="this.money.isChosen">
+        <a-button type="primary" style="margin-top: 20px">
+          Số tiền cần thanh toán là {{ this.money.value }} VND
+        </a-button>
       </div>
     </div>
   </div>
@@ -137,6 +142,10 @@ export default {
         { name: "1 tháng ", id: 2 },
         { name: "2 tháng", id: 3 },
       ],
+      money: {
+        isChosen: false,
+        value: "",
+      },
     };
   },
   computed: {
@@ -160,13 +169,27 @@ export default {
       if (oldVal !== undefined) {
         this.value.address = {
           district: this.value.address.district,
-          ward:newVal
+          ward: newVal,
         };
       }
     },
   },
   methods: {
     handleExpire(time) {
+      this.money =
+        time === 1
+          ? {
+              isChosen: false,
+            }
+          : time === 2
+          ? {
+              isChosen: true,
+              value: "1000000",
+            }
+          : {
+              isChosen: true,
+              value: "200000",
+            };
       this.$emit("timeExpired", time);
     },
   },

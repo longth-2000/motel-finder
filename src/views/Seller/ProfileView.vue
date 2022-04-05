@@ -2,84 +2,88 @@
   <div class="manage-profile">
     <a-spin tip="Loading..." :spinning="isSpinning">
       <div class="profile-content">
-        <div class="manage-column">
-          <div id="title-column">
-            <span>TRANG CÁ NHÂN</span>
-          </div>
-          <div id="infor-column">
-            <div id="avatar">
-              <img :src="userInfor.avatar.url" alt="" />
+        <div >
+          <div class="manage-column">
+            <div id="title-column">
+              <span>TRANG CÁ NHÂN</span>
             </div>
-            <div id="username">
-              <span v-if="userInfor.hasOwnProperty('name')">{{
-                userInfor.name.toUpperCase()
-              }}</span>
+            <div id="infor-column">
+              <div id="avatar">
+                <img :src="userInfor.avatar.url" alt="" />
+              </div>
+              <div id="username">
+                <span v-if="userInfor.hasOwnProperty('name')">{{
+                  userInfor.name.toUpperCase()
+                }}</span>
+              </div>
+              <div id="post">
+                <ul>
+                  <li>Số bài đã đăng: <span>0</span></li>
+                  <li>Số lượt yêu thích: <span>0</span></li>
+                  <li>Bài đăng được duyệt: <span>0</span></li>
+                  <li>Bài đăng bị từ chối: <span>0</span></li>
+                </ul>
+              </div>
             </div>
-            <div id="post">
-              <ul>
-                <li>Số bài đã đăng: <span>0</span></li>
-                <li>Số lượt yêu thích: <span>0</span></li>
-                <li>Bài đăng được duyệt: <span>0</span></li>
-                <li>Bài đăng bị từ chối: <span>0</span></li>
-              </ul>
-            </div>
-          </div>
-          <div id="choice-column">
-            <div class="choice-infor">
-              <div id="title">Quản lí thông tin cá nhân</div>
-              <ul>
-                <li
-                  :class="{ active: isActive.ManageProfile }"
-                  @click="changeComponent('ManageProfile', 'manage-profile')"
-                >
-                  Thay đổi thông tin cá nhân
-                </li>
-                <li
-                  :class="{ active: isActive.ChangePassword }"
-                  @click="changeComponent('ChangePassword', 'change-password')"
-                >
-                  Thay đổi mật khẩu
-                </li>
-              </ul>
-            </div>
-            <div class="choice-infor">
-              <div id="title">Quản lí bài đăng</div>
-              <ul>
-                <li>
-                  <router-link class="router-link" to="/dang-tin"
-                    >Đăng tin</router-link
+            <div id="choice-column">
+              <div class="choice-infor">
+                <div id="title">Quản lí thông tin cá nhân</div>
+                <ul>
+                  <li
+                    :class="{ active: isActive.ManageProfile }"
+                    @click="changeComponent('ManageProfile', 'manage-profile')"
                   >
-                </li>
-                <li
-                  :class="{ active: isActive.ManagePost }"
-                  @click="changeComponent('ManagePost', 'manage-post')"
-                >
-                  Tin đã đăng
-                </li>
-                <li
-                  :class="{ active: isActive.DraftPost }"
-                  @click="changeComponent('DraftPost', 'draft-post')"
-                >
-                  Tin nháp
-                </li>
-              </ul>
-            </div>
-            <div class="choice-infor">
-              <div id="title">Tiện ích</div>
-              <ul>
-                <li
-                  :class="{ active: isActive.Notification }"
-                  @click="changeComponent('Notification', 'notification')"
-                >
-                  Thông báo
-                </li>
-                <li
-                  :class="{ active: isActive.Payment }"
-                  @click="changeComponent('Payment', 'payment')"
-                >
-                  Thanh toán
-                </li>
-              </ul>
+                    Thay đổi thông tin cá nhân
+                  </li>
+                  <li
+                    :class="{ active: isActive.ChangePassword }"
+                    @click="
+                      changeComponent('ChangePassword', 'change-password')
+                    "
+                  >
+                    Thay đổi mật khẩu
+                  </li>
+                </ul>
+              </div>
+              <div class="choice-infor">
+                <div id="title">Quản lí bài đăng</div>
+                <ul>
+                  <li>
+                    <router-link class="router-link" to="/dang-tin"
+                      >Đăng tin</router-link
+                    >
+                  </li>
+                  <li
+                    :class="{ active: isActive.ManagePost }"
+                    @click="changeComponent('ManagePost', 'manage-post')"
+                  >
+                    Tin đã đăng
+                  </li>
+                  <li
+                    :class="{ active: isActive.DraftPost }"
+                    @click="changeComponent('DraftPost', 'draft-post')"
+                  >
+                    Tin nháp
+                  </li>
+                </ul>
+              </div>
+              <div class="choice-infor">
+                <div id="title">Tiện ích</div>
+                <ul>
+                  <li
+                    :class="{ active: isActive.Notification }"
+                    @click="changeComponent('Notification', 'notification')"
+                  >
+                    Thông báo
+                  </li>
+                  <li
+                    :class="{ active: isActive.Payment }"
+                    @click="changeComponent('Payment', 'payment')"
+                  >
+                    Thanh toán
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -197,12 +201,14 @@ export default {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
     async getArticleByUser(page, status) {
+      console.log(status);
       let query = this.$route.query;
       const { data } = await RepositoryFactory.get("article").filterArticle(
         page,
+        status,
         query
       );
-      return data.data.data.filter((element) => element.status === status);
+      return data.data.data;
     },
   },
 };
@@ -213,7 +219,7 @@ export default {
 }
 .profile-content {
   width: 90%;
-  height: 900px;
+  height: 950px;
   margin: 0 auto;
   padding: 50px 0;
   display: flex;
@@ -299,13 +305,11 @@ export default {
   margin-bottom: 20px;
 }
 ::v-deep .table {
-  margin-left: 20px;
-  background: white;
   border-radius: 4px;
+  margin: 20px;
+  width: 98%;
 }
-::v-deep #content {
-  width: 95%;
-}
+
 ::v-deep .table .form input {
   width: 50%;
 }

@@ -122,7 +122,7 @@ export default {
           }
         } else delete this.formValidation[item];
       });
-      this.images = JSON.parse(JSON.stringify(this.formValidation.images))
+      this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
     async callApi(status, message) {
       try {
@@ -139,6 +139,7 @@ export default {
         );
         console.log(MotelRes);
         this.openNotification("Thành công", message, "success");
+        /* window.location.href = "ho-so?type=manage-post";  */
       } catch (error) {
         if (status == "posted") {
           this.openNotification(
@@ -146,15 +147,14 @@ export default {
             "Bạn phải tải từ hai ảnh trở lên",
             "warn"
           );
-        }
-        else {
+        } else {
           const MotelRes = await RepositoryFactory.get("article").createArticle(
             this.formValidation
           );
-          console.log(MotelRes);          
+          console.log(MotelRes);
         }
       } finally {
-        if(status === 'draft') window.location.href = "ho-so?type=draft-post";
+        if (status === "draft") window.location.href = "ho-so?type=draft-post";
         this.offSpinning();
       }
     },
@@ -185,20 +185,28 @@ export default {
           (image) =>
             !this.deletedImageList.some((item) => item === image.public_id)
         );
-        if (this.deletedImageList.length !== 0) {
-          const deletedImage = await RepositoryFactory.get("app").deleteImage(
-            this.deletedImageList
+        if (this.formValidation.images.length < 2) {
+          this.openNotification(
+            "Cảnh báo",
+            "Bạn cần đăng ít nhất 2 ảnh",
+            "warning"
           );
-          console.log(deletedImage);
+        } else {
+          if (this.deletedImageList.length !== 0) {
+            const deletedImage = await RepositoryFactory.get("app").deleteImage(
+              this.deletedImageList
+            );
+            console.log(deletedImage);
+          }
+          delete this.formValidation.isApproved;
+          delete this.formValidation.createdAt;
+          delete this.formValidation.updatedAt;
+          const { data } = await RepositoryFactory.get("article").updateArticle(
+            this.formValidation,
+            this.idArticle
+          );
+          this.openNotification("Thành công", data.message, "success");
         }
-        delete this.formValidation.isApproved;
-        delete this.formValidation.createdAt;
-        delete this.formValidation.updatedAt;
-        const { data } = await RepositoryFactory.get("article").updateArticle(
-          this.formValidation,
-          this.idArticle
-        );
-        this.openNotification("Thành công", data.message, "success");
       }
     },
     createDraft() {
@@ -279,5 +287,15 @@ export default {
 .modal-content-alert {
   flex: 7;
   color: black;
+}
+@media only screen and (max-width: 992px) {
+  .create-post-content {
+    width: 80%;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .create-post-content {
+    width: 100%;
+  }
 }
 </style>

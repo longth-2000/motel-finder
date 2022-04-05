@@ -30,7 +30,6 @@
             </td>
             <td class="form">
               <a-date-picker
-               
                 v-model="value.birthDay"
                 :class="{
                   'is-invalid-form': isSubmit && validation.birthDay.$error,

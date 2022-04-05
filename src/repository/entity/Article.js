@@ -20,8 +20,8 @@ export default {
     updateStateArticle(articleID) {
         return BaseRepository.put(`/accomodations/update-state/${articleID}`, {}, { headers: authHeader() });
     },
-    filterArticle(page, query) {
-        let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id
+    filterArticle(page, status, query) {
+        let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id + '&status=' + status
         let paramsArray = ['isRented', 'isApproved', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
         paramsArray.forEach(element => {
             if (query[element] !== undefined)
