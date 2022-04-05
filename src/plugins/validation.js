@@ -7,6 +7,10 @@ export default {
                     validation.$touch();
                     if (validation.$invalid) return false;
                     else return true
+                },
+                redirectTo(nextpoint) {
+                    this.closeModal(this.name);
+                    this.showModal(nextpoint)
                 }
             }
         })

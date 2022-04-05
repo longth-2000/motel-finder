@@ -1,28 +1,18 @@
 <template>
   <div class="button">
-    <a-button type="danger" @click="createPost()"> Đăng bài </a-button>
+    <a-button type="danger" @click="handlePost()"> {{title}} </a-button>
   </div>
 </template>
 <script>
 import {mapGetters, mapMutations} from 'vuex'
-import { RepositoryFactory } from "../../../repository/factory";
 
 export default {
-  props:["createPost"],
+  props:["handlePost", "title"],
   computed:{
     ...mapGetters('app', ['imageMotel'])
   },
   methods:{
     ...mapMutations('app', ['uploadImageMotel', 'uploadLinkMotel']),
-    async createArticle() {
-      let formData = new FormData();
-      this.imageMotel.forEach(image => {
-        formData.append('file', image)
-      });
-      const { data } = await RepositoryFactory.get('app').uploadImage(formData) 
-      console.log(data)
-      this.uploadLinkMotel(data)
-    }
   }
 }
 </script>

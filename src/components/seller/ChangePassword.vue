@@ -8,36 +8,6 @@
         <table class="table table-borderless">
           <tbody>
             <tr>
-              <td class="label">Mật khẩu cũ</td>
-              <td class="form">
-                <a-input
-                  type="password"
-                  v-model="oldPass"
-                  :class="{
-                    'is-invalid-form': check.isSubmit && this.$v.oldPass.$error,
-                  }"
-                />
-                <div
-                  v-if="check.isSubmit && !this.$v.oldPass.required"
-                  class="condition"
-                >
-                  {{ validation_message.require }}
-                </div>
-                <div
-                  v-if="check.isSubmit && !this.$v.oldPass.minLength"
-                  class="condition"
-                >
-                  Min la 6
-                </div>
-                <div
-                  v-if="check.isSubmit && !this.$v.oldPass.alphaNum"
-                  class="condition"
-                >
-                  {{ validation_message.alphaNum }}
-                </div>
-              </td>
-            </tr>
-            <tr>
               <td class="label">Mật khẩu mới</td>
               <td class="form">
                 <a-input
@@ -85,10 +55,7 @@
                   {{ validation_message.require }}
                 </div>
                 <div
-                  v-if="
-                    confirmPass &&
-                    !$v.confirmPass.sameAsPassword
-                  "
+                  v-if="confirmPass && !$v.confirmPass.sameAsPassword"
                   class="condition"
                 >
                   {{ validation_message.confirmPassword }}
@@ -117,11 +84,11 @@ import {
   alphaNum,
 } from "vuelidate/lib/validators";
 import VALIDATION_MESSAGE from "../../constants/validation";
+import { RepositoryFactory } from "../../repository/factory";
 
 export default {
   data() {
     return {
-      oldPass: "",
       newPass: "",
       confirmPass: "",
       check: {
@@ -131,11 +98,6 @@ export default {
     };
   },
   validations: {
-    oldPass: {
-      required,
-      minLength: minLength(6),
-      alphaNum,
-    },
     newPass: {
       required,
       minLength: minLength(6),
@@ -147,8 +109,19 @@ export default {
     },
   },
   methods: {
-    changePassword() {
-      this.checkValidation(this.check, this.$v);
+    async changePassword() {
+      let check = this.checkValidation(this.check, this.$v);
+      if (!check) return;
+      let { id } = JSON.parse(localStorage.getItem('user'));
+      try {
+        const { data } = await RepositoryFactory.get("user").updatePassword({
+          id,
+          password: this.newPass,
+        });
+        this.openNotification("Thành công", data.message, "success");
+      } catch (error) {
+        console.log(error.response);
+      }
     },
   },
 };

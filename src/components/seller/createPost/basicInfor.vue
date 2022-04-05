@@ -9,7 +9,7 @@
           Loại phòng trọ <span class="require-sign">(*)</span>
         </p>
         <a-select
-          v-model="value.type.motel"
+          v-model="value.type"
           placeholder="Chọn loại phòng trọ"
           style="width: 100%"
           :class="{ 'is-invalid-form': isSubmit && validation.type.$error }"
@@ -17,9 +17,9 @@
           <a-select-option
             v-for="(type, index) in types"
             :key="index"
-            :value="type"
+            :value="type.id"
           >
-            {{ type }}
+            {{ type.name }}
           </a-select-option>
         </a-select>
         <div v-if="isSubmit && !validation.type.required" class="condition">
@@ -110,13 +110,27 @@ export default {
   data() {
     return {
       types: [
-        "Phòng trọ",
-        "Nhà nguyên căn",
-        "Chung cư nguyên căn",
-        "Chung cư mini",
+        { name: "Phòng trọ", id: 1 },
+        { name: "Nhà nguyên căn", id: 2 },
+        { name: "Chung cư nguyên căn", id: 3 },
+        { name: "Chung cư mini", id: 4 },
       ],
     };
   },
+  computed:{
+    getDistrict() {
+      return this.value.address.district
+    }
+  },
+  watch:{
+    getDistrict(newVal, oldVal) {
+      if(oldVal !== undefined) {
+        this.value.address = {
+          district:newVal
+        }
+      }
+    }
+  }
 };
 </script>
 <style scoped>

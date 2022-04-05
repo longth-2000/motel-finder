@@ -5,7 +5,6 @@
       <a-upload
         name="file"
         action="https://backend-api-production.up.railway.app/fil"
-        :multiple="true"
         :auto-upload="false"
         @change="handleChange"
         list-type="picture"
@@ -52,7 +51,7 @@ export default {
 .avatar-upload .upload-button {
   position: absolute;
   top: 40px;
-  left: 430px;
+  left: 480px;
 }
 ::v-deep .ant-upload-list-item {
    width: 300px;

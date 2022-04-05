@@ -8,6 +8,9 @@ export const mutations = {
     uploadLinkMotel: (state, payload) => {
         state.linkMotel = payload
     },
+    uploadLinkAvatar: (state, payload) => {
+        state.linkAvatar = payload
+    },
     onSpinning(state) {
         state.isSpinning = true
     },

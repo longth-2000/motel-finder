@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    
     <component :is="layout">
       <router-view></router-view>
     </component>
@@ -29,7 +30,6 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
 .router-link {
   text-decoration: none;
@@ -58,6 +58,11 @@ ul {
 .is-invalid-form .ant-calendar-picker-input  {
   border-color:red
 }
-
+.modal-title h3 {
+  font-size:18px
+}
+.ant-tag-has-color {
+  padding:5px 10px !important
+}
 
 </style>

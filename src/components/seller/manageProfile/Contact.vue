@@ -81,10 +81,9 @@ import childrenValidation from "../../../mixins/validation/childrenValidation";
 
 export default {
   mixins: [childrenValidation],
-  props: {
-    email:{
-      default:"",
-      type:String
+  data() {
+    return{
+      email:JSON.parse(localStorage.getItem("user")).email,
     }
   }
 };

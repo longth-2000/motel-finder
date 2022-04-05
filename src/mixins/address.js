@@ -20,7 +20,7 @@ var addressMixin = {
                 districtID
             );
             this.wards = data.wards;
-            console.log(data);
+
         },
     },
 }

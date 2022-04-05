@@ -8,10 +8,12 @@
           </div>
           <div id="infor-column">
             <div id="avatar">
-              <img :src="avatar" alt="" />
+              <img :src="userInfor.avatar.url" alt="" />
             </div>
             <div id="username">
-              <span>{{ name.toUpperCase() }}</span>
+              <span v-if="userInfor.hasOwnProperty('name')">{{
+                userInfor.name.toUpperCase()
+              }}</span>
             </div>
             <div id="post">
               <ul>
@@ -54,7 +56,12 @@
                 >
                   Tin đã đăng
                 </li>
-                <li>Tin nháp</li>
+                <li
+                  :class="{ active: isActive.DraftPost }"
+                  @click="changeComponent('DraftPost', 'draft-post')"
+                >
+                  Tin nháp
+                </li>
               </ul>
             </div>
             <div class="choice-infor">
@@ -66,12 +73,18 @@
                 >
                   Thông báo
                 </li>
+                <li
+                  :class="{ active: isActive.Payment }"
+                  @click="changeComponent('Payment', 'payment')"
+                >
+                  Thanh toán
+                </li>
               </ul>
             </div>
           </div>
         </div>
         <div class="manage-content">
-          <component :is="component" @setAvatar="setAvatar"></component>
+          <component :is="component"></component>
         </div>
       </div>
     </a-spin>
@@ -82,7 +95,8 @@ import ChangePassword from "../../components/seller/ChangePassword.vue";
 import ManageProfile from "../../components/seller/ManageProfile.vue";
 import Notification from "../../components/seller/Notification.vue";
 import ManagePost from "../../components/seller/ManagePost.vue";
-
+import DraftPost from "../../components/seller/DraftPost.vue";
+import Payment from "../PurchaseView.vue"
 import { mapGetters } from "vuex";
 import moment from "moment";
 
@@ -92,6 +106,8 @@ export default {
     ManageProfile,
     Notification,
     ManagePost,
+    DraftPost,
+    Payment
   },
 
   data() {
@@ -102,14 +118,15 @@ export default {
         ManageProfile: false,
         Notification: false,
         ManagePost: false,
+        DraftPost: false,
+        Payment:false
       },
       urlParams: "",
-      avatar:"",
-      name:""
     };
   },
   computed: {
     ...mapGetters("app", ["isSpinning"]),
+    ...mapGetters("user", ["userInfor"]),
   },
   created() {
     this.setURL();
@@ -144,10 +161,6 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    setAvatar(mes) {
-      this.avatar = mes.avatar.url;
-      this.name = (mes.name) ? mes.name : ""
-    },
   },
 };
 </script>
@@ -156,11 +169,11 @@ export default {
   background: #f2f2f280;
 }
 .profile-content {
-  width: 1200px;
+  width: 90%;
   height: 900px;
   margin: 0 auto;
-  display: flex;
   padding: 50px 0;
+  display: flex;
 }
 .manage-column {
   width: 250px;
@@ -169,8 +182,8 @@ export default {
   background: #fff;
 }
 .manage-content {
-  width: 100%;
   height: 100%;
+  width: 95%;
   margin-left: 20px;
   background: #fff;
 }
@@ -246,12 +259,15 @@ export default {
   margin: 20px 20px;
 }
 ::v-deep .table .form input {
-  width: 300px;
+  width: 50%;
 }
 ::v-deep .table .label {
   width: 150px;
   font-size: 12px;
   font-family: Tahoma;
+}
+::v-deep .ant-tabs-nav-scroll {
+  text-align:center
 }
 #avatar {
   width: 120px;

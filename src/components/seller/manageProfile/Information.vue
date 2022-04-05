@@ -15,7 +15,6 @@
                 :class="{
                   'is-invalid-form': isSubmit && validation.name.$error,
                 }"
-                
               />
               <div
                 v-if="isSubmit && !validation.name.required"
@@ -31,7 +30,7 @@
             </td>
             <td class="form">
               <a-date-picker
-                @change="onChangeBirthday"
+               
                 v-model="value.birthDay"
                 :class="{
                   'is-invalid-form': isSubmit && validation.birthDay.$error,
@@ -59,12 +58,16 @@
           <tr>
             <td class="label">Địa chỉ <span class="require-sign">(*)</span></td>
             <td class="form">
-              <div style="display: flex; padding-right: 20px">
-                <div>
+              <div
+                style="
+                  display: flex;
+                  width: 80%;
+                  justify-content: space-between;
+                "
+              >
+                <div class="address">
                   <a-select
-                    class="address"
                     placeholder="Quận/huyện"
-                    style="width: 200px"
                     @change="getWard"
                     v-model="value.address.district"
                     :class="{
@@ -87,11 +90,9 @@
                     {{ validation_message.require }}
                   </div>
                 </div>
-                <div>
+                <div class="address">
                   <a-select
-                    class="address"
                     placeholder="Phường xã"
-                    style="width: 200px"
                     v-model="value.address.ward"
                     :class="{
                       'is-invalid-form':
@@ -113,10 +114,10 @@
                     {{ validation_message.require }}
                   </div>
                 </div>
-                <div>
+                <div class="address">
                   <a-input
-                    class="address"
                     placeholder="Địa chỉ cụ thể"
+                    style="width:100%"
                     v-model="value.address.detail"
                     :class="{
                       'is-invalid-form':
@@ -141,14 +142,13 @@
 <script>
 import adddressMixin from "../../../mixins/address";
 import childrenValidation from "../../../mixins/validation/childrenValidation";
-import moment from 'moment';
 
 export default {
   props: {
     title: {
       default: "",
       type: String,
-    }
+    },
   },
   mixins: [adddressMixin, childrenValidation],
   data() {
@@ -156,17 +156,27 @@ export default {
       plainOptions: ["Nam", "Nữ"],
     };
   },
-  
-  methods: {
-    moment,
-    onChangeBirthday(date) {
-      console.log(date.format("DD-MM-YYYY"));
+  computed: {
+    getDistrict() {
+      return this.value.address.district;
+    },
+  },
+  watch: {
+    getDistrict(newVal, oldVal) {
+      if (oldVal !== undefined) {
+        this.value.address = {
+          district: newVal,
+        };
+      }
     },
   },
 };
 </script>
 <style scoped>
 .address {
-  margin-right: 20px;
+  width: 30%;
+}
+::v-deep .ant-calendar-picker-input {
+  width: 100% !important;
 }
 </style>
