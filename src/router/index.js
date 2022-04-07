@@ -59,6 +59,15 @@ export const router = new Router({
                 import ("../views/PurchaseView.vue"),
         },
         {
+            path: "/admin/manage",
+            name: "Admin",
+            meta: {
+                layout: 'error',
+            },
+            component: () =>
+                import ("../views/AdminView.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {
@@ -71,7 +80,7 @@ export const router = new Router({
 })
 router.beforeEach((to, from, next) => {
     console.log(from)
-    const publicPages = ['/lien-he', '/', '/auth'];
+    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {

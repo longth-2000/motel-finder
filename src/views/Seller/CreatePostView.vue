@@ -93,10 +93,13 @@ export default {
       status: this.$route.query.status,
       deletedImageList: [],
       images: [],
-      needUnload: true,
+      destination:""
     };
   },
   created() {
+    window.onbeforeunload = function (event) {
+      event.returnValue = "Write something clever here..";
+    };
     if (this.idArticle !== undefined) {
       this.getArticleByID();
     }
@@ -139,7 +142,7 @@ export default {
         );
         console.log(MotelRes);
         this.openNotification("Thành công", message, "success");
-        /* window.location.href = "ho-so?type=manage-post";  */
+        window.location.href = "ho-so?type=manage-post";
       } catch (error) {
         if (status == "posted") {
           this.openNotification(
@@ -154,7 +157,13 @@ export default {
           console.log(MotelRes);
         }
       } finally {
-        if (status === "draft") window.location.href = "ho-so?type=draft-post";
+        if (status === "draft") {
+          window.onbeforeunload = function () {
+            return null;
+          };
+          window.location.href = this.destination
+
+        }
         this.offSpinning();
       }
     },
@@ -210,8 +219,7 @@ export default {
       }
     },
     createDraft() {
-      this.needUnload = false;
-      this.callApi("draft", "Bài viết đã được lưu vào tin nháp");
+     this.callApi("draft", "Bài viết đã được lưu vào tin nháp"); 
     },
     setEXpiredDate(time) {
       const DATE = 60 * 60 * 1000 * 24;
@@ -223,7 +231,8 @@ export default {
     },
   },
 
-  beforeRouteLeave() {
+  beforeRouteLeave(from) {
+    this.destination = from.path
     this.showModal("alert");
   },
 };

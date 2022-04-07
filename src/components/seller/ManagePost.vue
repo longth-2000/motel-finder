@@ -421,12 +421,12 @@ tbody td {
 }
 .title-article {
   display: -webkit-box;
-max-width: 200px;
-height: 100px;
--webkit-line-clamp: 3;
--webkit-box-orient: vertical;
-overflow: hidden;
-text-overflow: ellipsis;
+  max-width: 200px;
+  height: 100px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media screen and (max-width: 1214px) {
   #edit-post-btn {

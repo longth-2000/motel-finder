@@ -5,5 +5,10 @@ export default {
     },
     deleteImage(public_id) {
         return BaseRepository.post('/file/destroy', { public_id });
-    }
+    },
+    refreshToken() {
+        const refreshToken = localStorage.getItem('refreshToken')
+        return BaseRepository.get(`user/token/refresh-token?refreshToken=${refreshToken}`);
+    },
+
 }

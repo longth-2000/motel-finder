@@ -18,6 +18,7 @@ var managePostMixin = {
         async getMultipleArticle(current) {
             this.current = current
             this.articleArray = await this.getArticle(current, this.state);
+            console.log(this.articleArray)
         },
         handleCheck(id, event) {
             let checked = event.target.checked;

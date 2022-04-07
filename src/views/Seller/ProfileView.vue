@@ -234,7 +234,7 @@ export default {
   height: 100%;
   width: 95%;
   margin-left: 20px;
-  background: #f2f2f280;
+  background: #fff;
 }
 #title-column {
   width: 100%;

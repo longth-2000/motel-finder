@@ -1,5 +1,4 @@
 import BaseRepository from "../BaseRepository";
-import authHeader from "../../helper/authHeader";
 export default {
     login(user) {
         return BaseRepository.post('/user/log-in', user);
@@ -9,15 +8,16 @@ export default {
     },
     getUser() {
         const { id } = JSON.parse(localStorage.getItem('user'))
-        return BaseRepository.get(`/user/${id}`, {
-            headers: authHeader()
-        });
+        return BaseRepository.get(`/user/${id}`);
     },
     updateUser(user) {
-        return BaseRepository.put('/user/update', user, { headers: authHeader() });
+        return BaseRepository.put('/user/update', user);
     },
     updatePassword(password) {
-        return BaseRepository.post('/user/update-password', password, { headers: authHeader() });
+        return BaseRepository.post('/user/update-password', password);
+    },
+    getOwner(page, limit) {
+        return BaseRepository.get(`  ?page=${page}&limit=${limit}`); //hoàn thiện url và giữ nguyên query
     }
 
 }
