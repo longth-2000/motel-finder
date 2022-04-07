@@ -114,6 +114,7 @@ import { RepositoryFactory } from "../repository/factory";
 import VueJwtDecode from "vue-jwt-decode";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
+import cookie from "../helper/cookie"
 
 export default {
   props: {
@@ -147,9 +148,11 @@ export default {
       else {
         try {
           const { data } = await RepositoryFactory.get("user").login(this.user);
-          var accessToken = data.data.accessToken;
+          var { accessToken, refreshToken } = data.data;
           var decodeToken = VueJwtDecode.decode(accessToken);
-          document.cookie = `accessToken=${accessToken}`;
+          /* document.cookie = `accessToken=${accessToken}`; */
+          cookie.setCookie('accessToken', accessToken, 1)
+          localStorage.setItem('refreshToken', refreshToken)
           const { id, email } = decodeToken
           localStorage.setItem("user" , JSON.stringify({id,email}));
  

@@ -30,13 +30,13 @@
             </td>
             <td class="form">
               <a-date-picker
-                v-model="value.birthDay"
+                v-model="value.date"
                 :class="{
-                  'is-invalid-form': isSubmit && validation.birthDay.$error,
+                  'is-invalid-form': isSubmit && validation.date.$error,
                 }"
               />
               <div
-                v-if="isSubmit && !validation.birthDay.required"
+                v-if="isSubmit && !validation.date.required"
                 class="condition"
               >
                 {{ validation_message.require }}

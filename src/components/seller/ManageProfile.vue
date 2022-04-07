@@ -58,7 +58,7 @@ export default {
         name: "",
         address: {},
         sex: true,
-        birthDay: null,
+        date: null,
       },
       email: "",
       check: {
@@ -86,7 +86,7 @@ export default {
         ward: { required },
         detail: { required },
       },
-      birthDay: { required },
+      date: { required },
     },
   },
   created() {
@@ -127,8 +127,8 @@ export default {
                   url,
                 };
         } finally {
-          this.manageProfile.birthDay = moment(this.manageProfile.birthDay).toString()
-          console.log(this.manageProfile.birthDay)
+          this.manageProfile.birthDay = this.manageProfile.date.format('YYYY-MM-DD')
+          delete this.manageProfile.date
           const { data } = await RepositoryFactory.get("user").updateUser(
             this.manageProfile
           );
@@ -156,7 +156,7 @@ export default {
       });
       for (let property in data) {
         if (property === "birthDay") {
-          this.manageProfile.birthDay = moment(data.birthDay, "YYYY-MM-DD");
+          this.manageProfile.date = moment(data.birthDay, "YYYY-MM-DD");
         } else {
           this.manageProfile[property] = data[property];
         }
