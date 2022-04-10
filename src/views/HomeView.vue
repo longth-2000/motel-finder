@@ -313,7 +313,6 @@ export default {
 }
 .homepage .search-box-label {
   position: absolute;
-  z-index: 2;
   width: 60%;
 }
 .homepage .search-label {
@@ -452,12 +451,10 @@ export default {
   width: 25%;
 }
 .homepage div.small-place div.small-district-name {
-  z-index: 2;
   padding: 15px;
   position: absolute;
 }
 .homepage .big-district .district-name {
-  z-index: 2;
   position: absolute;
   color: white;
   padding: 15px;

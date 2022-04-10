@@ -183,22 +183,17 @@ import Register from "../Register.vue";
 import { mapGetters } from "vuex";
 import authenticationMixin from "../../mixins/authentication";
 import { subject } from "@casl/ability";
-import { mapActions } from "vuex";
 export default {
-  props: ["openNav"],
+  props: ["openNav", "user", "isLogged"],
   mixins: [authenticationMixin],
 
   data() {
     const regexEmail = /(\w)+(?=@gmail.com)/;
     return {
-      user: {},
       regexEmail: regexEmail,
-      isLogged: false,
     };
   },
-  created() {
-    this.getUser();
-  },
+ 
   components: {
     Login,
     Register,
@@ -207,17 +202,7 @@ export default {
     ...mapGetters("modal", ["isVisible"]),
   },
   methods: {
-    ...mapActions("user", ["getUserInfor"]),
-    async getUser() {
-      try {
-        const user = await this.getUserInfor();
-        console.log(user);
-        this.user = user;
-        this.isLogged = true;
-      } catch (error) {
-        console.log(error.response);
-      }
-    },
+    
     createPost() {
       let checkPermission = this.$can("create", subject("User", this.user));
       if (!this.isLogged) {

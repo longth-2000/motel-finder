@@ -68,6 +68,12 @@ export const router = new Router({
                 import ("../views/AdminView.vue"),
         },
         {
+            path: "/draft",
+            name: "Draft",
+            component: () =>
+                import ("../components/chat/VueChat.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {

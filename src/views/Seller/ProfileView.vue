@@ -48,11 +48,6 @@
               <div class="choice-infor">
                 <div id="title">Quản lí bài đăng</div>
                 <ul>
-                  <li>
-                    <router-link class="router-link" to="/dang-tin"
-                      >Đăng tin</router-link
-                    >
-                  </li>
                   <li
                     :class="{ active: isActive.ManagePost }"
                     @click="changeComponent('ManagePost', 'manage-post')"

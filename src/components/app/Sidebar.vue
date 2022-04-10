@@ -4,12 +4,16 @@
       <font-awesome-icon icon="fa-solid fa-xmark" />
     </div>
     <div class="user-infor" v-if="isLogin">
-      <div id="avatar">{{ email.charAt(0).toUpperCase() }}</div>
+      <div id="avatar">
+        <span v-if="user.hasOwnProperty('email')">{{
+          user.email.charAt(0).toUpperCase()
+        }}</span>
+      </div>
       <div id="username">
         <p>
           <a-tooltip>
-            <template slot="title"> {{ email }} </template>
-            {{ email }}
+            <template slot="title"> {{ user.email }} </template>
+            {{ user.email }}
           </a-tooltip>
         </p>
       </div>
@@ -101,6 +105,7 @@
 import Login from "../Login.vue";
 import Register from "../Register.vue";
 import authenticationMixin from "../../mixins/authentication";
+import { mapActions } from "vuex";
 
 export default {
   props: ["closeNav"],
@@ -111,10 +116,24 @@ export default {
   },
   data() {
     return {
-      email: JSON.parse(localStorage.getItem("user")).email,
+      user: {},
     };
   },
+  created() {
+    this.getUser();
+  },
   methods: {
+    ...mapActions("user", ["getUserInfor"]),
+    async getUser() {
+      try {
+        const user = await this.getUserInfor();
+        console.log(user);
+        this.user = user;
+        this.isLogged = true;
+      } catch (error) {
+        console.log(error.response);
+      }
+    },
     redirectPage(endpoint) {
       this.$router.push(`/bai-dang?type=${endpoint}`);
       this.closeNav();

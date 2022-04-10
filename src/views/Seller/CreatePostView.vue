@@ -73,6 +73,7 @@ import ImageInfor from "../../components/seller/createPost/imageInfor.vue";
 import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
 import parentValidationMixin from "../../mixins/validation/postValidation/parentValidation";
 import { RepositoryFactory } from "../../repository/factory";
+
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   components: {
@@ -234,7 +235,7 @@ export default {
   beforeRouteLeave(from) {
     this.destination = from.path
     this.showModal("alert");
-  },
+  }
 };
 </script>
 <style scoped>
