@@ -96,7 +96,8 @@ footer {
 
 .container {
   display: flex;
-  padding: 3rem;
+  padding: 3rem 0;
+  margin: 0 auto;
 }
 
 .container .section {

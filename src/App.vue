@@ -78,5 +78,8 @@ ul {
   color:green
 }
 
+.ant-pagination {
+  margin-right: 2% !important;
+}
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background:white; height:100%">
     <div id="title-component-profile">
       <span>THAY ĐỔI THÔNG TIN CÁ NHÂN</span>
     </div>
@@ -25,7 +25,6 @@
           </div>
           <div id="Avatar">
             <Avatar title="Avatar" />
-            
           </div>
           <div id="button">
             <a-button type="primary" @click="createProfile()"> Lưu </a-button>
@@ -102,19 +101,23 @@ export default {
       if (!validation) return;
       else {
         this.onSpinning();
-        let formData = new FormData();
-        formData.append("file", this.imageAvatar);
+        let checkImageEmpty = Object.keys(this.imageAvatar).length === 0;
         this.manageProfile.id = JSON.parse(localStorage.getItem("user")).id;
-        try {
+        if (!checkImageEmpty) {
+          let formData = new FormData();
+          formData.append("file", this.imageAvatar);
           const { public_id } = this.manageProfile.avatar;
           const ImageResponse = await RepositoryFactory.get("app").uploadImage(
             formData
           );
           if (public_id !== "") {
-            this.deleteImage(public_id.split());
+            const ImageDelete = await RepositoryFactory.get("app").deleteImage(
+              public_id.split()
+            );
+            console.log(ImageDelete);
           }
           this.manageProfile.avatar = ImageResponse.data;
-        } catch (error) {
+        } else {
           const { public_id, url } = this.manageProfile.avatar;
           this.manageProfile.avatar =
             public_id === "" || public_id === "null"
@@ -126,17 +129,19 @@ export default {
                   public_id,
                   url,
                 };
-        } finally {
-          this.manageProfile.birthDay = this.manageProfile.date.format('YYYY-MM-DD')
-          delete this.manageProfile.date
-          const { data } = await RepositoryFactory.get("user").updateUser(
-            this.manageProfile
-          );
-          console.log(data);
-          this.GET_USER(this.manageProfile);
-          this.offSpinning();
-          this.openNotification("Thành công", data.message, "success");
         }
+        if (this.manageProfile.date !== undefined) {
+          this.manageProfile.birthDay =
+            this.manageProfile.date.format("YYYY-MM-DD");
+          delete this.manageProfile.date;
+        }
+        const { data } = await RepositoryFactory.get("user").updateUser(
+          this.manageProfile
+        );
+        this.GET_USER(this.manageProfile);
+        console.log(data)
+        this.offSpinning();
+        this.openNotification("Thành công", data.message, "success");
       }
     },
     async getUser() {
@@ -150,7 +155,6 @@ export default {
         "createdAt",
         "updatedAt",
       ];
-      console.log(data)
       deletedArray.forEach((item) => {
         delete data[item];
       });
@@ -161,7 +165,6 @@ export default {
           this.manageProfile[property] = data[property];
         }
       }
-      console.log(data)
     },
   },
 };

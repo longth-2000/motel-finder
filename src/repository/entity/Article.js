@@ -32,5 +32,23 @@ export default {
         return BaseRepository.post('accomodations/delete-multiple', {
             ids: idArr
         });
+    },
+    searchArticleByDistrict(district) {
+        return BaseRepository.get(`/accomodations/renter/list?district=${district}`)
+    },
+    getFavouriteArticle(limit) {
+        return BaseRepository.get(`/accomodations/renter/list?sortByLike=true&limit=${limit}`)
+    },
+    searchByKeyword(page, limit, query) {
+        let endpoint = '/accomodations/renter/list?page=' + page + '&limit=' + limit
+        let paramsArray = ['district', 'minArea', 'maxArea', 'bedRoom', 'type', 'minPrice', 'maxPrice']
+        paramsArray.forEach(element => {
+            if (query[element] !== undefined)
+                endpoint += '&' + element + '=' + query[element]
+        })
+        return BaseRepository.get(endpoint);
+    },
+    increaseLike(articleID) {
+        return BaseRepository.post(`/accomodations/increase-like/${articleID}`);
     }
 }

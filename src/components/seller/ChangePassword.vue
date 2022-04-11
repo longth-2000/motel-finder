@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div style="background:white; height:100%">
     <div id="title-component-profile">
       <span>THAY ĐỔI MẬT KHẨU</span>
     </div>
-    <div id="content">
+    <div id="content" >
       <form action="">
         <table class="table table-borderless">
           <tbody>

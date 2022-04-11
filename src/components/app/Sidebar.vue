@@ -127,7 +127,6 @@ export default {
     async getUser() {
       try {
         const user = await this.getUserInfor();
-        console.log(user);
         this.user = user;
         this.isLogged = true;
       } catch (error) {
@@ -146,10 +145,10 @@ export default {
   height: 100%;
   width: 0;
   position: fixed;
-  z-index: 1;
+  z-index: 3;
   top: 0;
   right: 0;
-  background-color: #fff;
+  background-color: #f5f5f5;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 60px;

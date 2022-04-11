@@ -9,7 +9,7 @@
           float: right;
           display: flex;
           justify-content: space-evenly;
-          width: 40%;
+          width: 30%;
         "
       >
         <div class="action" id="search">
@@ -65,6 +65,7 @@
         </a-dropdown-button>
       </div>
     </div>
+    <div></div>
     <div style="position: absolute; margin-left: 20px">
       <div v-if="postArr.length > 0">
         <a-popconfirm
@@ -86,7 +87,17 @@
         <span style="font-size: 25px; font-weight: bold">Tin đã đăng</span>
       </div>
     </div>
-    <div id="content" style="margin: 60px 0 0 0" v-if="articleArray.length > 0">
+    <div
+      id="content"
+      style="
+        margin: 60px 0 0 0;
+        background: white;
+        padding: 10px 0;
+        border-radius: 5px;
+        height: 686px;
+      "
+      v-if="articleArray.length > 0"
+    >
       <table class="table">
         <thead>
           <tr>
@@ -367,6 +378,9 @@ export default {
 };
 </script>
 <style scoped>
+.manage-content {
+  background: red;
+}
 #filter-post {
   width: 100%;
   height: 50px;

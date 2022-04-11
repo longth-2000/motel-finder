@@ -45,7 +45,7 @@
         <a-modal
           v-model="isVisible.alert"
           title="Thoát đăng tin"
-          ok-text="Lưu vào tin nháp"
+          ok-text="Thoát"
           cancel-text="Quay lại chỉnh sửa"
           @ok="createDraft"
         >
@@ -57,7 +57,7 @@
               />
             </div>
             <div class="modal-content-alert">
-              Tin đăng đang được soạn dở, bạn có muốn lưu vào tin nháp?
+              Tin đăng chưa được gửi, bạn có thực sự muốn thoát?
             </div>
           </div>
         </a-modal>
@@ -94,7 +94,7 @@ export default {
       status: this.$route.query.status,
       deletedImageList: [],
       images: [],
-      destination:""
+      destination: "",
     };
   },
   created() {
@@ -129,22 +129,10 @@ export default {
       this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
     async callApi(status, message) {
-      try {
-        this.formValidation.status = status;
-        this.onSpinning();
-        let formData = new FormData();
-        this.imageMotel.forEach((image) => formData.append("file", image));
-        const { data } = await RepositoryFactory.get("app").uploadImage(
-          formData
-        );
-        this.formValidation.images = data;
-        const MotelRes = await RepositoryFactory.get("article").createArticle(
-          this.formValidation
-        );
-        console.log(MotelRes);
-        this.openNotification("Thành công", message, "success");
-        window.location.href = "ho-so?type=manage-post";
-      } catch (error) {
+      this.onSpinning();
+      this.formValidation.status = status;
+      let lengthImage = Object.keys(this.imageMotel).length > 1;
+      if (!lengthImage) {
         if (status == "posted") {
           this.openNotification(
             "Cảnh báo",
@@ -157,16 +145,30 @@ export default {
           );
           console.log(MotelRes);
         }
-      } finally {
-        if (status === "draft") {
-          window.onbeforeunload = function () {
-            return null;
-          };
-          window.location.href = this.destination
-
-        }
-        this.offSpinning();
+      } else {
+        let formData = new FormData();
+        this.imageMotel.forEach((image) => formData.append("file", image));
+        const { data } = await RepositoryFactory.get("app").uploadImage(
+          formData
+        );
+        this.formValidation.images = data;
+        const MotelRes = await RepositoryFactory.get("article").createArticle(
+          this.formValidation
+        );
+        console.log(MotelRes);
+        this.openNotification("Thành công", message, "success");
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = "ho-so?type=manage-post";
       }
+      if (status === "draft") {
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = this.destination;
+      }
+      this.offSpinning();
     },
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
@@ -176,8 +178,9 @@ export default {
     async updatePost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      try {
-        this.formValidation.status = "posted";
+      this.formValidation.status = "posted";
+      let lengthImage = Object.keys(this.imageMotel).length > 0;
+      if (lengthImage) {
         let formData = new FormData();
         this.imageMotel.forEach((image) => formData.append("file", image));
         const image = await RepositoryFactory.get("app").uploadImage(formData);
@@ -188,39 +191,48 @@ export default {
             this.formValidation.images.push(element);
           });
         }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.formValidation.images = this.formValidation.images.filter(
-          (image) =>
-            !this.deletedImageList.some((item) => item === image.public_id)
+      }
+      this.formValidation.images = this.formValidation.images.filter(
+        (image) =>
+          !this.deletedImageList.some((item) => item === image.public_id)
+      );
+      if (this.formValidation.images.length < 2) {
+        this.openNotification(
+          "Cảnh báo",
+          "Bạn cần đăng ít nhất 2 ảnh",
+          "warning"
         );
-        if (this.formValidation.images.length < 2) {
-          this.openNotification(
-            "Cảnh báo",
-            "Bạn cần đăng ít nhất 2 ảnh",
-            "warning"
+      } else {
+        if (this.deletedImageList.length !== 0) {
+          const deletedImage = await RepositoryFactory.get("app").deleteImage(
+            this.deletedImageList
           );
-        } else {
-          if (this.deletedImageList.length !== 0) {
-            const deletedImage = await RepositoryFactory.get("app").deleteImage(
-              this.deletedImageList
-            );
-            console.log(deletedImage);
-          }
-          delete this.formValidation.isApproved;
-          delete this.formValidation.createdAt;
-          delete this.formValidation.updatedAt;
-          const { data } = await RepositoryFactory.get("article").updateArticle(
-            this.formValidation,
-            this.idArticle
-          );
-          this.openNotification("Thành công", data.message, "success");
+          console.log(deletedImage);
         }
+        delete this.formValidation.isApproved;
+        delete this.formValidation.createdAt;
+        delete this.formValidation.updatedAt;
+        const { data } = await RepositoryFactory.get("article").updateArticle(
+          this.formValidation,
+          this.idArticle
+        );
+        console.log(data.message)
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = "/ho-so?type=manage-post"
       }
     },
     createDraft() {
-     this.callApi("draft", "Bài viết đã được lưu vào tin nháp"); 
+      let status = this.$route.query.status;
+      if (status === "posted" || status === "draft") {
+        window.onbeforeunload = function () {
+          return null;
+        };
+         window.location.href = this.destination;
+      } else {
+        this.callApi("draft", "Bài viết đã được lưu vào tin nháp");
+      }
     },
     setEXpiredDate(time) {
       const DATE = 60 * 60 * 1000 * 24;
@@ -229,13 +241,13 @@ export default {
     },
     deleteImage(public_id) {
       this.deletedImageList.push(public_id);
-    },
+    }
   },
 
-  beforeRouteLeave(from) {
-    this.destination = from.path
+  beforeRouteLeave(to) {
+    this.destination = to.path;
     this.showModal("alert");
-  }
+  },
 };
 </script>
 <style scoped>

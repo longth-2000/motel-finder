@@ -69,7 +69,6 @@ export default {
     async getUser() {
       try {
         const user = await this.getUserInfor();
-        console.log(user);
         this.user = user;
         this.isLogged = true;
         let checkPermission = this.$can("chat", subject("User", this.user));
@@ -109,7 +108,7 @@ export default {
   position: fixed;
   z-index: 2;
   right: 30px;
-  top: 500px;
+  top: 700px;
   color: white;
   font-weight: bold;
   padding: 5px;
@@ -124,7 +123,7 @@ export default {
 .content-chat {
   width: 400px;
   position: fixed;
-  top: 100px;
+  top: 200px;
   z-index: 2;
   right: 20px;
 }

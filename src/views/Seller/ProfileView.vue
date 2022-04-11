@@ -203,7 +203,7 @@ export default {
         status,
         query
       );
-      return data.data.data;
+      return data.data;
     },
   },
 };
@@ -229,7 +229,6 @@ export default {
   height: 100%;
   width: 95%;
   margin-left: 20px;
-  background: #fff;
 }
 #title-column {
   width: 100%;

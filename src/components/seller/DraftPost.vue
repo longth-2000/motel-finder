@@ -24,8 +24,17 @@
         <span style="font-size: 25px; font-weight: bold">Tin nháp</span>
       </div>
     </div>
-    <div id="content" style="margin: 70px 0 0 0" v-if="articleArray.length > 0">
-      <table class="table">
+    <div
+      id="content"
+      style="
+        margin: 80px 0 0 0;
+        background: white;
+        padding: 10px 0;
+        border-radius: 5px;
+        height: 741px;
+      "
+    >
+      <table class="table" v-if="articleArray.length > 0">
         <thead>
           <tr>
             <th>
@@ -77,15 +86,15 @@
           </tr>
         </tbody>
       </table>
+      <div v-else class="empty-post-notify">
+        <slot></slot>
+      </div>
       <a-pagination
         v-model="current"
         :total="50"
         @change="getMultipleArticle"
         style="float: right"
       />
-    </div>
-    <div v-else class="empty-post-notify">
-      <slot></slot>
     </div>
   </div>
 </template>
@@ -154,6 +163,12 @@ tbody td {
 .modal-content-alert {
   flex: 7;
   color: black;
+}
+tr {
+  height: 8px;
+}
+td {
+  line-height: 80px !important;
 }
 
 @media screen and (max-width: 1024px) {

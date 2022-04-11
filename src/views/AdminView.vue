@@ -46,12 +46,7 @@
     <section class="home-section">
       <nav>
         <div class="sidebar-button">
-          <i class="bx bx-menu sidebarBtn" @click="hideSidebar()">
-            <font-awesome-icon
-              icon="fa-solid fa-bars"
-              style="font-size: 30px"
-            />
-          </i>
+          
           <span class="dashboard">Dashboard</span>
         </div>
         <div class="search-box">
@@ -137,25 +132,7 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    hideSidebar() {
-      let sidebar = document.querySelector(".sidebar");
-      let sidebarBtn = document.querySelector(".sidebarBtn");
-      let menuText = document.getElementsByClassName("links_name");
-      sidebarBtn.onclick = function () {
-        sidebar.classList.toggle("active");
-        if (sidebar.classList.contains("active")) {
-          sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
-          for (let i = 0; i < menuText.length; i++) {
-            menuText[i].style.opacity = 0;
-          }
-        } else {
-          for (let i = 0; i < menuText.length; i++) {
-            menuText[i].style.opacity = 1;
-          }
-          sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
-        }
-      };
-    },
+    
   },
 };
 </script>

@@ -11,14 +11,16 @@ var managePostMixin = {
     },
     data() {
         return {
-            current: 1
+            current: 1,
+            total: 0
         }
     },
     methods: {
         async getMultipleArticle(current) {
             this.current = current
-            this.articleArray = await this.getArticle(current, this.state);
-            console.log(this.articleArray)
+            const { data, total } = await this.getArticle(current, this.state);
+            this.articleArray = data
+            this.total = total
         },
         handleCheck(id, event) {
             let checked = event.target.checked;
@@ -27,9 +29,21 @@ var managePostMixin = {
                 this.postArr = this.postArr.filter((item) => item !== id);
             }
         },
-        handleCheckAll(event) {
+        async handleCheckAll(event) {
             let state = event.target.checked;
-            this.postArr = state ? this.articleArray.map((item) => item._id) : [];
+            let current = 0
+            if (state) {
+                current++;
+                while (this.postArr.length < this.total) {
+                    const {
+                        data
+                    } = await this.getArticle(current, this.state);
+                    data.forEach(element => {
+                        this.postArr.push(element)
+                    })
+                }
+            } else this.postArr = []
+            console.log(this.postArr)
         },
         async confirmDelete(articleID) {
             const { data } = await RepositoryFactory.get("article").deleteArticle(
@@ -58,6 +72,7 @@ var managePostMixin = {
             this.articleArray = this.articleArray.filter(item => !this.postArr.some(ele => ele === item._id))
             this.postArr = []
             this.openNotification('Thành công', 'Xóa nhà trọ thành công', 'success')
+
         }
     },
 }

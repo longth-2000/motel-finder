@@ -27,7 +27,7 @@ export const router = new Router({
 
         },
         {
-            path: "/bai-dang",
+            path: "/tim-kiem",
             name: "MotelSearch",
             component: () =>
                 import ("../views/SearchMotelView.vue"),
@@ -85,14 +85,13 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    console.log(from)
     const publicPages = ['/lien-he', '/', '/auth', '/admin/manage'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
         const id = JSON.parse(localStorage.getItem("user")).id;
         to.query.id = id;
-        to.query.limit = 5;
+        to.query.limit = 1;
         next();
     }
     if (authRequired && !loggedIn) {
