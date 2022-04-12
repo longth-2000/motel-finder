@@ -27,10 +27,11 @@
                     <div>{{card.area}} m2</div>
                 </div>
             </div>
-            <div>{{card.address.ward}}, {{card.address.district}}</div>
+            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> -->
+            <div>{{ card._id}}</div>
             <div>
                 <div style="margin:15px auto 0 auto; width:53%">
-                    <a-rate :disabled="true" v-model="value" />
+                    <a-rate v-model="value" allowHalf />
                 </div>
             </div> 
         </a-card>
@@ -38,7 +39,7 @@
 </template>
 <script>
 import { RepositoryFactory } from "../../repository/factory";
-
+import { ref } from "@vue/composition-api"
 export default {
     name: 'MotelCard',
     props: {
@@ -55,7 +56,7 @@ export default {
     data() {
         return {
             isStorage:false,
-            value:2
+            value:ref(2.5)
         }
     },
     methods:{

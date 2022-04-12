@@ -4,7 +4,7 @@
       <div class="box">
         <div class="right-side">
           <div class="box-topic">Người thuê trọ</div>
-          <div class="number">{{ownerArr.length}}</div>
+          <div class="number">1</div>
         </div>
         <i class="bx bx-cart-alt cart">
           <font-awesome-icon class="icon-static" icon="fa-solid fa-user" />
@@ -62,13 +62,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(owner, index ) in ownerArr" :key="index">
+              <tr >
                 <td><a-checkbox></a-checkbox></td>
-                <td>{{owner.name}}</td>
-                <td><a-tag color="green">{{owner.sex ? 'Nam' : 'Nữ'}}</a-tag></td>
-                <td>{{owner.address.detail}} , {{owner.ward}}, {{owner.district}}</td>
-                <td>{{owner.email}}</td>
-                <td>{{owner.phoneNumber}}</td>
+                <td>dvsdvdssdv</td>
+                <td><a-tag color="green">Nam</a-tag></td>
+                <td>Số nhà 111 , phường Nghĩa Tân, quận Cầu Giấy</td>
+                <td>1111@gmail.com</td>
+                <td>123456789</td>
                 <td>
                   <a-button type="danger">Từ chối</a-button
                   ><a-button type="primary">Đồng ý</a-button>
@@ -78,36 +78,20 @@
           </table>
         </div>
         <div>
-          <a-pagination
-            v-model="current"
-            :total="50"
-            @change="getOwner"
-            style="float: right"
-          />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { RepositoryFactory } from "../../repository/factory";
 
 export default {
   data() {
     return {
       current:1,
-      ownerArr : ''
     }
-  },
-  created() {
-    this.getOwner();
   },
   methods:{
-    async getOwner() {
-       const { data } = await RepositoryFactory.get('user').getOwner(this.current, 3);
-       console.log(data)
-       this.ownerArr = data 
-    }
   }
 }
 </script>
