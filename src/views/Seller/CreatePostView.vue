@@ -128,7 +128,7 @@ export default {
       });
       this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
-    async callApi(status, message) {
+    async callApi(status) {
       this.onSpinning();
       this.formValidation.status = status;
       let lengthImage = Object.keys(this.imageMotel).length > 1;
@@ -156,7 +156,6 @@ export default {
           this.formValidation
         );
         console.log(MotelRes);
-        this.openNotification("Thành công", message, "success");
         window.onbeforeunload = function () {
           return null;
         };
@@ -173,7 +172,7 @@ export default {
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      this.callApi("posted", "Tin đã được đăng");
+      this.callApi("posted");
     },
     async updatePost() {
       let validation = this.checkValidation(this.check, this.$v);
@@ -212,6 +211,11 @@ export default {
         delete this.formValidation.isApproved;
         delete this.formValidation.createdAt;
         delete this.formValidation.updatedAt;
+        delete this.formValidation.point;
+        delete this.formValidation.likes;
+        delete this.formValidation.view;
+        delete this.formValidation.isPaid;
+        delete this.formValidation.userLiked;
         const { data } = await RepositoryFactory.get("article").updateArticle(
           this.formValidation,
           this.idArticle
@@ -231,7 +235,7 @@ export default {
         };
          window.location.href = this.destination;
       } else {
-        this.callApi("draft", "Bài viết đã được lưu vào tin nháp");
+        this.callApi("draft");
       }
     },
     setEXpiredDate(time) {
