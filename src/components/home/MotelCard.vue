@@ -12,7 +12,7 @@
                        <span>Bấm để lưu tin</span>
                     </template>
 
-                    <font-awesome-icon @click ="storageFavorite(card._id)" icon="fa-solid fa-heart" :class="{colorHeart:isStorage}"/>
+                    <font-awesome-icon @click ="storageFavorite(card._id)" icon="fa-solid fa-heart" :class="{ colorHeart: isStorage}"/>
                 </a-tooltip>
             </template>
             <a-card-meta :title="card.detailedPost.title" >
@@ -27,10 +27,11 @@
                     <div>{{card.area}} m2</div>
                 </div>
             </div>
-            <div>{{card.address.ward}}, {{card.address.district}}</div>
+            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> -->
+            <div>{{ card._id}}</div>
             <div>
                 <div style="margin:15px auto 0 auto; width:53%">
-                    <a-rate :disabled="true" v-model="value" />
+                    <a-rate :default-value="card.point" allow-half />
                 </div>
             </div> 
         </a-card>
@@ -38,7 +39,6 @@
 </template>
 <script>
 import { RepositoryFactory } from "../../repository/factory";
-
 export default {
     name: 'MotelCard',
     props: {
@@ -50,13 +50,22 @@ export default {
         },
         isLogged:{
             type:Boolean
+        },
+        user:{
+            type:String
         }
     },
     data() {
         return {
             isStorage:false,
-            value:2
+            id:JSON.parse(this.user).id
         }
+    },
+    computed: {
+      
+    },
+    created() {
+       this.isStorage = (this.card.userLiked.includes(this.id)) ? true : false
     },
     methods:{
         async storageFavorite(articleID){

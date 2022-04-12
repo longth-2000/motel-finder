@@ -18,11 +18,70 @@
         </p>
       </div>
       <div id="icon" style="position: relative">
-        <font-awesome-icon
-          icon="fa-regular fa-bell"
-          style="font-size: 25px; margin: 10px 30px"
-        />
-        <div class="nofifycation-data">1</div>
+        <a-dropdown placement="bottomRight">
+          <div>
+            <font-awesome-icon
+              icon="fa-regular fa-bell"
+              style="font-size: 25px"
+            />
+            <div class="nofifycation-data">1</div>
+          </div>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <div class="notify-menu">
+                  <div class="notify-icon" style="color: red">
+                    <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
+                  </div>
+                  <div class="notify-content">
+                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  </div>
+                  <div class="notify-date">20/2/2020</div>
+                  <div class="notify-action">
+                    <font-awesome-icon
+                      style="color: red"
+                      icon="fa-solid fa-delete-left"
+                    />
+                  </div>
+                </div>
+              </a-menu-item>
+              <a-menu-item>
+                <div class="notify-menu">
+                  <div class="notify-icon" style="color: green">
+                    <font-awesome-icon icon="fa-solid fa-circle-check" />
+                  </div>
+                  <div class="notify-content">
+                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  </div>
+                  <div class="notify-date">20/2/2020</div>
+                  <div class="notify-action">
+                    <font-awesome-icon
+                      style="color: red"
+                      icon="fa-solid fa-delete-left"
+                    />
+                  </div>
+                </div>
+              </a-menu-item>
+              <a-menu-item>
+                <div class="notify-menu">
+                  <div class="notify-icon" style="color: green">
+                    <font-awesome-icon icon="fa-solid fa-circle-check" />
+                  </div>
+                  <div class="notify-content">
+                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  </div>
+                  <div class="notify-date">20/2/2020</div>
+                  <div class="notify-action">
+                    <font-awesome-icon
+                      style="color: red"
+                      icon="fa-solid fa-delete-left"
+                    />
+                  </div>
+                </div>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
     </div>
     <div class="action-items">
@@ -254,7 +313,32 @@ export default {
   font-size: 12px;
   border-radius: 4px;
   position: absolute;
-  top: 5px;
-  left: 44px;
+  top: -2px;
+  left: 10px;
+}
+.notify-menu {
+  display: flex;
+  width: 600px;
+  height: 70px;
+  font-size: 14px;
+  line-height: 70px;
+  text-align: center;
+  border-bottom: 1px solid #bfbfbf;
+}
+.notify-icon {
+  width: 60px;
+  font-size: 20px;
+  padding: 0 10px;
+}
+.notify-content {
+  width: 340px;
+  font-weight: bold;
+}
+.notify-date {
+  width: 120px;
+}
+.notify-action {
+  width: 80px;
+  font-size: 20px;
 }
 </style>

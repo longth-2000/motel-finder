@@ -172,12 +172,20 @@
                   />
                 </a>
                 <a-menu slot="overlay">
-                  <a-menu-item style="padding-left: 10px"
+                  <a-menu-item style="padding-left: 10px" v-if="setCheckPermisson"
                     ><a href="/ho-so?type=manage-post" class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
                         class="icon-user"
                       />Quản lí tin đăng</a
+                    ></a-menu-item
+                  >
+                  <a-menu-item style="padding-left: 10px" v-else
+                    ><a href="/ho-so?type=manage-post" class="router-link"
+                      ><font-awesome-icon
+                        icon="fa-solid fa-list"
+                        class="icon-user"
+                      />Tin đăng yêu thích</a
                     ></a-menu-item
                   >
 
@@ -252,15 +260,19 @@ export default {
     const regexEmail = /(\w)+(?=@gmail.com)/;
     return {
       regexEmail: regexEmail,
+      checkPermission:false
     };
   },
-
+  
   components: {
     Login,
     Register,
   },
   computed: {
     ...mapGetters("modal", ["isVisible"]),
+    setCheckPermisson() {
+      return this.$can("create", subject("User", this.user));
+    }
   },
   methods: {
     createPost() {

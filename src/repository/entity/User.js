@@ -15,9 +15,6 @@ export default {
     },
     updatePassword(password) {
         return BaseRepository.post('/user/update-password', password);
-    },
-    getOwner(page, limit) {
-        return BaseRepository.get(`  ?page=${page}&limit=${limit}`); //hoàn thiện url và giữ nguyên query
     }
 
 }

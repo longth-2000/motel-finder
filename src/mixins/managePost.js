@@ -31,7 +31,7 @@ var managePostMixin = {
         },
         async handleCheckAll(event) {
             let state = event.target.checked;
-            let current = 0
+            /* let current = 0
             if (state) {
                 current++;
                 while (this.postArr.length < this.total) {
@@ -42,8 +42,8 @@ var managePostMixin = {
                         this.postArr.push(element)
                     })
                 }
-            } else this.postArr = []
-            console.log(this.postArr)
+            } else this.postArr = [] */
+            this.postArr = state ? this.articleArray.map((item) => item._id) : [];
         },
         async confirmDelete(articleID) {
             const { data } = await RepositoryFactory.get("article").deleteArticle(
