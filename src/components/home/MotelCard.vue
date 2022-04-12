@@ -1,10 +1,10 @@
 <template lang="">
     <div class="motel-card">
-        <a-card hoverable style="width: 300px">
+        <a-card hoverable style="width: 240px">
             <img
-            slot="cover"
-            alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                slot="cover"
+                alt="example"
+                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
             />
             <template slot="actions" class="ant-card-actions">
                 <a-icon type="heart" />
@@ -23,6 +23,8 @@ export default {
     }
 }
 </script>
-<style lang="">
-
+<style scoped>
+.motel-card {
+    padding: 20px;
+}
 </style>

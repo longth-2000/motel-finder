@@ -5,74 +5,93 @@
         <div class="search-label">Tìm kiếm nhà trọ</div>
         <form action="/bai-dang" method="post">
           <div class="search-elements">
-            <a-input-search
-              placeholder="Tìm nhà trọ phù hợp"
-              style="width: 93.5%; padding: 5px 0"
-              enter-button
-              @search="onSearch"
-            />
+            <div class="search-elements-input" style="padding: 5px 5px 8px 0px">
+              <a-input-search
+                placeholder="input search text"
+                enter-button="Search"
+                size="large"
+                @search="onSearch"
+              />
+            </div>
             <div class="search-dropdown" style="margin-left: -8px">
-              <a-dropdown style="width: 200px; margin-bottom:10px">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 1st menu item </a-menu-item>
-                  <a-menu-item key="2"> 2nd menu item </a-menu-item>
-                  <a-menu-item key="3"> 3rd item </a-menu-item>
-                </a-menu>
-                <a-button style="margin-left: 8px; text-align: left">
-                  Mức giá
-                  <a-icon style="text-align: right" type="down" />
-                </a-button>
-              </a-dropdown>
-              <a-dropdown style="width: 200px; margin-bottom:10px">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 1st menu item </a-menu-item>
-                  <a-menu-item key="2"> 2nd menu item </a-menu-item>
-                  <a-menu-item key="3"> 3rd item </a-menu-item>
-                </a-menu>
-                <a-button style="margin-left: 8px; text-align: left">
-                  Diện tích <a-icon type="down" />
-                </a-button>
-              </a-dropdown>
-              <a-dropdown style="width: 200px; margin-bottom:10px">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 1st menu item </a-menu-item>
-                  <a-menu-item key="2"> 2nd menu item </a-menu-item>
-                  <a-menu-item key="3"> 3rd item </a-menu-item>
-                </a-menu>
-                <a-button style="margin-left: 8px; text-align: left">
-                  Dự án <a-icon type="down" />
-                </a-button>
-              </a-dropdown>
-              <a-dropdown style="width: 200px; margin-bottom:10px">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 1st menu item </a-menu-item>
-                  <a-menu-item key="2"> 2nd menu item </a-menu-item>
-                  <a-menu-item key="3"> 3rd item </a-menu-item>
-                </a-menu>
-                <a-button style="margin-left: 8px; text-align: left">
-                  Phường/Xã <a-icon type="down" />
-                </a-button>
-              </a-dropdown>
-              <a-dropdown style="width: 200px; margin-bottom:10px">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 1st menu item </a-menu-item>
-                  <a-menu-item key="2"> 2nd menu item </a-menu-item>
-                  <a-menu-item key="3"> 3rd item </a-menu-item>
-                </a-menu>
-                <a-button style="margin-left: 8px; text-align: left">
-                  Đường/Phố <a-icon type="down" />
-                </a-button>
-              </a-dropdown>
-              <a-dropdown style="width: 200px; margin-bottom:10px">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 1st menu item </a-menu-item>
-                  <a-menu-item key="2"> 2nd menu item </a-menu-item>
-                  <a-menu-item key="3"> 3rd item </a-menu-item>
-                </a-menu>
-                <a-button style="margin-left: 8px; text-align: left">
-                  Số phòng ngủ <a-icon type="down" />
-                </a-button>
-              </a-dropdown>
+              <div class="search-dropdown-cell">
+                <a-dropdown style="width: 200px;">
+                  <a-menu slot="overlay" @click="handleMenuClick">
+                    <a-menu-item key="1"> 1st menu item </a-menu-item>
+                    <a-menu-item key="2"> 2nd menu item </a-menu-item>
+                    <a-menu-item key="3"> 3rd item </a-menu-item>
+                  </a-menu>
+                  <a-button style="margin-left: 8px; text-align: left">
+                    Mức giá
+                    <a-icon style="text-align: right" type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
+              <div class="search-dropdown-cell">
+                <a-dropdown style="width: 200px;">
+                  <a-menu slot="overlay" @click="handleMenuClick">
+                    <a-menu-item key="1"> 1st menu item </a-menu-item>
+                    <a-menu-item key="2"> 2nd menu item </a-menu-item>
+                    <a-menu-item key="3"> 3rd item </a-menu-item>
+                  </a-menu>
+                  <a-button style="margin-left: 8px; text-align: left">
+                      Diện tích
+                    <a-icon style="text-align: right" type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
+              <div class="search-dropdown-cell">
+                <a-dropdown style="width: 200px;">
+                  <a-menu slot="overlay" @click="handleMenuClick">
+                    <a-menu-item key="1"> 1st menu item </a-menu-item>
+                    <a-menu-item key="2"> 2nd menu item </a-menu-item>
+                    <a-menu-item key="3"> 3rd item </a-menu-item>
+                  </a-menu>
+                  <a-button style="margin-left: 8px; text-align: left">
+                    Dự án
+                    <a-icon style="text-align: right" type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
+              <div class="search-dropdown-cell">
+                <a-dropdown style="width: 200px;">
+                  <a-menu slot="overlay" @click="handleMenuClick">
+                    <a-menu-item key="1"> 1st menu item </a-menu-item>
+                    <a-menu-item key="2"> 2nd menu item </a-menu-item>
+                    <a-menu-item key="3"> 3rd item </a-menu-item>
+                  </a-menu>
+                  <a-button style="margin-left: 8px; text-align: left">
+                    Phường xã
+                    <a-icon style="text-align: right" type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
+              <div class="search-dropdown-cell">
+                <a-dropdown style="width: 200px;">
+                  <a-menu slot="overlay" @click="handleMenuClick">
+                    <a-menu-item key="1"> 1st menu item </a-menu-item>
+                    <a-menu-item key="2"> 2nd menu item </a-menu-item>
+                    <a-menu-item key="3"> 3rd item </a-menu-item>
+                  </a-menu>
+                  <a-button style="margin-left: 8px; text-align: left">
+                    Đường/Phố
+                    <a-icon style="text-align: right" type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
+              <div class="search-dropdown-cell">
+                <a-dropdown style="width: 200px;">
+                  <a-menu slot="overlay" @click="handleMenuClick">
+                    <a-menu-item key="1"> 1st menu item </a-menu-item>
+                    <a-menu-item key="2"> 2nd menu item </a-menu-item>
+                    <a-menu-item key="3"> 3rd item </a-menu-item>
+                  </a-menu>
+                  <a-button style="margin-left: 8px; text-align: left">
+                    Số phòng ngủ
+                    <a-icon style="text-align: right" type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
             </div>
           </div>
         </form>
@@ -133,30 +152,30 @@
         <div class="motel">
           <h4 class="title-motel">Phòng trọ cho bạn</h4>
           <a-row>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard motelType="Phong tro" />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard motelType="Chung cu mini" />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard motelType="Nha nguyen can" />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard motelType="Chung cu nguyen can" />
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
           </a-row>
@@ -167,16 +186,16 @@
         <div class="popular-motel">
           <h4 class="title-motel">Phòng trọ được yêu thích</h4>
           <a-row>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
-            <a-col :span="6">
+            <a-col :span="span_responsive">
               <MotelCard />
             </a-col>
           </a-row>
@@ -284,6 +303,14 @@ export default {
   components: {
     MotelCard,
   },
+  data () {
+    return {
+      span_responsive: 6
+    }
+  },
+  mounted() {
+    window.addEventListener("resize", this.onResponsive);
+  },
   methods: {
     handleMenuClick(e) {
       console.log("click", e);
@@ -291,15 +318,25 @@ export default {
     onSearch() {
       window.location.href = "/bai-dang";
     },
+    onResponsive() {
+      if(window.innerWidth < 500) {
+        this.span_responsive = 24
+      }  
+      else if(window.innerWidth < 1000) {
+        this.span_responsive = 12
+      } else if(window.innerWidth < 1180) {
+        this.span_responsive = 8
+      } else this.span_responsive = 6
+    }
   },
 };
 </script>
-<style>
+<style scoped>
 .banner {
   height: 375px;
   width: 100%;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/8d/Yarra_Night_Panorama%2C_Melbourne_-_Feb_2005.jpg');
-  position: relative;
+  background-image: url('https://t3.ftcdn.net/jpg/02/79/38/68/360_F_279386856_2pn8TCBAslZaxE9PEuZQTkYaVHZ6nUWg.jpg');
+  background-size: 480px 400px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -321,6 +358,8 @@ export default {
   background-color: bisque;
   padding: 10px;
   border-radius: 4px;
+  height: auto;
+  display: inline-block;
 }
 div.slick-track {
   text-align: center;
@@ -332,51 +371,19 @@ div.slick-track {
   float: right;
   padding-top: 5px;
 }
+.search-dropdown .search-dropdown-cell {
+  padding-bottom: 10px;
+  float: left;
+}
 .banner-image img {
   width: 100%;
   height: 100%;
 }
-/*search box css start here*/
-.search-sec {
-  padding: 2rem;
-}
-.search-slt {
-  display: block;
-  width: 100%;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: #55595c;
-  background-color: #fff;
-  background-image: none;
-  border: 1px solid #ccc;
-  height: calc(3rem + 2px) !important;
-  border-radius: 0;
-}
-.wrn-btn {
-  width: 100%;
-  font-size: 16px;
-  font-weight: 400;
-  text-transform: capitalize;
-  height: calc(3rem + 2px) !important;
-  border-radius: 0;
-}
-.carousel-inner {
-  padding-bottom: 5px;
-}
-.carousel-inner img {
-  height: 375px;
-}
-::v-deep .ant-btn {
-  margin-top: 10px;
-  background: red;
-}
 .title-motel {
-    font-weight: bold;
+  font-weight: bold;
 }
-@media (max-width: 992px) {
-  .search-sec {
-    background: #1a4668;
-  }
+.motel .title-motel, .popular-motel .title-motel {
+  padding-left: 40px;
 }
 svg {
   position: relative;
@@ -401,7 +408,7 @@ div.motel-by-district {
   display: inline-block;
 }
 div.big-district {
-  padding: 10px;
+  padding: 10px 5px;
   float: left;
   width: 50%;
 
@@ -433,6 +440,7 @@ div.small-place div.small-district-name {
 }
 .big-district img {
     border-radius: 4px;
+    height: 100%
 }
 .bottom-carousel .bottom-carousel-item {
     margin: 5px 5px 20px 5px;
