@@ -110,7 +110,8 @@ export default {
           const ImageResponse = await RepositoryFactory.get("app").uploadImage(
             formData
           );
-          if (public_id !== "") {
+
+          if (public_id !== 'null') {
             const ImageDelete = await RepositoryFactory.get("app").deleteImage(
               public_id.split()
             );

@@ -150,7 +150,7 @@
     </div>
     <div class="container pt-5">
       <div class="content">
-        <div class="motel" >
+        <div class="motel">
           <h4 class="title-motel">Phòng trọ mới nhất</h4>
           <a-row>
             <a-col :span="6">
@@ -227,7 +227,7 @@
               v-for="(card, index) in favoriteArticle"
               :key="index"
             >
-              <MotelCard :card="card" :isLogged="user === null" />
+              <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
           <div class="see-more">
