@@ -20,7 +20,7 @@ export const router = new Router({
                 import ("../views/AboutView.vue"),
         },
         {
-            path: "/phong-tro/:motelName",
+            path: "/phong-tro",
             name: "MotelDetail",
             component: () =>
                 import ("../views/MotelDetailView.vue"),
@@ -85,7 +85,7 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem'];
+    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/phong-tro'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {

@@ -114,8 +114,7 @@ import { RepositoryFactory } from "../repository/factory";
 import VueJwtDecode from "vue-jwt-decode";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
-/* import cookie from "../helper/cookie"
- */export default {
+export default {
   props: {
     isAuthenticated: {
       default: false,
