@@ -101,7 +101,7 @@
 <script>
 export default {
     name: 'SearchBar',
-     data(){
+    data(){
         return {
             house_type: 'Tất cả',
             region : 'Tất cả',

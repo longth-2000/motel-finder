@@ -20,24 +20,25 @@
                     <div class="product-short-info">
                         <div class="short-info-item">
                             <span class="title">Mức giá</span>
-                            <span class="value">29 tỷ</span>
+                            <span class="value" style="display: inline">29 tỷ</span>
                             <span class="ext">~311.8 triệu/m²</span>
                         </div>
                         <div class="short-info-item">
                             <span class="title">Diện tích</span>
-                            <span class="value">93 m²</span>
+                            <span class="value" style="display: inline">93 m²</span>
                             <span class="ext">Mặt tiền 6 m</span>
                         </div>
                         <div class="short-info-item">
                             <span class="title">Phòng ngủ</span>
-                            <span class="value">5 PN</span>
-                            <span class="ext"> </span>
+                            <span class="value" style="display: inline">5 PN</span>
                         </div>
                         <div class="short-info-save">
                             <a-icon type="heart" style="font-size: 25px"/>
+                            <span class="heart-label" style="padding-left: 5px">Lưu tin</span>
                         </div>
                         <div class="short-info-share">
                             <a-icon type="share-alt" style="font-size: 25px"/>
+                            <span class="share-label" style="padding-left: 5px">Chia sẻ</span>
                         </div>
                     </div>
                     <div class="product-full-description">
@@ -47,6 +48,64 @@
                         I. Shophouse cập nhật mới nhất:
                         <br>
                         Shophouse B4 - 0X. MT 6m. DT 93m2. Hướng Đông Bắc. Gần mặt đường K2. Mặt vườn hoa. Đã hoàn thiện đang cho thuê. Giá 29 tỷ bao sổ đỏ.
+                    </div>
+                    <div class="product-property">
+                        <span class="full-desc-title">Đặc điểm nhà trọ</span>
+                        <div class="property-box">
+                            <div class="line-info">
+                                <span class="title">Loại tin đăng:</span>
+                                <span class="value">Cho thuê chung cư nguyên căn</span>
+                            </div>
+                            <div class="line-info">
+                                <span class="title">Địa chỉ:</span>
+                                <span class="value">Dự án Eco Green Sài Gòn, Đường Nguyễn Văn Linh, Phường Tân Thuận
+                                        Tây, Quận 7, Hồ Chí Minh</span>
+                            </div>
+                            <div class="line-info">
+                                <span class="title">Số phòng ngủ:</span>
+                                <span class="value">1 phòng</span>
+                            </div>
+                            <div class="line-info">
+                                <span class="title">Nội thất:</span>
+                                <span class="value">Nội thất bàn giao của CĐT: Full sàn gỗ 12mm, máy lạnh Samsung ở tất
+                                        cả các phòng, bếp trên và bếp dưới của Casta, bếp từ + mấy hút mùi từ Teka, Full
+                                        nội thất nhà WC của Duravit, cửa kính solar control</span>
+                            </div>
+                            <div class="line-info">
+                                <span class="title">Chung chủ:</span>
+                                <span class="value">Không</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <span class="section-title">Thông tin dự án</span>
+                        <div class="section-body">
+                                <div class="section-avatar">
+                                    <a href="https://duan.batdongsan.com.vn/khu-phuc-hop-quan-7/eco-green-sai-gon-pj3507" target="_blank">
+                                        <img src="https://file4.batdongsan.com.vn/crop/257x147/2021/02/20/20210220073639-453d_wm.jpg" alt=""/>
+                                    </a>
+                                </div>
+                                <div class="section-content">
+                                    <div class="project-item">
+                                        <div class="project-title">Eco Green Sài Gòn</div>
+                                        <a class="link-pr" href="https://duan.batdongsan.com.vn/khu-phuc-hop-quan-7/eco-green-sai-gon-pj3507" target="_blank">
+                                            <span>Tìm hiểu thêm</span>
+                                        </a>
+                                    </div>
+                                    <div class="project-item">
+                                        <span class="title">Chủ đầu tư</span>
+                                        <span class="value">
+                                            Công ty CP Đầu tư và Xây dựng Xuân Mai
+                                        </span>
+                                    </div>
+                                    <div class="project-item">
+                                        <span class="title">Quy mô</span>
+                                        <span class="value">
+                                            Đang cập nhật
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                     <div class="product-comment-box">
                         <form action="" method="">
@@ -60,6 +119,24 @@
                                 </a-button>
                             </div>
                         </form>
+                    </div>
+                    <div class="product-short-info">
+                        <div class="short-info-item">
+                            <span class="title">Ngày đăng</span>
+                            <span class="value" style="display: inline">29 tỷ</span>
+                        </div>
+                        <div class="short-info-item">
+                            <span class="title">Ngày hết hạn</span>
+                            <span class="value" style="display: inline">93 m²</span>
+                        </div>
+                        <div class="short-info-item">
+                            <span class="title">Loại tin</span>
+                            <span class="value" style="display: inline">5 PN</span>
+                        </div>
+                        <div class="short-info-item">
+                            <span class="title">Mã tin</span>
+                            <span class="value" style="display: inline">5 PN</span>
+                        </div>
                     </div>
                 </div>
                 <div class="product-card">
@@ -155,8 +232,11 @@ export default {
 }
 </script>
 <style scoped>
-.picture-carousel {
-    width: 100%;  
+.picture-carousel img{
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    z-index: 1; 
 }
 .bread-crumb {
     margin : 24px 0px 8px 0px
@@ -175,6 +255,7 @@ export default {
     margin-top: 8px;
 }
 .product-short-info {
+    height: auto;
     width: 100%;
     margin : 24px 0px;
     padding : 15px 0px;
@@ -184,15 +265,15 @@ export default {
     float: left;
 }
 .short-info-item {
-    padding-left : 64px;
-    display: inline-block;
-    vertical-align: baseline;
+    padding-left : 48px;
+    float: left;
 }
 .short-info-item:first-child {
-    padding: 0px;
+    padding-left : 0px;
 }
 .short-info-item span{
-    display: block;
+    display: flex;
+    align-items: flex-start;
 }
 .short-info-item span:nth-child(1){
     font-size: 14px;
@@ -256,7 +337,7 @@ span.full-desc-title {
 .product-comment-box {
     font-weight: bold;
     font-size: 20px;
-    margin-top : 30px;
+    margin-top : 50px;
     margin-bottom : 50px
 }
 .product-suggest {
@@ -273,6 +354,119 @@ span.full-desc-title {
 .motel-card {
     width : 100px
 }
+.product-property {
+    margin-top: 40px;
+}
+.property-box {
+    font-size: 14px;
+    text-decoration-style: solid;
+    border: 1px solid rgb(242, 242, 242);
+    border-radius: 4px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    display: block;
+    box-sizing: border-box;
+}
+.line-info {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 0px 16px 0px 16px;
+    padding: 14px 14px 0px 0px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    border-bottom: 1px solid rgb(242, 242, 242) ;
+}
+.title {
+    width: 112px;
+    font-weight: bold;
+    line-height: 20px;
+    color: rgb(44, 44, 44);
+}
+.value {
+    width: calc(100% - 112px);
+    box-sizing: border-box;
+    font-size: 14px;
+    text-decoration-style: solid;
+    line-height: 20px;
+    color: rgb(44, 44, 44);
+}
+.project-info {
+    box-sizing: border-box;
+    display: block;
+    margin-bottom: 32px;
+    font-size: 14px;
+    line-height: 20px;
+    height: 172px;
+}
+span.section-title {
+    margin-top: 50px;
+    display: block;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 28px;
+}
+.section-body {
+    outline: 1px solid #f2f2f2;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.section-avatar {
+    height: 128px;
+    box-sizing: border-box;
+    float: left;
+    display: block;
+    width: 216px;
+    height: inherit;
+}
+.section-avatar img {
+    box-sizing: border-box;
+    display: inline;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+.section-content {
+    box-sizing: border-box;
+    display: block;
+    float: right;
+    padding: 16px;
+    position: relative;
+    width : calc(100% - 216px);
+}
+.project-item {
+    display: block;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+.project-title {
+    font-size: 15px;
+    font-weight: bold;
+    box-sizing: border-box;
+    display: -webkit-box;
+}
+.project-item a {
+    position: absolute;
+    box-sizing: border-box;
+    right: 16px;
+    top: 16px;
+    float: right;
+    color: red;
+    text-decoration: none;
+}
+.project-item span.value {
+    box-sizing: border-box;
+    display: -webkit-box;
+    float: right;
+}
+
 .main-sidebar {
     padding: 10px;
     display: block;

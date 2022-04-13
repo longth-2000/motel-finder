@@ -1,20 +1,18 @@
 <template>
-    <div>
-        <a-carousel arrows>
-            <div
-            slot="prevArrow"
-            class="custom-slick-arrow"
-            style="left: 10px;zIndex: 1"
-            >
-            <a-icon type="left-circle" />
+    <div class="carousel-items">
+        <a-carousel :autoplay="true" :dots="true" dotPosition="bottom" arrows>
+            <div>
+              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222915-fb15_wm.jpg" alt="">
             </div>
-            <div slot="nextArrow" class="custom-slick-arrow" style="right: 10px">
-            <a-icon type="right-circle" />
+            <div>
+              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222955-516b_wm.jpg" alt="">
             </div>
-            <div><h3>1</h3></div>
-            <div><h3>2</h3></div>
-            <div><h3>3</h3></div>
-            <div><h3>4</h3></div>
+            <div>
+              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222955-644c_wm.jpg" alt="">
+            </div>
+            <div>
+              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222955-ff23_wm.jpg" alt="">
+            </div>
         </a-carousel>
     </div>
 </template>
@@ -50,5 +48,11 @@ export default {
 
 .ant-carousel >>> .slick-slide h3 {
   color: #fff;
+}
+.carousel-items img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  z-index: -1;
 }
 </style>

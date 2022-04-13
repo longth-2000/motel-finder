@@ -110,6 +110,7 @@
                 </div>
             </div>
             <div class="main-sidebar">
+                <div class="sidebar-title">Nha tro theo quan</div>
                 <div class="sidebar-item"><a href="">Quan Cau Giay</a></div>
                 <div class="sidebar-item"><a href="">Quan Hoan Kiem</a></div>
                 <div class="sidebar-item"><a href="">Quan Tay Ho</a></div>
@@ -133,6 +134,7 @@ export default {
 .motel-card-detail {
     display: block;
     margin-bottom: 16px;
+    width: initial;
     height: 200px;
     border-radius: 4px;
     border: 1px solid #f2f2f2;
@@ -142,7 +144,7 @@ export default {
 .main-content {
     width: 1000px;
     margin-right: 30px;
-    display: inline-block;  
+    display: inline-block; 
 }
 .motel-result {
     margin-bottom: 50px;
@@ -209,9 +211,6 @@ export default {
     width: inherit;
     height: 200px;
 }
-.sidebar-item {
-    padding-bottom: 10px;
-}
 .main-sidebar {
     padding: 10px;
     display: block;
@@ -219,8 +218,21 @@ export default {
     width: 210px;
     height: auto;
     display: block;
-    border: 1px solid #f2f2f2;
-    background-color: azure;
+    border: 1px solid #cbcaca;
+    border-radius: 5px;
+    background-color: rgb(224, 223, 223);
+}
+.sidebar-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.sidebar-item a {
+    padding-bottom: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: normal !important;
+    color: black;
 }
 @media screen and (max-width: 1400px) {
     .main-sidebar {
