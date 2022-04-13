@@ -159,7 +159,7 @@ export default {
         window.onbeforeunload = function () {
           return null;
         };
-        window.location.href = "ho-so?type=manage-post";
+        window.location.href = "ho-so?type=manage-post&sortByDate=-1";
       }
       if (status === "draft") {
         window.onbeforeunload = function () {
@@ -175,6 +175,7 @@ export default {
       this.callApi("posted");
     },
     async updatePost() {
+       this.onSpinning();
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
       this.formValidation.status = "posted";
@@ -238,10 +239,12 @@ export default {
         this.callApi("draft");
       }
     },
-    setEXpiredDate(time) {
+    setEXpiredDate(mess) {
+      console.log(mess)
       const DATE = 60 * 60 * 1000 * 24;
-      let duration = time === 1 ? DATE : time === 2 ? 30 * DATE : 60 * DATE;
+      let duration = mess.time === 1 ? DATE : mess.time === 2 ? 30 * DATE : 60 * DATE;
       this.formValidation.postExpired = new Date(Date.now() + duration);
+      this.formValidation.moneyPayment = mess.value
     },
     deleteImage(public_id) {
       this.deletedImageList.push(public_id);

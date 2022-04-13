@@ -27,7 +27,8 @@
                     <div>{{card.area}} m2</div>
                 </div>
             </div>
-            <div>{{card.address.ward}}, {{card.address.district}}</div> 
+            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> --> 
+            <div>{{card._id}}</div>
             <div>
                 <div style="margin:15px auto 0 auto; width:53%">
                     <a-rate :default-value="card.point" allow-half />

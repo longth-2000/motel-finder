@@ -9,7 +9,7 @@
           float: right;
           display: flex;
           justify-content: space-evenly;
-          width: 30%;
+          width: 38%;
         "
       >
         <div class="action" id="search">
@@ -66,7 +66,7 @@
       </div>
     </div>
     <div></div>
-    <div style="position: absolute; margin-left: 20px">
+    <div style="position: absolute; margin: -55px 0 20px 0">
       <div v-if="postArr.length > 0">
         <a-popconfirm
           title="Bạn có muốn xóa tất cả các tin này?"
@@ -90,11 +90,11 @@
     <div
       id="content"
       style="
-        margin: 60px 0 0 0;
+        margin: 20px 0 0 0;
         background: white;
         padding: 10px 0;
         border-radius: 5px;
-        height: 686px;
+        height: 730px;
       "
       v-if="articleArray.length > 0"
     >
@@ -174,7 +174,7 @@
                 v-model="isVisible.purchase"
                 title="Thông báo gia hạn"
                 ok-text="Thanh toán"
-                @ok="redirectPayment"
+                @ok="redirectPayment(post._id, countPayment(paymentMoney))"
                 cancel-text="Quay lại"
               >
                 <div style="display: flex">
@@ -209,22 +209,37 @@
                 <a-button type="danger"> Xóa </a-button>
               </a-popconfirm>
               <a :href="'/dang-tin?id=' + post._id + '&status=posted'">
-                <a-button id="edit-post-btn" type="primary"> Sửa </a-button>
+                <a-button
+                  id="edit-post-btn"
+                  type="primary"
+                  :disabled="post.isApproved === 1 ? false : true"
+                >
+                  Sửa
+                </a-button>
               </a>
+
+              <a-button
+                id="edit-post-btn"
+                type="primary"
+                :disabled="post.isPaid ? true : false"
+                @click="redirectPayment(post._id, post.moneyPayment)"
+              >
+                Thanh toán
+              </a-button>
             </td>
           </tr>
         </tbody>
       </table>
-      <a-pagination
-        v-model="current"
-        :total="50"
-        @change="getMultipleArticle"
-        style="float: right"
-      />
     </div>
     <div v-else class="empty-post-notify">
       <slot></slot>
     </div>
+    <a-pagination
+      v-model="current"
+      :total="50"
+      @change="getMultipleArticle"
+      style="float: right; margin-top:-50px"
+    />
   </div>
 </template>
 <script>
@@ -241,6 +256,7 @@ export default {
     return {
       stateFilter: "",
       paymentMoney: 1,
+      moneyPurchase: 0,
       state: "posted",
       articleArray: [],
       postArr: [],
@@ -296,11 +312,14 @@ export default {
     },
     alertPurchase(event) {
       let value = event.target.getAttribute("value");
-      if (value === "true") {
+      console.log(value);
+      if (value == "false") {
         this.showModal("purchase");
       }
     },
-    redirectPayment() {
+    redirectPayment(id, money) {
+      localStorage.setItem("article-id", id);
+      localStorage.setItem("money-payment", money);
       window.location.href = "/ho-so?type=payment";
     },
     async changeStateArticle(articleID) {

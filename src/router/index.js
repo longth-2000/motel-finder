@@ -20,7 +20,7 @@ export const router = new Router({
                 import ("../views/AboutView.vue"),
         },
         {
-            path: "/phong-tro",
+            path: "/phong-tro/:motelID",
             name: "MotelDetail",
             component: () =>
                 import ("../views/MotelDetailView.vue"),
