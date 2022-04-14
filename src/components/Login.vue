@@ -111,11 +111,9 @@
 </template>
 <script>
 import { RepositoryFactory } from "../repository/factory";
-import VueJwtDecode from "vue-jwt-decode";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
-/* import cookie from "../helper/cookie"
- */export default {
+export default {
   props: {
     isAuthenticated: {
       default: false,
@@ -147,14 +145,7 @@ import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
       else {
         try {
           const { data } = await RepositoryFactory.get("user").login(this.user);
-          var { accessToken, refreshToken } = data.data;
-          var decodeToken = VueJwtDecode.decode(accessToken);
-          document.cookie = `accessToken=${accessToken}`;
-          localStorage.setItem('refreshToken', refreshToken)
-          const { id, email } = decodeToken
-          localStorage.setItem("user" , JSON.stringify({id,email}));
-          
-          window.location.href = "/ho-so";
+          this.handleAfterSign(data.data)
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");

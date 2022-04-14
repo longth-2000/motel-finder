@@ -147,6 +147,13 @@
                       </div>
                     </div>
                   </a-menu-item>
+                  <a-menu-item>
+                    <a class="router-link" href="/ho-so?type=notification">
+                      <div style="text-align: center; color: blue">
+                        Xem tất cả
+                      </div>
+                    </a>
+                  </a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -172,7 +179,9 @@
                   />
                 </a>
                 <a-menu slot="overlay">
-                  <a-menu-item style="padding-left: 10px" v-if="setCheckPermisson"
+                  <a-menu-item
+                    style="padding-left: 10px"
+                    v-if="setCheckPermisson"
                     ><a href="/ho-so?type=manage-post" class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
@@ -260,10 +269,10 @@ export default {
     const regexEmail = /(\w)+(?=@gmail.com)/;
     return {
       regexEmail: regexEmail,
-      checkPermission:false
+      checkPermission: false,
     };
   },
-  
+
   components: {
     Login,
     Register,
@@ -272,7 +281,7 @@ export default {
     ...mapGetters("modal", ["isVisible"]),
     setCheckPermisson() {
       return this.$can("create", subject("User", this.user));
-    }
+    },
   },
   methods: {
     createPost() {

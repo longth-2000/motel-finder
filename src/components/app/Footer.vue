@@ -67,7 +67,7 @@
             <span
               >Powered By
               <a href="https://multiwebpress.com"
-                >© 2021 | All Rights Reserved | Made By Multiwebpress</a
+                >© 2021 | All Rights Reserved | Made By UET</a
               ></span
             >
           </div>

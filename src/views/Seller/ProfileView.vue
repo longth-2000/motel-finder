@@ -172,7 +172,7 @@ export default {
         this.$router.push({
           path: "/ho-so",
           query: {
-            type: "manage-profile",
+            type: "manage-profile"
           },
         });
       }
