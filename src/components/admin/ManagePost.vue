@@ -34,7 +34,7 @@
         <div class="right-side">
           <div class="box-topic">Chưa phê duyệt</div>
           <div class="number">
-            {{ articleSummary.refused }}
+            {{ articleSummary.notApprove }}
           </div>
         </div>
         <i class="bx bxs-cart-download cart four">
