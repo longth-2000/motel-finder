@@ -69,17 +69,17 @@
                 <td>{{owner.address ? `${owner.address.detail} ${owner.address.ward} ${owner.address.district}` : ''}}</td>
                 <td>{{owner.email}}</td>
                 <td>{{owner.phoneNumber}}</td>
-                <td v-if="owner.status == 0">     
+                <td v-if="owner.state == 0">     
                   <a-tag color="red">
                     Từ chối
                   </a-tag>
                 </td>
-                <td v-if="owner.status == 2">     
+                <td v-if="owner.state == 2">     
                   <a-tag color="green">
                     Đã duyệt
                   </a-tag>
                 </td>
-                <td v-if="owner.status == 1" class="action-approve">
+                <td v-if="owner.state == 1" class="action-approve">
                   <a-button type="danger">Từ chối</a-button
                   ><a-button type="primary" class="button-approve">Đồng ý</a-button>
                 </td>
