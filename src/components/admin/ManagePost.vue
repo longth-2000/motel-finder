@@ -72,11 +72,6 @@
                 <td>Trương Hoàng Long</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
                 <td><a-tag color="red">Chưa thanh toán</a-tag></td>
-                <td>
-                  <a-tag :color="article.state === 0 ? 'green' : 'red'">{{
-                    article.state === 1 ? "Chấp nhận" : "Từ chối"
-                  }}</a-tag>
-                </td>
                 <td v-if="article.state == 0">     
                   <a-tag color="red">
                     Từ chối
