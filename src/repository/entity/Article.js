@@ -56,5 +56,12 @@ export default {
     },
     payment(idArticle) {
         return BaseRepository.get(`accomodations/payment/${idArticle}`);
+    },
+    comment(idArticle, comment) {
+        return BaseRepository.post('report/comment', {
+            id: idArticle,
+            type: 'comment',
+            comment: comment
+        });
     }
 }

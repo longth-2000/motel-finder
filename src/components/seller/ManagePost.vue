@@ -127,7 +127,7 @@
               ></a-checkbox>
             </td>
             <td>
-              <span class="title-article">{{ post.detailedPost.title }}</span>
+              <span class="title-article">{{ post._id }}</span>
             </td>
             <td>
               <a-tag
@@ -166,7 +166,7 @@
                 style="cursor: pointer"
                 :color="setExpiredState(post.postExpired).color"
                 :value="setExpiredState(post.postExpired).state"
-                @click="alertPurchase($event)"
+                @click="alertPurchase($event, post._id)"
               >
                 {{ setExpiredState(post.postExpired).mess }}</a-tag
               >
@@ -174,7 +174,7 @@
                 v-model="isVisible.purchase"
                 title="Thông báo gia hạn"
                 ok-text="Thanh toán"
-                @ok="redirectPayment(post._id, countPayment(paymentMoney))"
+                @ok="redirectPayment(post._id, countPayment(paymentMoney), 'extension', paymentMoney)"
                 cancel-text="Quay lại"
               >
                 <div style="display: flex">
@@ -222,7 +222,7 @@
                 id="edit-post-btn"
                 type="primary"
                 :disabled="post.isPaid ? true : false"
-                @click="redirectPayment(post._id, post.moneyPayment)"
+                @click="redirectPayment(post._id, post.moneyPayment, 'create', null)"
               >
                 Thanh toán
               </a-button>
@@ -263,6 +263,7 @@ export default {
       resultFilter: {},
       sortTitle: "Sắp xếp",
       searchTitle: "",
+      id:''
     };
   },
   computed: {
@@ -310,18 +311,24 @@ export default {
         value: result.value,
       };
     },
-    alertPurchase(event) {
+    alertPurchase(event, id) {
+      this.id = id
       let value = event.target.getAttribute("value");
       console.log(value);
       if (value == "false") {
         this.showModal("purchase");
       }
     },
-    redirectPayment(id, money) {
-      localStorage.setItem("article-id", id);
-      localStorage.setItem("money-payment", money);
-      window.location.href = "/ho-so?type=payment";
-    },
+    redirectPayment(id, money, state, duration) {
+      let idArticle = (state == 'create') ? id : this.id
+      localStorage.setItem("purchase", JSON.stringify({
+        id:idArticle,
+        money,
+        state,
+        duration
+      }));
+      window.location.href = "/ho-so?type=payment";  
+     },
     async changeStateArticle(articleID) {
       const { data } = await RepositoryFactory.get(
         "article"

@@ -155,64 +155,47 @@
           <a-row>
             <a-col
               :span="6"
-              v-for="(card, index) in newArticle"
+              v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
-          <div class="see-more">
-            <a-button>Xem thêm</a-button>
+          <a-row class="row-hidden" v-if="seeMore.new == true">
+            <a-col
+              :span="6"
+              v-for="(card, index) in newArticle.slice(8, newArticle.length)"
+              :key="index"
+            >
+              <MotelCard :card="card" :isLogged="user === null" :user="user" />
+            </a-col>
+          </a-row>
+          <div class="see-more" v-if="seeMore.new == false">
+            <a-button @click="seeMore.new = true">Xem thêm</a-button>
           </div>
         </div>
-        <!-- <div class="motel" v-else>
-          <h4 class="title-motel">Phòng trọ dành cho bạn</h4>
-          <a-row>
-            <a-col :span="6">
-              <MotelCard motelType="Phong tro" />
-            </a-col>
-            <a-col :span="6">
-              <MotelCard motelType="Chung cu mini" />
-            </a-col>
-            <a-col :span="6">
-              <MotelCard motelType="Nha nguyen can" />
-            </a-col>
-            <a-col :span="6">
-              <MotelCard motelType="Chung cu nguyen can" />
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col :span="6">
-              <MotelCard />
-            </a-col>
-            <a-col :span="6">
-              <MotelCard />
-            </a-col>
-            <a-col :span="6">
-              <MotelCard />
-            </a-col>
-            <a-col :span="6">
-              <MotelCard />
-            </a-col>
-          </a-row>
-          <div class="see-more">
-            <a-button>Xem thêm</a-button>
-          </div>
-        </div> -->
-
         <div class="popular-motel">
           <h4 class="title-motel">Phòng trọ được yêu thích</h4>
           <a-row>
             <a-col
               :span="6"
-              v-for="(card, index) in favoriteArticle"
+              v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
-          <div class="see-more">
-            <a-button>Xem thêm</a-button>
+          <a-row class="row-hidden" v-if="seeMore.favorite == true">
+            <a-col
+              :span="6"
+              v-for="(card, index) in favoriteArticle.slice(8, newArticle.length)"
+              :key="index"
+            >
+              <MotelCard :card="card" :isLogged="user === null" :user="user" />
+            </a-col>
+          </a-row>
+          <div class="see-more" v-if="seeMore.favorite == false">
+            <a-button @click="seeMore.favorite = true">Xem thêm</a-button>
           </div>
         </div>
         <div class="motel-by-district">
@@ -296,10 +279,10 @@
             {{ item.name }}
           </div>
         </div>
-        <div class="see-more" id="see-more" v-if="seeMore == false">
-          <a-button @click="seeMore = true">Xem thêm</a-button>
+        <div class="see-more" id="see-more" v-if="seeMore.district == false">
+          <a-button @click="seeMore.district = true">Xem thêm</a-button>
         </div>
-        <div class="row-hidden" v-if="seeMore == true">
+        <div class="row-hidden" v-if="seeMore.district == true">
           <div
             v-for="(item, index) in districts.slice(12, districts.length)"
             :key="index"
@@ -322,7 +305,11 @@ export default {
   },
   data() {
     return {
-      seeMore: false,
+      seeMore: {
+        district: false,
+        new: false,
+        favorite: false,
+      },
       districts: [],
       favoriteArticle: [],
       newArticle: [],

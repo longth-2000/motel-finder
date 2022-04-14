@@ -1,58 +1,56 @@
 <template>
-    <div class="carousel-items">
-        <a-carousel :autoplay="true" :dots="true" dotPosition="bottom" arrows>
-            <div>
-              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222915-fb15_wm.jpg" alt="">
-            </div>
-            <div>
-              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222955-516b_wm.jpg" alt="">
-            </div>
-            <div>
-              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222955-644c_wm.jpg" alt="">
-            </div>
-            <div>
-              <img src="https://file4.batdongsan.com.vn/resize/745x510/2021/12/11/20211211222955-ff23_wm.jpg" alt="">
-            </div>
-        </a-carousel>
+  <a-carousel arrows dots-class="slick-dots slick-thumb">
+    <a slot="customPaging" slot-scope="props">
+      <img :src="getImgUrl(props.i)" />
+    </a>
+    <div v-for="(item,index) in images.length" :key="index">
+      <img :src="getImgUrl(index)" />
     </div>
+  </a-carousel>
 </template>
 <script>
+
 export default {
-    name: 'Carousel'
-}
+  data() {
+    return {
+    };
+  },
+  props:{
+    images:{
+      type:Array
+    }
+  },
+  methods: {
+    getImgUrl(i) {
+      return `${this.images[i].url}`;
+    },
+  },
+};
 </script>
 <style scoped>
 /* For demo */
-.ant-carousel >>> .slick-slide {
-  text-align: center;
-  height: 160px;
-  line-height: 160px;
-  background: #364d79;
-  overflow: hidden;
+.ant-carousel >>> .slick-dots {
+  height: auto;
 }
-
-.ant-carousel >>> .custom-slick-arrow {
-  width: 25px;
-  height: 25px;
-  font-size: 25px;
-  color: #fff;
-  background-color: rgba(31, 45, 61, 0.11);
-  opacity: 0.3;
+.ant-carousel >>> .slick-slide img {
+  border: 5px solid #fff;
+  display: block;
+  margin: auto;
+  max-width: 100%;
 }
-.ant-carousel >>> .custom-slick-arrow:before {
-  display: none;
+.ant-carousel >>> .slick-thumb {
+  bottom: -45px;
 }
-.ant-carousel >>> .custom-slick-arrow:hover {
-  opacity: 0.5;
+.ant-carousel >>> .slick-thumb li {
+  width: 60px;
+  height: 45px;
 }
-
-.ant-carousel >>> .slick-slide h3 {
-  color: #fff;
-}
-.carousel-items img {
+.ant-carousel >>> .slick-thumb li img {
   width: 100%;
-  height: 500px;
-  object-fit: cover;
-  z-index: -1;
+  height: 100%;
+  filter: grayscale(100%);
+}
+.ant-carousel >>> .slick-thumb li.slick-active img {
+  filter: grayscale(0%);
 }
 </style>

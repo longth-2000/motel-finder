@@ -23,24 +23,23 @@
         </div>
       </div>
       <div id="action">
-        <div id="delete" class="action-handle"><span>Xóa</span></div>
-        <div id="mark" class="action-handle"><span>Đánh dấu đã đọc</span></div>
+        <div id="delete" class="action-handle" @click="deleteNotify()"><span>Xóa</span></div>
+        <div id="mark" class="action-handle" @click="markNotify()"><span>Đánh dấu đã đọc</span></div>
       </div>
       <div id="notification">
         <div v-if="isRead">
           <div
             class="notify-content"
-            v-for="(notify, index) in [1, 2, 3, 4, 5]"
-            :key="index"
+            v-for="(notify) in read.filter(ele => ele.unRead)"
+            :key="notify.id"
           >
             <div id="box">
-              <a-checkbox></a-checkbox>
+              <a-checkbox
+                @change="(checked) => handleCheck(notify.id, checked)"
+              ></a-checkbox>
             </div>
             <div id="text">
-              <span
-                >Tham gia EC #112 để biết cách “giữ chân khách hàng” hiệu
-                quả</span
-              >
+              <span>{{ notify.content }}</span>
             </div>
             <div id="date">24/2/2020</div>
           </div>
@@ -48,14 +47,14 @@
         <div v-else>
           <div
             class="notify-content"
-            v-for="(notify, index) in [1, 2, 3, 4, 5]"
-            :key="index"
+            v-for="(notify) in read.filter(ele => !ele.unRead)"
+            :key="notify.id"
           >
             <div id="box">
               <a-checkbox></a-checkbox>
             </div>
             <div id="text">
-              <span>dmm dmmm dmmm dmmm dmmm</span>
+              <span>{{notify.content}}</span>
             </div>
             <div id="date">24/2/2020</div>
           </div>
@@ -69,7 +68,33 @@ export default {
   data() {
     return {
       isRead: true,
+      read: [
+        { id: 1, content: "1------", unRead: true },
+        { id: 2, content: "2------", unRead: true },
+        { id: 3, content: "3------", unRead: true },
+        { id: 4, content: "4------", unRead: true },
+        { id: 5, content: "5------", unRead: true },
+        { id: 6, content: "6------", unRead: true },
+      ],
+      checkNotify: [],
     };
+  },
+  methods: {
+    handleCheck(notify, event) {
+      let checked = event.target.checked;
+      if (checked) this.checkNotify.push(notify);
+      else {
+        this.checkNotify = this.checkNotify.filter((item) => item !== notify);
+      }
+      console.log(this.checkNotify)
+    },
+    markNotify() {
+      this.read.forEach(notify => {
+        let checkNotify = this.checkNotify.some(element => element === notify.id)
+        if(checkNotify) notify.unRead = false
+      })
+      console.log(this.read)
+    }
   },
 };
 </script>
@@ -87,8 +112,6 @@ export default {
   height: 50px;
   width: 100%;
   border-bottom: 1px solid #ccc;
-  display: flex;
-  justify-content: space-between;
 }
 .action-handle {
   line-height: 30px;
@@ -99,6 +122,7 @@ export default {
   margin: 10px;
   font-size: 12px;
   border-radius: 5px;
+  float: right;
 }
 .stateDisplay {
   background: #e8e8e8 !important;

@@ -1,11 +1,14 @@
 <template lang="">
     <div class="motel-card">
         <a-card hoverable style="width: 300px">
-            <img
-            slot="cover"
-            alt="example"
-            :src="card.images[0].url"
+            <a :href="'/phong-tro/' + card._id" class="router-link">
+              <img
+                slot="cover"
+                alt="example"
+                :src="card.images[0].url"
             />
+            </a>
+            
             <template slot="actions" class="ant-card-actions">
                 <a-tooltip placement="bottom">
                     <template #title>
@@ -17,7 +20,7 @@
             </template>
             <a-card-meta :title="card.detailedPost.title" >
             </a-card-meta>
-            <div style="display:flex; justify-content; margin: 20px 0">
+            <div style="display:flex; justify-content; margin: 20px 15px">
                 <div class="price extra-infor">
                     <font-awesome-icon class="icon" icon="fa-solid fa-money-bill" />
                     <div>{{card.price.quantity}}</div>
@@ -28,9 +31,9 @@
                 </div>
             </div>
             <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> --> 
-            <div>{{card._id}}</div>
+            <div style="margin-left:15px">{{card._id}}</div>
             <div>
-                <div style="margin:15px auto 0 auto; width:53%">
+                <div style="margin:15px 80px 15px; width:53%">
                     <a-rate :default-value="card.point" allow-half />
                 </div>
             </div> 
@@ -102,17 +105,28 @@ export default {
     margin-right: 10px;
     font-size: 18px;
 }
-::v-deep .ant-card-cover img {
+.router-link img {
     height: 180px;
+    padding:10px
 }
 .colorHeart {
     color: red;
 }
+::v-deep .ant-card-body {
+  padding: 0
+}
+
 ::v-deep .ant-card-actions > li > span:hover{
     color:rgba(0, 0, 0, 0.45)
 }
+::v-deep .ant-card-meta-detail {
+    padding:10px 0 0 15px
+}
 ::v-deep .ant-card-actions > li > span {
     font-size: 25px;
+}
+::v-deep .ant-card-meta {
+    margin:10px 0;
 }
 
 </style>

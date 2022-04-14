@@ -102,8 +102,8 @@
           <label for="">Bạn là</label>
           <div>
             <a-radio-group v-model="user.role">
-              <a-radio :value=2> Chủ trọ </a-radio>
-              <a-radio :value=3> Người thuê trọ </a-radio>
+              <a-radio :value="2"> Chủ trọ </a-radio>
+              <a-radio :value="3"> Người thuê trọ </a-radio>
             </a-radio-group>
           </div>
         </a-form-item>
@@ -149,7 +149,13 @@
 <script>
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
-import { required, sameAs, minLength, alphaNum, email } from "vuelidate/lib/validators";
+import {
+  required,
+  sameAs,
+  minLength,
+  alphaNum,
+  email,
+} from "vuelidate/lib/validators";
 
 export default {
   components: {
@@ -172,7 +178,6 @@ export default {
     },
   },
 
-
   methods: {
     async handleSignup() {
       let validation = this.checkValidation(this.check, this.$v);
@@ -186,7 +191,7 @@ export default {
             role: this.user.role,
           });
           console.log(data);
-          window.location.href = "/";
+          this.handleAfterSign(data.data)
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
@@ -197,7 +202,6 @@ export default {
 };
 </script>
 <style>
-
 .register-form {
   margin-top: 30px;
 }
