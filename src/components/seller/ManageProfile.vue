@@ -147,7 +147,7 @@ export default {
     async getUser() {
       const data = await this.getUserInfor();
       let deletedArray = [
-        "isApproved",
+        "state",
         "_id",
         "email",
         "role",

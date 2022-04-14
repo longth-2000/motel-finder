@@ -209,7 +209,7 @@ export default {
           );
           console.log(deletedImage);
         }
-        delete this.formValidation.isApproved;
+        delete this.formValidation.state;
         delete this.formValidation.createdAt;
         delete this.formValidation.updatedAt;
         const { data } = await RepositoryFactory.get("article").updateArticle(

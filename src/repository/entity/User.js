@@ -15,6 +15,12 @@ export default {
     },
     updatePassword(password) {
         return BaseRepository.post('/user/update-password', password);
+    },
+    getSummary() {
+        return BaseRepository.get('/user/manage/summary')
+    },
+    getOwners(query) {
+        return BaseRepository.get(`/user/manage/owners?limit=${query.limit}&page=${query.page}`)
     }
 
 }
