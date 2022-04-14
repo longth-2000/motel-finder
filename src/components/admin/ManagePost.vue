@@ -186,9 +186,6 @@ export default {
   background: rgba(0,0,0,.1);
   cursor: pointer;
 }
-.action-approve {
-  display: flex;
-}
 .button-approve {
   margin-left: 10px;
 }
