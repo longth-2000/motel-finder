@@ -6,7 +6,7 @@
       sub-title="Trang này không tồn tại"
     >
       <template #extra>
-        <a-button type="primary">Quay lại trang chủ</a-button>
+        <a-button type="primary" href="/">Quay lại trang chủ</a-button>
       </template>
     </a-result>
   </div>
