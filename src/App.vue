@@ -64,5 +64,22 @@ ul {
 .ant-tag-has-color {
   padding:5px 10px !important
 }
+.ant-upload-list-item-error {
+  border-color:green !important;
+  color:green !important
+}
+.ant-upload-list-item-error .anti-icon {
+  color: green !important;
+}
+.ant-upload-list-picture .ant-upload-list-item-name {
+  color: green;
+}
+.ant-upload-list-item-error .ant-upload-list-item-card-actions .anticon {
+  color:green
+}
+
+.ant-pagination {
+  margin-right: 2% !important;
+}
 
 </style>

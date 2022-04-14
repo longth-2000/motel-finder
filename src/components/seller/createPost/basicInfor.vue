@@ -32,7 +32,6 @@
           <div class="address">
             <a-select
               class="address-component"
-              @change="getWard"
               placeholder="Quận/huyện"
               v-model="value.address.district"
               :class="{
@@ -99,6 +98,29 @@
           </div>
         </div>
       </div>
+      <div id="duration" class="content-items">
+        <p class="label">
+          Thời hạn đăng bài <span class="require-sign">(*)</span>
+        </p>
+        <a-select
+          @change="handleExpire"
+          style="width: 100%"
+          placeholder="Chọn thời gian gia hạn"
+        >
+          <a-select-option
+            v-for="(time, index) in duration"
+            :key="index"
+            :value="time.id"
+          >
+            {{ time.name }}
+          </a-select-option>
+        </a-select>
+      </div>
+      <div v-if="this.money.isChosen">
+        <a-button type="primary" style="margin-top: 20px">
+          Số tiền cần thanh toán là {{ this.money.value }} VND
+        </a-button>
+      </div>
     </div>
   </div>
 </template>
@@ -115,22 +137,62 @@ export default {
         { name: "Chung cư nguyên căn", id: 3 },
         { name: "Chung cư mini", id: 4 },
       ],
+      duration: [
+        { name: "1 tuần", id: 1 },
+        { name: "1 tháng ", id: 2 },
+        { name: "2 tháng", id: 3 },
+      ],
+      money: {
+        isChosen: false,
+        value: "",
+      },
     };
   },
-  computed:{
+  computed: {
     getDistrict() {
-      return this.value.address.district
-    }
+      return this.value.address.district;
+    },
+    getWards() {
+      return this.value.address.ward;
+    },
   },
-  watch:{
+  watch: {
     getDistrict(newVal, oldVal) {
-      if(oldVal !== undefined) {
+      if (oldVal !== undefined) {
         this.value.address = {
-          district:newVal
-        }
+          district: newVal,
+        };
       }
-    }
-  }
+      this.getWard(newVal);
+    },
+    getWards(newVal, oldVal) {
+      if (oldVal !== undefined) {
+        this.value.address = {
+          district: this.value.address.district,
+          ward: newVal,
+        };
+      }
+    },
+  },
+  methods: {
+    handleExpire(time) {
+      this.money =
+        time === 1
+          ? {
+              isChosen: false,
+            }
+          : time === 2
+          ? {
+              isChosen: true,
+              value: "1000000",
+            }
+          : {
+              isChosen: true,
+              value: "200000",
+            };
+      this.$emit("timeExpired", time);
+    },
+  },
 };
 </script>
 <style scoped>

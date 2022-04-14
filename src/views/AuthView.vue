@@ -1,6 +1,6 @@
 <template>
-  <div class="authentication-component">
-    <Login :isAuthenticated="true" />
+  <div class="auth-component">
+    <Login class="auth-frame"  :isAuthenticated="true" />
   </div>
 </template>
 <script>
@@ -12,9 +12,13 @@ export default {
 };
 </script>
 <style scoped>
-.authentication-component {
-  width: 600px;
-  margin: 0px auto;
+.auth-component {
   padding: 20px;
+  background: #f2f2f280;
+}
+.auth-frame {
+  width:550px;
+  margin:0 auto; 
+  padding:40px
 }
 </style>

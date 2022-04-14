@@ -84,16 +84,77 @@
             style="position: relative; margin-top: 10px"
             v-if="isLogin"
           >
-            <font-awesome-icon
-              icon="fa-regular fa-bell"
-              style="font-size: 25px"
-            />
-            <div class="nofifycation-data">1</div>
+            <a-dropdown placement="bottomRight">
+              <div>
+                <font-awesome-icon
+                  icon="fa-regular fa-bell"
+                  style="font-size: 25px"
+                />
+                <div class="nofifycation-data">1</div>
+              </div>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item>
+                    <div class="notify-menu">
+                      <div class="notify-icon" style="color: red">
+                        <font-awesome-icon
+                          icon="fa-solid fa-circle-exclamation"
+                        />
+                      </div>
+                      <div class="notify-content">
+                        Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                      </div>
+                      <div class="notify-date">20/2/2020</div>
+                      <div class="notify-action">
+                        <font-awesome-icon
+                          style="color: red"
+                          icon="fa-solid fa-delete-left"
+                        />
+                      </div>
+                    </div>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <div class="notify-menu">
+                      <div class="notify-icon" style="color: green">
+                        <font-awesome-icon icon="fa-solid fa-circle-check" />
+                      </div>
+                      <div class="notify-content">
+                        Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                      </div>
+                      <div class="notify-date">20/2/2020</div>
+                      <div class="notify-action">
+                        <font-awesome-icon
+                          style="color: red"
+                          icon="fa-solid fa-delete-left"
+                        />
+                      </div>
+                    </div>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <div class="notify-menu">
+                      <div class="notify-icon" style="color: green">
+                        <font-awesome-icon icon="fa-solid fa-circle-check" />
+                      </div>
+                      <div class="notify-content">
+                        Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                      </div>
+                      <div class="notify-date">20/2/2020</div>
+                      <div class="notify-action">
+                        <font-awesome-icon
+                          style="color: red"
+                          icon="fa-solid fa-delete-left"
+                        />
+                      </div>
+                    </div>
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
           </li>
           <li class="menu-items" style="display: flex" v-if="isLogin">
             <div class="abbreviation-username">
               <span v-if="user.hasOwnProperty('email')">{{
-                  user.email.charAt(0).toUpperCase()
+                user.email.charAt(0).toUpperCase()
               }}</span>
             </div>
             <div class="fullwrite-username">
@@ -111,12 +172,20 @@
                   />
                 </a>
                 <a-menu slot="overlay">
-                  <a-menu-item style="padding-left: 10px"
+                  <a-menu-item style="padding-left: 10px" v-if="setCheckPermisson"
                     ><a href="/ho-so?type=manage-post" class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
                         class="icon-user"
                       />Quản lí tin đăng</a
+                    ></a-menu-item
+                  >
+                  <a-menu-item style="padding-left: 10px" v-else
+                    ><a href="/ho-so?type=manage-post" class="router-link"
+                      ><font-awesome-icon
+                        icon="fa-solid fa-list"
+                        class="icon-user"
+                      />Tin đăng yêu thích</a
                     ></a-menu-item
                   >
 
@@ -183,41 +252,29 @@ import Register from "../Register.vue";
 import { mapGetters } from "vuex";
 import authenticationMixin from "../../mixins/authentication";
 import { subject } from "@casl/ability";
-import { mapActions } from "vuex";
 export default {
-  props: ["openNav"],
+  props: ["openNav", "user", "isLogged"],
   mixins: [authenticationMixin],
 
   data() {
     const regexEmail = /(\w)+(?=@gmail.com)/;
     return {
-      user: {},
       regexEmail: regexEmail,
-      isLogged: false,
+      checkPermission:false
     };
   },
-  created() {
-    this.getUser();
-  },
+  
   components: {
     Login,
     Register,
   },
   computed: {
     ...mapGetters("modal", ["isVisible"]),
+    setCheckPermisson() {
+      return this.$can("create", subject("User", this.user));
+    }
   },
   methods: {
-    ...mapActions("user", ["getUserInfor"]),
-    async getUser() {
-      try {
-        const user = await this.getUserInfor();
-        console.log(user);
-        this.user = user;
-        this.isLogged = true;
-      } catch (error) {
-        console.log(error.response);
-      }
-    },
     createPost() {
       let checkPermission = this.$can("create", subject("User", this.user));
       if (!this.isLogged) {
@@ -272,6 +329,31 @@ img {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.notify-menu {
+  display: flex;
+  width: 600px;
+  height: 70px;
+  font-size: 14px;
+  line-height: 70px;
+  text-align: center;
+  border-bottom: 1px solid #bfbfbf;
+}
+.notify-icon {
+  width: 60px;
+  font-size: 20px;
+  padding: 0 10px;
+}
+.notify-content {
+  width: 340px;
+  font-weight: bold;
+}
+.notify-date {
+  width: 120px;
+}
+.notify-action {
+  width: 80px;
+  font-size: 20px;
 }
 
 @media screen and (min-width: 800px) {

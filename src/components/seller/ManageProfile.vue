@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background:white; height:100%">
     <div id="title-component-profile">
       <span>THAY ĐỔI THÔNG TIN CÁ NHÂN</span>
     </div>
@@ -57,7 +57,7 @@ export default {
         name: "",
         address: {},
         sex: true,
-        birthDay: null,
+        date: null,
       },
       email: "",
       check: {
@@ -85,7 +85,7 @@ export default {
         ward: { required },
         detail: { required },
       },
-      birthDay: { required },
+      date: { required },
     },
   },
   created() {
@@ -101,19 +101,24 @@ export default {
       if (!validation) return;
       else {
         this.onSpinning();
-        let formData = new FormData();
-        formData.append("file", this.imageAvatar);
+        let checkImageEmpty = Object.keys(this.imageAvatar).length === 0;
         this.manageProfile.id = JSON.parse(localStorage.getItem("user")).id;
-        try {
+        if (!checkImageEmpty) {
+          let formData = new FormData();
+          formData.append("file", this.imageAvatar);
           const { public_id } = this.manageProfile.avatar;
           const ImageResponse = await RepositoryFactory.get("app").uploadImage(
             formData
           );
-          if (public_id !== "") {
-            this.deleteImage(public_id.split());
+
+          if (public_id !== 'null') {
+            const ImageDelete = await RepositoryFactory.get("app").deleteImage(
+              public_id.split()
+            );
+            console.log(ImageDelete);
           }
           this.manageProfile.avatar = ImageResponse.data;
-        } catch (error) {
+        } else {
           const { public_id, url } = this.manageProfile.avatar;
           this.manageProfile.avatar =
             public_id === "" || public_id === "null"
@@ -125,15 +130,19 @@ export default {
                   public_id,
                   url,
                 };
-        } finally {
-          const { data } = await RepositoryFactory.get("user").updateUser(
-            this.manageProfile
-          );
-          console.log(data);
-          this.GET_USER(this.manageProfile);
-          this.offSpinning();
-          this.openNotification("Thành công", data.message, "success");
         }
+        if (this.manageProfile.date !== undefined) {
+          this.manageProfile.birthDay =
+            this.manageProfile.date.format("YYYY-MM-DD");
+          delete this.manageProfile.date;
+        }
+        const { data } = await RepositoryFactory.get("user").updateUser(
+          this.manageProfile
+        );
+        this.GET_USER(this.manageProfile);
+        console.log(data)
+        this.offSpinning();
+        this.openNotification("Thành công", data.message, "success");
       }
     },
     async getUser() {
@@ -152,12 +161,11 @@ export default {
       });
       for (let property in data) {
         if (property === "birthDay") {
-          this.manageProfile.birthDay = moment(data.birthDay, "YYYY-MM-DD");
+          this.manageProfile.date = moment(data.birthDay, "YYYY-MM-DD");
         } else {
           this.manageProfile[property] = data[property];
         }
       }
-      console.log(data)
     },
   },
 };
@@ -179,10 +187,8 @@ export default {
   background: white;
 }
 #button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 20px;
+  margin-left: 47.5%;
+  padding: 20px 0 20px 0;
 }
 
 ::v-deep .change-title {

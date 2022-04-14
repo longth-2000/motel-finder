@@ -18,7 +18,15 @@ function deleteCookie(name) {
     document.cookie =
         name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
+
+function setCookie(cname, cvalue, expired) {
+    const d = new Date();
+    d.setTime(d.getTime() + (expired * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 export default {
     getCookie,
-    deleteCookie
+    deleteCookie,
+    setCookie
 }

@@ -15,6 +15,7 @@ var authenticationMixin = {
         },
         isLogout() {
             cookie.deleteCookie('accessToken');
+            localStorage.removeItem("user");
             window.location.href = "/"
         },
     },

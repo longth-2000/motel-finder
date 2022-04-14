@@ -27,7 +27,7 @@ export const router = new Router({
 
         },
         {
-            path: "/bai-dang",
+            path: "/tim-kiem",
             name: "MotelSearch",
             component: () =>
                 import ("../views/SearchMotelView.vue"),
@@ -52,13 +52,26 @@ export const router = new Router({
             name: "Auth",
             component: () =>
                 import ("../views/AuthView.vue"),
-
-
         },
         {
             path: "/purchase",
             component: () =>
                 import ("../views/PurchaseView.vue"),
+        },
+        {
+            path: "/admin/manage",
+            name: "Admin",
+            meta: {
+                layout: 'error',
+            },
+            component: () =>
+                import ("../views/AdminView.vue"),
+        },
+        {
+            path: "/draft",
+            name: "Draft",
+            component: () =>
+                import ("../components/chat/VueChat.vue"),
         },
         {
             path: "*",
@@ -72,9 +85,15 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/lien-he', '/', '/auth'];
+    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
+    if (to.path === "/ho-so") {
+        const id = JSON.parse(localStorage.getItem("user")).id;
+        to.query.id = id;
+        to.query.limit = 5;
+        next();
+    }
     if (authRequired && !loggedIn) {
         next('/auth');
     } else {

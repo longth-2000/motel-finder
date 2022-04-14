@@ -1,5 +1,5 @@
 <template>
-  <div class="avatar-upload">
+  <div class="avatar-upload" style="position: relative">
     <div class="change-title">{{ title }}</div>
     <div class="change-content">
       <a-upload
@@ -10,7 +10,7 @@
         list-type="picture"
         accept="image/*"
       >
-        <a-button class="upload-button" v-if="disableUpload">
+        <a-button class="upload-button fixed-button" :class="{hiddenButton: !disableUpload}">
           <a-icon type="upload" /> Chọn file
         </a-button>
       </a-upload>
@@ -46,21 +46,18 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+ 
 }
 .avatar-upload .upload-button {
   position: absolute;
-  top: 40px;
-  left: 480px;
-}
+  top: 70px;
+  left: 45%;
+} 
 ::v-deep .ant-upload-list-item {
    width: 300px;
 }
-::v-deep .ant-upload-list-item-error {
-  border-color:green !important;
-  color:green !important
+.hiddenButton {
+  display:none
 }
-::v-deep .ant-upload-list-item-error .anti-icon {
-  color: green !important;
-}
+
 </style>

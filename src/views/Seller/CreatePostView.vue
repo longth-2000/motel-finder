@@ -9,6 +9,7 @@
               :isSubmit="check.isSubmit"
               v-model="formValidation"
               :validation="$v.formValidation"
+              @timeExpired="setEXpiredDate"
             />
           </div>
           <div class="detail-infor post-infor">
@@ -27,8 +28,12 @@
               :validation="$v.formValidation.detailedPost"
             />
           </div>
-          <div class="image-infor post-infor" v-if="idArticle === undefined">
-            <ImageInfor title="Hình ảnh" />
+          <div class="image-infor post-infor">
+            <ImageInfor
+              title="Hình ảnh"
+              @delete-image="deleteImage"
+              :images="images"
+            />
           </div>
           <div class="image-infor post-infor">
             <ButtonInfor
@@ -40,7 +45,7 @@
         <a-modal
           v-model="isVisible.alert"
           title="Thoát đăng tin"
-          ok-text="Lưu vào tin nháp"
+          ok-text="Thoát"
           cancel-text="Quay lại chỉnh sửa"
           @ok="createDraft"
         >
@@ -52,7 +57,7 @@
               />
             </div>
             <div class="modal-content-alert">
-              Tin đăng đang được soạn dở, bạn có muốn lưu vào tin nháp?
+              Tin đăng chưa được gửi, bạn có thực sự muốn thoát?
             </div>
           </div>
         </a-modal>
@@ -68,6 +73,7 @@ import ImageInfor from "../../components/seller/createPost/imageInfor.vue";
 import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
 import parentValidationMixin from "../../mixins/validation/postValidation/parentValidation";
 import { RepositoryFactory } from "../../repository/factory";
+
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   components: {
@@ -85,9 +91,16 @@ export default {
         isSubmit: false,
       },
       idArticle: this.$route.query.id,
+      status: this.$route.query.status,
+      deletedImageList: [],
+      images: [],
+      destination: "",
     };
   },
   created() {
+    window.onbeforeunload = function (event) {
+      event.returnValue = "Write something clever here..";
+    };
     if (this.idArticle !== undefined) {
       this.getArticleByID();
     }
@@ -104,66 +117,139 @@ export default {
     async getArticleByID() {
       let articleID = this.$route.query.id;
       const response = await this.getArticle(articleID);
-      console.log(response);
       this.formValidation = { ...response };
-      let deletedArray = ["_id", "__v"];
+      let deletedArray = ["_id", "__v", "district", "ward"];
       deletedArray.forEach((item) => {
-        delete this.formValidation[item];
+        if (item === "district" || item === "ward") {
+          if (this.formValidation.address[item] === "") {
+            delete this.formValidation.address[item];
+          }
+        } else delete this.formValidation[item];
       });
+      this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
-    async callApi() {
-      let formData = new FormData();
-      this.imageMotel.forEach((image) => formData.append("file", image));
-      const { data } = await RepositoryFactory.get("app").uploadImage(formData);
-      this.formValidation.images = data;
-      this.formValidation.status = "posted";
-      const MotelRes = await RepositoryFactory.get("article").createArticle(
-        this.formValidation
-      );
-      console.log(MotelRes);
+    async callApi(status) {
+      this.onSpinning();
+      this.formValidation.status = status;
+      let lengthImage = Object.keys(this.imageMotel).length > 1;
+      if (!lengthImage) {
+        if (status == "posted") {
+          this.openNotification(
+            "Cảnh báo",
+            "Bạn phải tải từ hai ảnh trở lên",
+            "warn"
+          );
+        } else {
+          const MotelRes = await RepositoryFactory.get("article").createArticle(
+            this.formValidation
+          );
+          console.log(MotelRes);
+        }
+      } else {
+        let formData = new FormData();
+        this.imageMotel.forEach((image) => formData.append("file", image));
+        const { data } = await RepositoryFactory.get("app").uploadImage(
+          formData
+        );
+        this.formValidation.images = data;
+        const MotelRes = await RepositoryFactory.get("article").createArticle(
+          this.formValidation
+        );
+        console.log(MotelRes);
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = "ho-so?type=manage-post";
+      }
+      if (status === "draft") {
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = this.destination;
+      }
+      this.offSpinning();
     },
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      try {
-        this.onSpinning();
-        this.callApi();
-        this.openNotification(
-          "Thành công",
-          "Bạn đã tạo bài đăng thành công",
-          "warning"
-        );
-      } catch (error) {
-        this.openNotification(
-          "Cảnh báo",
-          "Bạn phải tải từ hai ảnh trở lên",
-          "success"
-        );
-      } finally {
-        this.offSpinning();
-      }
+      this.callApi("posted");
     },
     async updatePost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      try {
+      this.formValidation.status = "posted";
+      let lengthImage = Object.keys(this.imageMotel).length > 0;
+      if (lengthImage) {
+        let formData = new FormData();
+        this.imageMotel.forEach((image) => formData.append("file", image));
+        const image = await RepositoryFactory.get("app").uploadImage(formData);
+        if (image.data.public_id !== undefined) {
+          this.formValidation.images.push(image.data);
+        } else {
+          image.data.forEach((element) => {
+            this.formValidation.images.push(element);
+          });
+        }
+      }
+      this.formValidation.images = this.formValidation.images.filter(
+        (image) =>
+          !this.deletedImageList.some((item) => item === image.public_id)
+      );
+      if (this.formValidation.images.length < 2) {
+        this.openNotification(
+          "Cảnh báo",
+          "Bạn cần đăng ít nhất 2 ảnh",
+          "warning"
+        );
+      } else {
+        if (this.deletedImageList.length !== 0) {
+          const deletedImage = await RepositoryFactory.get("app").deleteImage(
+            this.deletedImageList
+          );
+          console.log(deletedImage);
+        }
+        delete this.formValidation.isApproved;
+        delete this.formValidation.createdAt;
+        delete this.formValidation.updatedAt;
+        delete this.formValidation.point;
+        delete this.formValidation.likes;
+        delete this.formValidation.view;
+        delete this.formValidation.isPaid;
+        delete this.formValidation.userLiked;
         const { data } = await RepositoryFactory.get("article").updateArticle(
           this.formValidation,
           this.idArticle
         );
-        console.log(data);
-        this.openNotification("Thành công", data.message, "success"); 
-      } catch (error) {
-        console.log(error.response);
+        console.log(data.message)
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = "/ho-so?type=manage-post"
       }
     },
     createDraft() {
-      this.callApi();
-      /*  window.location.href = "ho-so?type=draft-post" */
+      let status = this.$route.query.status;
+      if (status === "posted" || status === "draft") {
+        window.onbeforeunload = function () {
+          return null;
+        };
+         window.location.href = this.destination;
+      } else {
+        this.callApi("draft");
+      }
     },
+    setEXpiredDate(time) {
+      const DATE = 60 * 60 * 1000 * 24;
+      let duration = time === 1 ? DATE : time === 2 ? 30 * DATE : 60 * DATE;
+      this.formValidation.postExpired = new Date(Date.now() + duration);
+    },
+    deleteImage(public_id) {
+      this.deletedImageList.push(public_id);
+    }
   },
 
-  beforeRouteLeave() {
+  beforeRouteLeave(to) {
+    this.destination = to.path;
     this.showModal("alert");
   },
 };
@@ -227,5 +313,15 @@ export default {
 .modal-content-alert {
   flex: 7;
   color: black;
+}
+@media only screen and (max-width: 992px) {
+  .create-post-content {
+    width: 80%;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .create-post-content {
+    width: 100%;
+  }
 }
 </style>

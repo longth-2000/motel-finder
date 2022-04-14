@@ -4,21 +4,84 @@
       <font-awesome-icon icon="fa-solid fa-xmark" />
     </div>
     <div class="user-infor" v-if="isLogin">
-      <div id="avatar">{{ email.charAt(0).toUpperCase() }}</div>
+      <div id="avatar">
+        <span v-if="user.hasOwnProperty('email')">{{
+          user.email.charAt(0).toUpperCase()
+        }}</span>
+      </div>
       <div id="username">
         <p>
           <a-tooltip>
-            <template slot="title"> {{ email }} </template>
-            {{ email }}
+            <template slot="title"> {{ user.email }} </template>
+            {{ user.email }}
           </a-tooltip>
         </p>
       </div>
       <div id="icon" style="position: relative">
-        <font-awesome-icon
-          icon="fa-regular fa-bell"
-          style="font-size: 25px; margin: 10px 30px"
-        />
-        <div class="nofifycation-data">1</div>
+        <a-dropdown placement="bottomRight">
+          <div>
+            <font-awesome-icon
+              icon="fa-regular fa-bell"
+              style="font-size: 25px"
+            />
+            <div class="nofifycation-data">1</div>
+          </div>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <div class="notify-menu">
+                  <div class="notify-icon" style="color: red">
+                    <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
+                  </div>
+                  <div class="notify-content">
+                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  </div>
+                  <div class="notify-date">20/2/2020</div>
+                  <div class="notify-action">
+                    <font-awesome-icon
+                      style="color: red"
+                      icon="fa-solid fa-delete-left"
+                    />
+                  </div>
+                </div>
+              </a-menu-item>
+              <a-menu-item>
+                <div class="notify-menu">
+                  <div class="notify-icon" style="color: green">
+                    <font-awesome-icon icon="fa-solid fa-circle-check" />
+                  </div>
+                  <div class="notify-content">
+                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  </div>
+                  <div class="notify-date">20/2/2020</div>
+                  <div class="notify-action">
+                    <font-awesome-icon
+                      style="color: red"
+                      icon="fa-solid fa-delete-left"
+                    />
+                  </div>
+                </div>
+              </a-menu-item>
+              <a-menu-item>
+                <div class="notify-menu">
+                  <div class="notify-icon" style="color: green">
+                    <font-awesome-icon icon="fa-solid fa-circle-check" />
+                  </div>
+                  <div class="notify-content">
+                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  </div>
+                  <div class="notify-date">20/2/2020</div>
+                  <div class="notify-action">
+                    <font-awesome-icon
+                      style="color: red"
+                      icon="fa-solid fa-delete-left"
+                    />
+                  </div>
+                </div>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
     </div>
     <div class="action-items">
@@ -101,6 +164,7 @@
 import Login from "../Login.vue";
 import Register from "../Register.vue";
 import authenticationMixin from "../../mixins/authentication";
+import { mapActions } from "vuex";
 
 export default {
   props: ["closeNav"],
@@ -111,10 +175,23 @@ export default {
   },
   data() {
     return {
-      email: JSON.parse(localStorage.getItem("user")).email,
+      user: {},
     };
   },
+  created() {
+    this.getUser();
+  },
   methods: {
+    ...mapActions("user", ["getUserInfor"]),
+    async getUser() {
+      try {
+        const user = await this.getUserInfor();
+        this.user = user;
+        this.isLogged = true;
+      } catch (error) {
+        console.log(error.response);
+      }
+    },
     redirectPage(endpoint) {
       this.$router.push(`/bai-dang?type=${endpoint}`);
       this.closeNav();
@@ -127,10 +204,10 @@ export default {
   height: 100%;
   width: 0;
   position: fixed;
-  z-index: 1;
+  z-index: 3;
   top: 0;
   right: 0;
-  background-color: #fff;
+  background-color: #f5f5f5;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 60px;
@@ -236,7 +313,32 @@ export default {
   font-size: 12px;
   border-radius: 4px;
   position: absolute;
-  top: 5px;
-  left: 44px;
+  top: -2px;
+  left: 10px;
+}
+.notify-menu {
+  display: flex;
+  width: 600px;
+  height: 70px;
+  font-size: 14px;
+  line-height: 70px;
+  text-align: center;
+  border-bottom: 1px solid #bfbfbf;
+}
+.notify-icon {
+  width: 60px;
+  font-size: 20px;
+  padding: 0 10px;
+}
+.notify-content {
+  width: 340px;
+  font-weight: bold;
+}
+.notify-date {
+  width: 120px;
+}
+.notify-action {
+  width: 80px;
+  font-size: 20px;
 }
 </style>
