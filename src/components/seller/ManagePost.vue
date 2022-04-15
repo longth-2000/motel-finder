@@ -9,7 +9,7 @@
           float: right;
           display: flex;
           justify-content: space-evenly;
-          width: 30%;
+          width: 38%;
         "
       >
         <div class="action" id="search">
@@ -66,7 +66,7 @@
       </div>
     </div>
     <div></div>
-    <div style="position: absolute; margin-left: 20px">
+    <div style="position: absolute; margin: -55px 0 20px 0">
       <div v-if="postArr.length > 0">
         <a-popconfirm
           title="Bạn có muốn xóa tất cả các tin này?"
@@ -90,11 +90,11 @@
     <div
       id="content"
       style="
-        margin: 60px 0 0 0;
+        margin: 20px 0 0 0;
         background: white;
         padding: 10px 0;
         border-radius: 5px;
-        height: 686px;
+        height: 730px;
       "
       v-if="articleArray.length > 0"
     >
@@ -127,7 +127,7 @@
               ></a-checkbox>
             </td>
             <td>
-              <span class="title-article">{{ post.detailedPost.title }}</span>
+              <span class="title-article">{{ post._id }}</span>
             </td>
             <td>
               <a-tag
@@ -166,7 +166,7 @@
                 style="cursor: pointer"
                 :color="setExpiredState(post.postExpired).color"
                 :value="setExpiredState(post.postExpired).state"
-                @click="alertPurchase($event)"
+                @click="alertPurchase($event, post._id)"
               >
                 {{ setExpiredState(post.postExpired).mess }}</a-tag
               >
@@ -174,7 +174,7 @@
                 v-model="isVisible.purchase"
                 title="Thông báo gia hạn"
                 ok-text="Thanh toán"
-                @ok="redirectPayment"
+                @ok="redirectPayment(post._id, countPayment(paymentMoney), 'extension', paymentMoney)"
                 cancel-text="Quay lại"
               >
                 <div style="display: flex">
@@ -209,22 +209,37 @@
                 <a-button type="danger"> Xóa </a-button>
               </a-popconfirm>
               <a :href="'/dang-tin?id=' + post._id + '&status=posted'">
-                <a-button id="edit-post-btn" type="primary"> Sửa </a-button>
+                <a-button
+                  id="edit-post-btn"
+                  type="primary"
+                  :disabled="post.isApproved === 1 ? false : true"
+                >
+                  Sửa
+                </a-button>
               </a>
+
+              <a-button
+                id="edit-post-btn"
+                type="primary"
+                :disabled="post.isPaid ? true : false"
+                @click="redirectPayment(post._id, post.moneyPayment, 'create', null)"
+              >
+                Thanh toán
+              </a-button>
             </td>
           </tr>
         </tbody>
       </table>
-      <a-pagination
-        v-model="current"
-        :total="50"
-        @change="getMultipleArticle"
-        style="float: right"
-      />
     </div>
     <div v-else class="empty-post-notify">
       <slot></slot>
     </div>
+    <a-pagination
+      v-model="current"
+      :total="50"
+      @change="getMultipleArticle"
+      style="float: right; margin-top:-50px"
+    />
   </div>
 </template>
 <script>
@@ -241,12 +256,14 @@ export default {
     return {
       stateFilter: "",
       paymentMoney: 1,
+      moneyPurchase: 0,
       state: "posted",
       articleArray: [],
       postArr: [],
       resultFilter: {},
       sortTitle: "Sắp xếp",
       searchTitle: "",
+      id:''
     };
   },
   computed: {
@@ -294,15 +311,24 @@ export default {
         value: result.value,
       };
     },
-    alertPurchase(event) {
+    alertPurchase(event, id) {
+      this.id = id
       let value = event.target.getAttribute("value");
-      if (value === "true") {
+      console.log(value);
+      if (value == "false") {
         this.showModal("purchase");
       }
     },
-    redirectPayment() {
-      window.location.href = "/ho-so?type=payment";
-    },
+    redirectPayment(id, money, state, duration) {
+      let idArticle = (state == 'create') ? id : this.id
+      localStorage.setItem("purchase", JSON.stringify({
+        id:idArticle,
+        money,
+        state,
+        duration
+      }));
+      window.location.href = "/ho-so?type=payment";  
+     },
     async changeStateArticle(articleID) {
       const { data } = await RepositoryFactory.get(
         "article"

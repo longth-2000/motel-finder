@@ -128,7 +128,7 @@ export default {
       });
       this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
-    async callApi(status, message) {
+    async callApi(status) {
       this.onSpinning();
       this.formValidation.status = status;
       let lengthImage = Object.keys(this.imageMotel).length > 1;
@@ -156,11 +156,10 @@ export default {
           this.formValidation
         );
         console.log(MotelRes);
-        this.openNotification("Thành công", message, "success");
         window.onbeforeunload = function () {
           return null;
         };
-        window.location.href = "ho-so?type=manage-post";
+        /* window.location.href = "ho-so?type=manage-post&sortByDate=-1"; */
       }
       if (status === "draft") {
         window.onbeforeunload = function () {
@@ -173,9 +172,10 @@ export default {
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      this.callApi("posted", "Tin đã được đăng");
+      this.callApi("posted");
     },
     async updatePost() {
+       this.onSpinning();
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
       this.formValidation.status = "posted";
@@ -212,6 +212,11 @@ export default {
         delete this.formValidation.state;
         delete this.formValidation.createdAt;
         delete this.formValidation.updatedAt;
+        delete this.formValidation.point;
+        delete this.formValidation.likes;
+        delete this.formValidation.view;
+        delete this.formValidation.isPaid;
+        delete this.formValidation.userLiked;
         const { data } = await RepositoryFactory.get("article").updateArticle(
           this.formValidation,
           this.idArticle
@@ -231,13 +236,15 @@ export default {
         };
          window.location.href = this.destination;
       } else {
-        this.callApi("draft", "Bài viết đã được lưu vào tin nháp");
+        this.callApi("draft");
       }
     },
-    setEXpiredDate(time) {
+    setEXpiredDate(mess) {
+      console.log(mess)
       const DATE = 60 * 60 * 1000 * 24;
-      let duration = time === 1 ? DATE : time === 2 ? 30 * DATE : 60 * DATE;
+      let duration = mess.time === 1 ? DATE : mess.time === 2 ? 30 * DATE : 60 * DATE;
       this.formValidation.postExpired = new Date(Date.now() + duration);
+      this.formValidation.moneyPayment = mess.value
     },
     deleteImage(public_id) {
       this.deletedImageList.push(public_id);

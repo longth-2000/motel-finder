@@ -180,17 +180,21 @@ export default {
         time === 1
           ? {
               isChosen: false,
+              value:0
             }
           : time === 2
           ? {
               isChosen: true,
-              value: "1000000",
+              value: 1000000,
             }
           : {
               isChosen: true,
-              value: "200000",
+              value: 200000,
             };
-      this.$emit("timeExpired", time);
+      this.$emit("timeExpired", {
+        time:time,
+        value:this.money.value
+      });
     },
   },
 };

@@ -1,23 +1,26 @@
 <template lang="">
     <div class="motel-card">
         <a-card hoverable style="width: 300px">
-            <img
-            slot="cover"
-            alt="example"
-            :src="card.images[0].url"
+            <a :href="'/phong-tro/' + card._id" class="router-link">
+              <img
+                slot="cover"
+                alt="example"
+                :src="card.images[0].url"
             />
+            </a>
+            
             <template slot="actions" class="ant-card-actions">
                 <a-tooltip placement="bottom">
                     <template #title>
                        <span>Bấm để lưu tin</span>
                     </template>
 
-                    <font-awesome-icon @click ="storageFavorite(card._id)" icon="fa-solid fa-heart" :class="{colorHeart:isStorage}"/>
+                    <font-awesome-icon @click ="storageFavorite(card._id)" icon="fa-solid fa-heart" :class="{ colorHeart: isStorage}"/>
                 </a-tooltip>
             </template>
             <a-card-meta :title="card.detailedPost.title" >
             </a-card-meta>
-            <div style="display:flex; justify-content; margin: 20px 0">
+            <div style="display:flex; justify-content; margin: 20px 15px">
                 <div class="price extra-infor">
                     <font-awesome-icon class="icon" icon="fa-solid fa-money-bill" />
                     <div>{{card.price.quantity}}</div>
@@ -27,11 +30,11 @@
                     <div>{{card.area}} m2</div>
                 </div>
             </div>
-            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> -->
-            <div>{{ card._id}}</div>
+            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> --> 
+            <div style="margin-left:15px">{{card._id}}</div>
             <div>
-                <div style="margin:15px auto 0 auto; width:53%">
-                    <a-rate v-model="value" allowHalf />
+                <div style="margin:15px 80px 15px; width:53%">
+                    <a-rate :default-value="card.point" allow-half />
                 </div>
             </div> 
         </a-card>
@@ -39,7 +42,6 @@
 </template>
 <script>
 import { RepositoryFactory } from "../../repository/factory";
-import { ref } from "@vue/composition-api"
 export default {
     name: 'MotelCard',
     props: {
@@ -51,13 +53,22 @@ export default {
         },
         isLogged:{
             type:Boolean
+        },
+        user:{
+            type:String
         }
     },
     data() {
         return {
             isStorage:false,
-            value:ref(2.5)
+            id:JSON.parse(this.user).id
         }
+    },
+    computed: {
+      
+    },
+    created() {
+       this.isStorage = (this.card.userLiked.includes(this.id)) ? true : false
     },
     methods:{
         async storageFavorite(articleID){
@@ -94,17 +105,28 @@ export default {
     margin-right: 10px;
     font-size: 18px;
 }
-::v-deep .ant-card-cover img {
+.router-link img {
     height: 180px;
+    padding:10px
 }
 .colorHeart {
     color: red;
 }
+::v-deep .ant-card-body {
+  padding: 0
+}
+
 ::v-deep .ant-card-actions > li > span:hover{
     color:rgba(0, 0, 0, 0.45)
 }
+::v-deep .ant-card-meta-detail {
+    padding:10px 0 0 15px
+}
 ::v-deep .ant-card-actions > li > span {
     font-size: 25px;
+}
+::v-deep .ant-card-meta {
+    margin:10px 0;
 }
 
 </style>

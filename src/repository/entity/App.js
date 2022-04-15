@@ -9,6 +9,7 @@ export default {
     refreshToken() {
         const refreshToken = localStorage.getItem('refreshToken')
         return BaseRepository.get(`user/token/refresh-token?refreshToken=${refreshToken}`);
-    },
+    }
+
 
 }

@@ -37,7 +37,10 @@ export default {
         return BaseRepository.get(`/accomodations/renter/list?district=${district}`)
     },
     getFavouriteArticle(limit) {
-        return BaseRepository.get(`/accomodations/renter/list?sortByLike=true&limit=${limit}`)
+        return BaseRepository.get(`/accomodations/renter/list?sortbyLike=true&&limit=${limit}`)
+    },
+    getNewArticle(limit) {
+        return BaseRepository.get(`/accomodations/renter/list?limit=${limit}`)
     },
     searchByKeyword(page, limit, query) {
         let endpoint = '/accomodations/renter/list?page=' + page + '&limit=' + limit
@@ -56,5 +59,14 @@ export default {
     },
     getAllPosts(query) {
         return BaseRepository.get(`/accomodations/manage/posts?limit=${query.limit}&page=${query.page}`)
+    payment(idArticle) {
+        return BaseRepository.get(`accomodations/payment/${idArticle}`);
+    },
+    comment(idArticle, comment) {
+        return BaseRepository.post('report/comment', {
+            id: idArticle,
+            type: 'comment',
+            comment: comment
+        });
     }
 }
