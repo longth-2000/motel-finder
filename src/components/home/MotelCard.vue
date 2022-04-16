@@ -8,7 +8,6 @@
                 :src="card.images[0].url"
             />
             </a>
-            
             <template slot="actions" class="ant-card-actions">
                 <a-tooltip placement="bottom">
                     <template #title>
@@ -30,8 +29,7 @@
                     <div>{{card.area}} m2</div>
                 </div>
             </div>
-            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> --> 
-            <div style="margin-left:15px">{{card._id}}</div>
+            <div style="margin-left:15px">{{card.address.ward}}, {{card.address.district}}</div> -
             <div>
                 <div style="margin:15px 80px 15px; width:53%">
                     <a-rate :default-value="card.point" allow-half />

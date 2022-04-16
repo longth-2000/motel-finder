@@ -132,17 +132,17 @@
             <td>
               <a-tag
                 :color="
-                  post.isApproved === 1
+                  post.state === 1
                     ? 'blue'
-                    : post.isApproved === 2
+                    : post.state === 2
                     ? 'green'
                     : 'red'
                 "
               >
                 {{
-                  post.isApproved === 1
+                  post.state === 1
                     ? "Chưa duyệt"
-                    : post.isApproved === 2
+                    : post.state === 2
                     ? "Chấp nhận"
                     : "Từ chối"
                 }}
@@ -212,7 +212,7 @@
                 <a-button
                   id="edit-post-btn"
                   type="primary"
-                  :disabled="post.isApproved === 1 ? false : true"
+                  :disabled="post.state === 1 ? false : true"
                 >
                   Sửa
                 </a-button>
@@ -304,7 +304,7 @@ export default {
         result.type === "stateMotel"
           ? "isRented"
           : result.type === "stateApproved"
-          ? "isApproved"
+          ? "state"
           : "isExpired";
       this.resultFilter = {
         type: type,
@@ -342,9 +342,9 @@ export default {
           ? {
               isRented: this.resultFilter.value,
             }
-          : this.resultFilter.type === "isApproved"
+          : this.resultFilter.type === "state"
           ? {
-              isApproved: this.resultFilter.value,
+              state: this.resultFilter.value,
             }
           : {
               isExpired: this.resultFilter.value,

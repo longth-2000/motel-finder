@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'authenticated': isAuthenticated }">
+  <div :class="{ authenticated: isAuthenticated }">
     <div class="login-title modal-title">
       <h3></h3>
     </div>
@@ -85,7 +85,7 @@
     </div>
     <div class="login-seperate">Hoặc</div>
     <div class="login-Oauth">
-      <div class="login-google">
+      <div class="login-google" @click="showModal('role')">
         <div class="image">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1024px-Google_%22G%22_Logo.svg.png"
@@ -96,6 +96,12 @@
           <h3>Google</h3>
         </div>
       </div>
+      <a-modal v-model="isVisible.role"  title="Bạn là "  @ok="authGoogle">
+        <a-radio-group name="radioGroup" v-model="role">
+            <a-radio :value="2"> Chủ trọ </a-radio>
+            <a-radio :value="3"> Người thuê trọ </a-radio>
+        </a-radio-group>
+      </a-modal>
     </div>
     <div class="login-register" style="text-align: center">
       Chưa có tài khoản?
@@ -128,6 +134,7 @@ export default {
   data() {
     return {
       name: "login",
+      role: 2,
     };
   },
   validations: {
@@ -145,12 +152,19 @@ export default {
       else {
         try {
           const { data } = await RepositoryFactory.get("user").login(this.user);
-          this.handleAfterSign(data.data)
+          this.handleAfterSign(data.data);
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
         }
       }
+    },
+    async authGoogle() {
+      const google = await this.$gAuth.signIn();
+      console.log(google)
+     const { id_token } = google.xc 
+      const { data } = await RepositoryFactory.get('app').loginGoogle(id_token, this.role);
+      console.log(data); 
     },
   },
 };

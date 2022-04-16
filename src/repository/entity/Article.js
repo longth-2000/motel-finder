@@ -21,7 +21,7 @@ export default {
     },
     filterArticle(page, status, query) {
         let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id + '&status=' + status
-        let paramsArray = ['isRented', 'isApproved', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
+        let paramsArray = ['isRented', 'state', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
         paramsArray.forEach(element => {
             if (query[element] !== undefined)
                 endpoint += '&' + element + '=' + query[element]
@@ -62,6 +62,13 @@ export default {
             id: idArticle,
             type: 'comment',
             comment: comment
+        });
+    },
+    rate(idArticle, rate) {
+        return BaseRepository.post('report', {
+            id: idArticle,
+            type: 'evaluation',
+            content: rate
         });
     }
 }

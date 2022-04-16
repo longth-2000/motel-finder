@@ -134,31 +134,17 @@ export default {
         if (this.manageProfile.date !== undefined) {
           this.manageProfile.birthDay =
             this.manageProfile.date.format("YYYY-MM-DD");
-          delete this.manageProfile.date;
         }
         const { data } = await RepositoryFactory.get("user").updateUser(
           this.manageProfile
         );
         this.GET_USER(this.manageProfile);
-        console.log(data)
         this.offSpinning();
         this.openNotification("Thành công", data.message, "success");
       }
     },
     async getUser() {
       const data = await this.getUserInfor();
-      let deletedArray = [
-        "isApproved",
-        "_id",
-        "email",
-        "role",
-        "__v",
-        "createdAt",
-        "updatedAt",
-      ];
-      deletedArray.forEach((item) => {
-        delete data[item];
-      });
       for (let property in data) {
         if (property === "birthDay") {
           this.manageProfile.date = moment(data.birthDay, "YYYY-MM-DD");
