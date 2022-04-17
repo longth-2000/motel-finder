@@ -90,11 +90,11 @@
                   icon="fa-regular fa-bell"
                   style="font-size: 25px"
                 />
-                <div class="nofifycation-data">1</div>
+                <div class="nofifycation-data">{{notificationItems.length}}</div>
               </div>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item>
+                  <a-menu-item v-for="(item, index) in notificationItems" :key="index"> 
                     <div class="notify-menu">
                       <div class="notify-icon" style="color: red">
                         <font-awesome-icon
@@ -102,9 +102,9 @@
                         />
                       </div>
                       <div class="notify-content">
-                        Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                        {{item.detail}}
                       </div>
-                      <div class="notify-date">20/2/2020</div>
+                      <div class="notify-date">{{item.date}}</div>
                       <div class="notify-action">
                         <font-awesome-icon
                           style="color: red"
@@ -113,7 +113,7 @@
                       </div>
                     </div>
                   </a-menu-item>
-                  <a-menu-item>
+                  <!-- <a-menu-item>
                     <div class="notify-menu">
                       <div class="notify-icon" style="color: green">
                         <font-awesome-icon icon="fa-solid fa-circle-check" />
@@ -146,7 +146,7 @@
                         />
                       </div>
                     </div>
-                  </a-menu-item>
+                  </a-menu-item> -->
                   <a-menu-item>
                     <a class="router-link" href="/ho-so?type=notification">
                       <div style="text-align: center; color: blue">
@@ -270,6 +270,7 @@ export default {
     return {
       regexEmail: regexEmail,
       checkPermission: false,
+      notificationItems: []
     };
   },
   
@@ -279,6 +280,8 @@ export default {
   },
   computed: {
     ...mapGetters("modal", ["isVisible"]),
+    ...mapGetters("notifications", ['notifications']),
+
     setCheckPermisson() {
       return this.$can("create", subject("User", this.user));
     },
@@ -297,6 +300,15 @@ export default {
       } else window.location.href = "/dang-tin";
     },
   },
+  mounted() {
+  },
+  watch: {
+    notifications(val) {
+      if(val) {
+        this.notificationItems = val.filter((item) => item.isRead == false)
+      }
+    }
+  }
 };
 </script>
 <style scoped>

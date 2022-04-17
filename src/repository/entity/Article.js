@@ -73,6 +73,9 @@ export default {
             comment: comment
         });
     },
+    updateState(id, query) {
+        return BaseRepository.put(`/accomodations/manage/update-state/${id}`, query)
+    },
     rate(idArticle, rate) {
         return BaseRepository.post('report', {
             id: idArticle,

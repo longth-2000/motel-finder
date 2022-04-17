@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :updateTime="updateTime">
     <div class="overview-boxes">
       <div class="box">
         <div class="right-side">
@@ -72,19 +72,19 @@
                 <td>Trương Hoàng Long</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
                 <td><a-tag color="red">Chưa thanh toán</a-tag></td>
-                <td v-if="article.state == 0">     
+                <td v-if="article.state == postState.reject">     
                   <a-tag color="red">
                     Từ chối
                   </a-tag>
                 </td>
-                <td v-if="article.state == 2">     
+                <td v-if="article.state == postState.agree">     
                   <a-tag color="green">
                     Đã duyệt
                   </a-tag>
                 </td>
-                <td v-if="article.state == 1" class="action-approve">
-                  <a-button type="danger">Từ chối</a-button
-                  ><a-button type="primary" class="button-approve">Đồng ý</a-button>
+                <td v-if="article.state == postState.waiting" class="action-approve">
+                  <a-button type="danger" @click="handleApprove(article, {state: 0})">Từ chối</a-button
+                  ><a-button type="primary" class="button-approve" @click="handleApprove(article, {state: 2})">Đồng ý</a-button>
                 </td>
               </tr>
             </tbody>
@@ -112,6 +112,10 @@
 </style>
 <script>
 import { RepositoryFactory } from "../../repository/factory";
+import { collection, addDoc } from "firebase/firestore"
+import {db} from './../../fire'
+import { postState } from './../../constants/postState'
+import { notificationTypes } from './../../constants/notificationTypes'
 
 export default {
   data() {
@@ -127,7 +131,10 @@ export default {
       query: {
         limit: 5,
         page: 1
-      }
+      },
+      updateTime: Date.now(),
+      postState: postState,
+      notificationTypes: notificationTypes
     };
   },
   created() {
@@ -162,14 +169,39 @@ export default {
       console.log('get all posts')
       const { data } = await RepositoryFactory.get('article').getAllPosts(query)
       this.articleArray = data.data
+    },
+    async handleApprove(article, state) {
+      try {
+        await RepositoryFactory.get('article').updateState(article._id, state)
+        await addDoc(collection(db, "notifications"), {
+          user_id: article.ownerId,
+          detail: `Bài đăng của bạn đã ${state.state  == postState.agree ? 'được phê duyệt' : 'bị từ chối'}`,
+          state: state.state,
+          type: notificationTypes.approveFromAdmin,
+          date: new Date().toISOString(),
+          isRead: false
+        });
+      } catch(err) {
+        console.log('err', err)
+      }
+      await this.getSummary()
+      await this.getAllPosts(this.query)
+      this.updateTime = Date.now()
+
     }
   },
   watch: {
     current(value) {
       this.query.page = value
       this.getAllPosts(this.query)
+    },
+    updateTime(val) {
+      this.updateTime = val
     }
-  }
+  },
+  mounted() {
+  },
+
 };
 </script>
 <style scoped>

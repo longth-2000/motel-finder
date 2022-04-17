@@ -5,12 +5,14 @@ import UserModule from './components/user/user.module'
 import ModalModule from './components/modal/modal.module'
 import AppModule from './components/app/app.module'
 import ArticleModule from './components/article/article.module'
+import Notification from './components/notifications/notifications.module'
 
 const modules = {
     user: UserModule,
     modal: ModalModule,
     app: AppModule,
-    article: ArticleModule
+    article: ArticleModule,
+    notifications: Notification
 }
 
 const store = new Vuex.Store({
