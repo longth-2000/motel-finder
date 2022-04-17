@@ -72,19 +72,19 @@
                 <td>Trương Hoàng Long</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
                 <td><a-tag color="red">Chưa thanh toán</a-tag></td>
-                <td v-if="article.state == postState.reject">     
+                <td v-if="article.status == postState.reject">
                   <a-tag color="red">
                     Từ chối
                   </a-tag>
                 </td>
-                <td v-if="article.state == postState.agree">     
+                <td v-if="article.status == postState.agree">
                   <a-tag color="green">
                     Đã duyệt
                   </a-tag>
                 </td>
-                <td v-if="article.state == postState.waiting" class="action-approve">
-                  <a-button type="danger" @click="handleApprove(article, {state: 0})">Từ chối</a-button
-                  ><a-button type="primary" class="button-approve" @click="handleApprove(article, {state: 2})">Đồng ý</a-button>
+                <td v-if="article.status == postState.waiting" class="action-approve">
+                  <a-button type="danger" @click="handleApprove(article, {status: `rejected`})">Từ chối</a-button
+                  ><a-button type="primary" class="button-approve" @click="handleApprove(article, {status: `approved`})">Đồng ý</a-button>
                 </td>
               </tr>
             </tbody>
@@ -175,8 +175,8 @@ export default {
         await RepositoryFactory.get('article').updateState(article._id, state)
         await addDoc(collection(db, "notifications"), {
           user_id: article.ownerId,
-          detail: `Bài đăng của bạn đã ${state.state  == postState.agree ? 'được phê duyệt' : 'bị từ chối'}`,
-          state: state.state,
+          detail: `Bài đăng của bạn đã ${state.status  == postState.agree ? 'được phê duyệt' : 'bị từ chối'}`,
+          state: state.status,
           type: notificationTypes.approveFromAdmin,
           date: new Date().toISOString(),
           isRead: false
