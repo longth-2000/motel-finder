@@ -4,7 +4,7 @@
       <div class="box">
         <div class="right-side">
           <div class="box-topic">Số bài đăng</div>
-          <div class="number">{{ articleArray.length }}</div>
+          <div class="number">{{ articleSummary.posts }}</div>
         </div>
         <i class="bx bx-cart-alt cart">
           <font-awesome-icon icon="fa-solid fa-book" />
@@ -13,7 +13,7 @@
       <div class="box">
         <div class="right-side">
           <div class="box-topic">Đã thanh toán</div>
-          <div class="number">0</div>
+          <div class="number">{{articleSummary.paid}}</div>
         </div>
         <i class="bx bxs-cart-add cart two">
           <font-awesome-icon icon="fa-solid fa-money-bill" />
@@ -21,9 +21,9 @@
       </div>
       <div class="box">
         <div class="right-side">
-          <h3 class="box-topic">Đã duyệt</h3>
+          <h3 class="box-topic">Đã phê duyệt</h3>
           <div class="number">
-            {{ articleArray.filter((element) => element.isApproved === 2).length }}
+            {{articleSummary.approved}}
           </div>
         </div>
         <i class="bx bx-cart cart three">
@@ -32,9 +32,9 @@
       </div>
       <div class="box">
         <div class="right-side">
-          <div class="box-topic">Từ chối</div>
+          <div class="box-topic">Chưa phê duyệt</div>
           <div class="number">
-            {{ articleArray.filter((element) => element.isApproved === 3).length }}
+            {{ articleSummary.notApprove }}
           </div>
         </div>
         <i class="bx bxs-cart-download cart four">
@@ -72,18 +72,26 @@
                 <td>Trương Hoàng Long</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
                 <td><a-tag color="red">Chưa thanh toán</a-tag></td>
-                <td>
-                  <a-tag :color="article.isApproved === 2 ? 'green' : 'red'">{{
-                    article.isApproved === 2 ? "Chấp nhận" : "Từ chối"
-                  }}</a-tag>
+                <td v-if="article.state == 0">     
+                  <a-tag color="red">
+                    Từ chối
+                  </a-tag>
                 </td>
-                <td >
+                <td v-if="article.state == 2">     
+                  <a-tag color="green">
+                    Đã duyệt
+                  </a-tag>
+                </td>
+                <td v-if="article.state == 1" class="action-approve">
                   <a-button type="danger">Từ chối</a-button
-                  ><a-button type="primary">Đồng ý</a-button>
+                  ><a-button type="primary" class="button-approve">Đồng ý</a-button>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="pagination">
+          <a-pagination v-model="current" :total="articleSummary.posts" show-less-items :defaultPageSize="5" />
         </div>
         <div>
           <!-- <a-pagination
@@ -110,10 +118,21 @@ export default {
     return {
       articleArray: [],
       current: 1,
+      articleSummary: {
+        posts: 0,
+        paid: 0,
+        approved: 0,
+        refused: 0
+      },
+      query: {
+        limit: 5,
+        page: 1
+      }
     };
   },
   created() {
-    this.getArticle();
+    this.getSummary()
+    this.getAllPosts(this.query)
   },
   methods: {
     async getArticle() {
@@ -134,7 +153,23 @@ export default {
         formatDate.getFullYear()
       );
     },
+    async getSummary() {
+      console.log('get summary..')
+      const { data } = await RepositoryFactory.get('article').getSummary()
+      this.articleSummary = data.data
+    },
+    async getAllPosts(query) {
+      console.log('get all posts')
+      const { data } = await RepositoryFactory.get('article').getAllPosts(query)
+      this.articleArray = data.data
+    }
   },
+  watch: {
+    current(value) {
+      this.query.page = value
+      this.getAllPosts(this.query)
+    }
+  }
 };
 </script>
 <style scoped>
@@ -150,5 +185,8 @@ export default {
 .table-article:hover {
   background: rgba(0,0,0,.1);
   cursor: pointer;
+}
+.button-approve {
+  margin-left: 10px;
 }
 </style>

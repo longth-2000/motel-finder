@@ -272,7 +272,7 @@ export default {
       checkPermission: false,
     };
   },
-
+  
   components: {
     Login,
     Register,

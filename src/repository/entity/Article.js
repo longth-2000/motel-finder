@@ -57,6 +57,12 @@ export default {
     increaseLike(articleID) {
         return BaseRepository.post(`/accomodations/increase-like/${articleID}`);
     },
+    getSummary() {
+        return BaseRepository.get('/accomodations/manage/summary')
+    },
+    getAllPosts(query) {
+        return BaseRepository.get(`/accomodations/manage/posts?limit=${query.limit}&page=${query.page}`);
+    },
     payment(idArticle) {
         return BaseRepository.get(`accomodations/payment/${idArticle}`);
     },

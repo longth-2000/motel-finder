@@ -31,6 +31,18 @@ var managePostMixin = {
         },
         async handleCheckAll(event) {
             let state = event.target.checked;
+            /* let current = 0
+            if (state) {
+                current++;
+                while (this.postArr.length < this.total) {
+                    const {
+                        data
+                    } = await this.getArticle(current, this.state);
+                    data.forEach(element => {
+                        this.postArr.push(element)
+                    })
+                }
+            } else this.postArr = [] */
             this.postArr = state ? this.articleArray.map((item) => item._id) : [];
         },
         async confirmDelete(articleID) {
