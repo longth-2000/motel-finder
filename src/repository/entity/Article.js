@@ -69,5 +69,8 @@ export default {
             type: 'comment',
             comment: comment
         });
+    },
+    updateState(id, query) {
+        return BaseRepository.put(`/accomodations/manage/update-state/${id}`, query)
     }
 }

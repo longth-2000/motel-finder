@@ -21,6 +21,9 @@ export default {
     },
     getOwners(query) {
         return BaseRepository.get(`/user/manage/owners?limit=${query.limit}&page=${query.page}`)
+    },
+    updateState(id, query) {
+        return BaseRepository.put(`/user/manage/update-state/${id}`, query)
     }
 
 }

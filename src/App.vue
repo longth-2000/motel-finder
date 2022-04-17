@@ -9,6 +9,9 @@
 
 <script>
 import DefaultLayout from "./layouts/default.vue";
+
+import { mapActions } from "vuex";
+
 export default {
   name: "App",
   components: {
@@ -22,6 +25,13 @@ export default {
       return (this.$route.meta.layout || "default") + "-layout";
     },
   },
+  mounted() {
+    this.notifications()
+  },
+  methods: {
+    ...mapActions("notifications", ["notifications"]),
+
+  }
 };
 </script>
 

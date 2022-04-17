@@ -69,19 +69,19 @@
                 <td>{{owner.address ? `${owner.address.detail} ${owner.address.ward} ${owner.address.district}` : ''}}</td>
                 <td>{{owner.email}}</td>
                 <td>{{owner.phoneNumber}}</td>
-                <td v-if="owner.state == 0">     
+                <td v-if="owner.state == userState.reject">     
                   <a-tag color="red">
                     Từ chối
                   </a-tag>
                 </td>
-                <td v-if="owner.state == 2">     
+                <td v-if="owner.state == userState.agree">     
                   <a-tag color="green">
                     Đã duyệt
                   </a-tag>
                 </td>
-                <td v-if="owner.state == 1" class="action-approve">
-                  <a-button type="danger">Từ chối</a-button
-                  ><a-button type="primary" class="button-approve">Đồng ý</a-button>
+                <td v-if="owner.state == userState.waiting" class="action-approve">
+                  <a-button type="danger" @click="handleApprove(owner, {state: 0})">Từ chối</a-button
+                  ><a-button type="primary" class="button-approve" @click="handleApprove(owner, {state: 2})">Đồng ý</a-button>
                 </td>
               </tr>
             </tbody>
@@ -98,6 +98,7 @@
 </template>
 <script>
 import { RepositoryFactory } from '../../repository/factory';
+import { userState } from './../../constants/userState'
 
 export default {
   data() {
@@ -113,7 +114,8 @@ export default {
       query: {
         page: 1,
         limit: 5
-      }
+      },
+      userState: userState
     }
   },
   methods:{
@@ -128,6 +130,15 @@ export default {
       console.log('get owners...')
       const { data } = await RepositoryFactory.get("user").getOwners(query);
       this.owners = data.data
+    },
+    async handleApprove(owner, state) {
+      try {
+        await RepositoryFactory.get('user').updateState(owner._id, state);
+      } catch(err) {
+        console.log('err', err)
+      }
+      await this.getSummary();
+      await this.getOwners(this.query);
     }
   },
   mounted() {
