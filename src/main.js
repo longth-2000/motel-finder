@@ -23,12 +23,19 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { firestorePlugin } from 'vuefire'
 
 Vue.use(firestorePlugin)
+import GAuth from 'vue-google-oauth2'
+
 library.add(fas, far)
 
 import { abilitiesPlugin } from '@casl/vue';
 import defineAbilityFor from './services/permission/ability';
 const ability = defineAbilityFor()
-
+const gauthOption = {
+    clientId: '944024016812-n8bp21cc45s7msj99n9v7o5k8v7aroui.apps.googleusercontent.com',
+    scope: 'profile email',
+    prompt: 'select_account'
+}
+Vue.use(GAuth, gauthOption)
 Vue.use(abilitiesPlugin, ability);
 Vue.use(Vuelidate)
 Vue.use(Antd);

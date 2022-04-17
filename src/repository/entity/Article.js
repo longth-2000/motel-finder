@@ -28,6 +28,9 @@ export default {
         })
         return BaseRepository.get(endpoint);
     },
+    filterArticleByUser(id) {
+        return BaseRepository.get(`/accomodations/user/accomod?id=${id}&status=posted`)
+    },
     deleteMultiple(idArr) {
         return BaseRepository.post('accomodations/delete-multiple', {
             ids: idArr
@@ -72,5 +75,12 @@ export default {
     },
     updateState(id, query) {
         return BaseRepository.put(`/accomodations/manage/update-state/${id}`, query)
+    },
+    rate(idArticle, rate) {
+        return BaseRepository.post('report', {
+            id: idArticle,
+            type: 'evaluation',
+            content: rate
+        });
     }
 }

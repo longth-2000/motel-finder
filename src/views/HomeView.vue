@@ -170,7 +170,7 @@
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
-          <div class="see-more" v-if="seeMore.new == false">
+          <div class="see-more" v-if="seeMore.new == false && newArticle.length > 8">
             <a-button @click="seeMore.new = true">Xem thêm</a-button>
           </div>
         </div>
@@ -188,13 +188,13 @@
           <a-row class="row-hidden" v-if="seeMore.favorite == true">
             <a-col
               :span="6"
-              v-for="(card, index) in favoriteArticle.slice(8, newArticle.length)"
+              v-for="(card, index) in favoriteArticle.slice(8, favoriteArticle.length)"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
-          <div class="see-more" v-if="seeMore.favorite == false">
+          <div class="see-more" v-if="seeMore.favorite == false && favoriteArticle.length > 8">
             <a-button @click="seeMore.favorite = true">Xem thêm</a-button>
           </div>
         </div>

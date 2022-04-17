@@ -26,6 +26,7 @@ var signMixin = {
             localStorage.setItem("user", JSON.stringify({ id, email }));
             let endpoint =
                 role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
+            console.log(endpoint)
             window.location.href = endpoint;
         }
     }

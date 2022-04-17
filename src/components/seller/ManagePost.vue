@@ -127,7 +127,7 @@
               ></a-checkbox>
             </td>
             <td>
-              <span class="title-article">{{ post._id }}</span>
+              <span class="title-article">{{ post.detailedPost.title }}</span>
             </td>
             <td>
               <a-tag
@@ -212,7 +212,7 @@
                 <a-button
                   id="edit-post-btn"
                   type="primary"
-                  :disabled="post.isApproved === 1 ? false : true"
+                  :disabled="post.state === 1 ? false : true"
                 >
                   Sửa
                 </a-button>

@@ -74,6 +74,12 @@ export const router = new Router({
                 import ("../components/chat/VueChat.vue"),
         },
         {
+            path: "/thay-doi-mat-khau",
+            name: "ResetPassword",
+            component: () =>
+                import ("../components/password/ResetPassword.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {
@@ -85,7 +91,7 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/phong-tro/624ba451a29f258abf34bd90'];
+    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/thay-doi-mat-khau', '/google/login'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
