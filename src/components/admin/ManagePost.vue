@@ -84,7 +84,7 @@
                 </td>
                 <td v-if="article.status == postState.waiting" class="action-approve">
                   <a-button type="danger" @click="handleApprove(article, {status: `rejected`})">Từ chối</a-button
-                  ><a-button type="primary" class="button-approve" @click="handleApprove(article, {state: `approved`})">Đồng ý</a-button>
+                  ><a-button type="primary" class="button-approve" @click="handleApprove(article, {status: `approved`})">Đồng ý</a-button>
                 </td>
               </tr>
             </tbody>
