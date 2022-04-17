@@ -20,7 +20,8 @@ const setup = (axiosInstance) => {
                     "createdAt",
                     "updatedAt",
                     "status",
-                    "date"
+                    "date",
+                    "resetToken"
                 ];
                 deletedArray.forEach((item) => {
                     delete data[item];

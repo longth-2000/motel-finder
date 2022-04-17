@@ -96,10 +96,10 @@
           <h3>Google</h3>
         </div>
       </div>
-      <a-modal v-model="isVisible.role"  title="Bạn là "  @ok="authGoogle">
+      <a-modal v-model="isVisible.role" title="Bạn là " @ok="authGoogle">
         <a-radio-group name="radioGroup" v-model="role">
-            <a-radio :value="2"> Chủ trọ </a-radio>
-            <a-radio :value="3"> Người thuê trọ </a-radio>
+          <a-radio :value="2"> Chủ trọ </a-radio>
+          <a-radio :value="3"> Người thuê trọ </a-radio>
         </a-radio-group>
       </a-modal>
     </div>
@@ -119,6 +119,7 @@
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
+
 export default {
   props: {
     isAuthenticated: {
@@ -161,10 +162,13 @@ export default {
     },
     async authGoogle() {
       const google = await this.$gAuth.signIn();
-      console.log(google)
-     const { id_token } = google.xc 
-      const { data } = await RepositoryFactory.get('app').loginGoogle(id_token, this.role);
-      console.log(data); 
+      console.log(google);
+      const { id_token } = (google.xc) ? google.xc : google.wc;
+      const { data } = await RepositoryFactory.get("app").loginGoogle(
+        id_token,
+        this.role
+      );
+      this.handleAfterSign(data.data) 
     },
   },
 };

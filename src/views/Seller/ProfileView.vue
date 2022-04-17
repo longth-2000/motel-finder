@@ -2,7 +2,7 @@
   <div class="manage-profile">
     <a-spin tip="Loading..." :spinning="isSpinning">
       <div class="profile-content">
-        <div >
+        <div>
           <div class="manage-column">
             <div id="title-column">
               <span>TRANG CÁ NHÂN</span>
@@ -18,10 +18,22 @@
               </div>
               <div id="post">
                 <ul>
-                  <li>Số bài đã đăng: <span>0</span></li>
+                  <li>
+                    Số bài đã đăng: <span>{{ posts.length }}</span>
+                  </li>
                   <li>Số lượt yêu thích: <span>0</span></li>
-                  <li>Bài đăng được duyệt: <span>0</span></li>
-                  <li>Bài đăng bị từ chối: <span>0</span></li>
+                  <li>
+                    Bài đăng được duyệt:
+                    <span>{{
+                      posts.filter((element) => element.state === 2).length
+                    }}</span>
+                  </li>
+                  <li>
+                    Bài đăng bị từ chối:
+                    <span>{{
+                      posts.filter((element) => element.state === 3).length
+                    }}</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -135,6 +147,7 @@ export default {
         Payment: false,
       },
       urlParams: "",
+      posts: [],
     };
   },
   computed: {
@@ -162,7 +175,7 @@ export default {
   methods: {
     moment,
     ...mapActions("user", ["getUserInfor"]),
-    setURL() {
+    async setURL() {
       var query = this.$route.query;
       var checkExistedType = Object.prototype.hasOwnProperty.call(
         query,
@@ -172,7 +185,7 @@ export default {
         this.$router.push({
           path: "/ho-so",
           query: {
-            type: "manage-profile"
+            type: "manage-profile",
           },
         });
       }
@@ -185,6 +198,11 @@ export default {
       }
       this.urlParams = urlParams.split("-").map(this.capitalize).join("");
       this.component = this.urlParams;
+      const id = JSON.parse(localStorage.getItem("user")).id;
+      const { data } = await RepositoryFactory.get(
+        "article"
+      ).filterArticleByUser(id);
+      this.posts = data.data.data;
     },
     changeComponent(component, params) {
       window.scrollTo(0, 0);

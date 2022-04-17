@@ -127,7 +127,7 @@
               ></a-checkbox>
             </td>
             <td>
-              <span class="title-article">{{ post._id }}</span>
+              <span class="title-article">{{ post.detailedPost.title }}</span>
             </td>
             <td>
               <a-tag

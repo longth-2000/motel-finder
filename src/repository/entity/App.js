@@ -15,6 +15,17 @@ export default {
             token: token,
             role: role
         });
+    },
+    requestEmail(email) {
+        return BaseRepository.post('user/request-password', {
+            email: email
+        })
+    },
+    resetPassword(token, password) {
+        return BaseRepository.post('user/reset-password', {
+            token: token,
+            password: password
+        })
     }
 
 

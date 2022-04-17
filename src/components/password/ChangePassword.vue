@@ -9,9 +9,9 @@
           <a-input
             placeholder="Nhập email của bạn"
             :class="{
-              'is-invalid-form': check.isSubmit && $v.forgotPassword.$error,
+              'is-invalid-form': check.isSubmit && $v.email.$error,
             }"
-            v-model="forgotPassword"
+            v-model="email"
           >
             <a-icon
               slot="prefix"
@@ -20,13 +20,13 @@
             />
           </a-input>
           <p
-            v-if="check.isSubmit && !$v.forgotPassword.required"
+            v-if="check.isSubmit && !$v.email.required"
             class="condition"
           >
             {{ validation_message.require }}
           </p>
           <p
-            v-if="check.isSubmit && !$v.forgotPassword.email"
+            v-if="check.isSubmit && !$v.email.email"
             class="condition"
           >
             {{ validation_message.email }}
@@ -52,6 +52,8 @@
 import { required, email } from "vuelidate/lib/validators";
 import VALIDATION_MESSAGE from "../../constants/validation";
 import { mapGetters } from "vuex";
+import { RepositoryFactory } from "../../repository/factory";
+
 export default {
   components: {
     Notification: () => import("./NotificationPassword.vue"),
@@ -61,7 +63,7 @@ export default {
   },
   data() {
     return {
-      forgotPassword: "",
+      email: "",
       check: {
         isSubmit: false,
       },
@@ -70,13 +72,15 @@ export default {
     };
   },
   validations: {
-    forgotPassword: { required, email },
+    email: { required, email },
   },
   methods: {
-    handleForgotPassword() {
-      /*  let check = this.checkValidation(this.check, this.$v);
-      if (!check) return; */
-      this.redirectTo("notifyPassword");
+    async handleForgotPassword() {
+      let check = this.checkValidation(this.check, this.$v);
+      if (!check) return;
+      const { data } = await RepositoryFactory.get('app').requestEmail(this.email)
+      console.log(data)
+      this.redirectTo("notifyPassword");  
     },
   },
 };

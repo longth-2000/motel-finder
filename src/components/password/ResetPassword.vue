@@ -74,6 +74,8 @@
 </template>
 <script>
 import VALIDATION_MESSAGE from "../../constants/validation";
+import { RepositoryFactory } from "../../repository/factory";
+
 import {
   required,
   minLength,
@@ -103,9 +105,13 @@ export default {
     },
   },
   methods: {
-    resetPassword() {
+    async resetPassword() {
       let check = this.checkValidation(this.check, this.$v);
-      if (!check) return;
+      if (!check) return; 
+      let token = this.$route.query.token
+      const { data } = await RepositoryFactory.get('app').resetPassword(token, this.newPass)
+      console.log(data)
+      window.location.href = "/"
     },
   },
 };
