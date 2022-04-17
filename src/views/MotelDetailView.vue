@@ -43,11 +43,12 @@
                     </div>
                     <div class="product-full-description">
                         <span class="full-desc-title">Thông tin mô tả</span>
-                        Cập nhật các lô liền kề, biệt thự, shophouse Vinhomes Gardenia Mỹ Đình chính chủ bán lại mới nhất, giá tốt nhất.
-                        <br>
-                        I. Shophouse cập nhật mới nhất:
-                        <br>
-                        Shophouse B4 - 0X. MT 6m. DT 93m2. Hướng Đông Bắc. Gần mặt đường K2. Mặt vườn hoa. Đã hoàn thiện đang cho thuê. Giá 29 tỷ bao sổ đỏ.
+                        Đất ở đường 2/ Nguyễn Thị Rành, Xã Trung Lập Hạ, Củ Chi.
+                        <br>Diện tích: 1242m2 có 300m2 thổ cư (26*46).
+                        <br>Giá 2,3tỷ khách thiện chí có thể bớt lộc.
+                        <br>Sổ hồng riêng, pháp lý sạch, công chứng ngay trong ngày.
+                        <br>Đất đường đan 8m, đường thông, ô tô vào tới đất, quay đầu thoải mái, gần chợ Nguyễn Thị rành, khu dân cư tiện cho việc buôn bán kinh doanh, các siêu thị mini.
+                        <br>Anh chị liên hệ Lộc để xem đất ạ!
                     </div>
                     <div class="product-property">
                         <span class="full-desc-title">Đặc điểm nhà trọ</span>
@@ -89,7 +90,8 @@
                                     <div class="project-item">
                                         <div class="project-title">Eco Green Sài Gòn</div>
                                         <a class="link-pr" href="https://duan.batdongsan.com.vn/khu-phuc-hop-quan-7/eco-green-sai-gon-pj3507" target="_blank">
-                                            <span>Tìm hiểu thêm</span>
+                                            <span class="findout">Tìm hiểu thêm</span>
+                                            <a-icon type="right" />
                                         </a>
                                     </div>
                                     <div class="project-item">
@@ -106,19 +108,6 @@
                                     </div>
                                 </div>
                             </div>
-                    </div>
-                    <div class="product-comment-box">
-                        <form action="" method="">
-                            <span class="comment-box-title">Bình luận</span>
-                            <div class="comment-box">
-                                <a-textarea placeholder="Viết bình luận" :rows="4" allowClear />
-                            </div>
-                            <div class="submit-button">
-                                <a-button type="primary" htmlType="submit">
-                                    Comment
-                                </a-button>
-                            </div>
-                        </form>
                     </div>
                     <div class="product-short-info">
                         <div class="short-info-item">
@@ -138,6 +127,19 @@
                             <span class="value" style="display: inline">5 PN</span>
                         </div>
                     </div>
+                </div>
+                <div class="product-comment-box">
+                    <form action="" method="">
+                        <div class="comment-box-title">Bình luận</div>
+                        <div class="comment-box">
+                            <a-textarea placeholder="Viết bình luận" :rows="4" allowClear />
+                        </div>
+                        <div class="submit-button">
+                            <a-button type="primary" htmlType="submit">
+                                Comment
+                            </a-button>
+                        </div>
+                    </form>
                 </div>
                 <div class="product-card">
                     <div class="product-suggest">
@@ -177,22 +179,33 @@
                 </div>
             </div>
             <div class="main-sidebar">
-                <div class="sidebar-avatar">
-                    <a-avatar :size="40" icon="user" />
+                <div class="sidebar-block">
+                    <div class="sidebar-avatar">
+                        <a-avatar :size="40" icon="user" />
+                    </div>
+                    <span class="prefix-contact-name">Được đăng bởi</span>
+                    <div class="contact-name" title="Nguyễn Như Duy">
+                        <h5>Nguyễn Như Duy</h5>
+                    </div>
+                    <div class="phone-contact">
+                        <a-button type="primary" block>
+                            Gọi cho tôi
+                        </a-button>
+                    </div>
+                    <div class="send-email">
+                        <a-button type="primary" block style="background-color:green">
+                            Email cho tôi
+                        </a-button>
+                    </div>
                 </div>
-                <span class="prefix-contact-name">Được đăng bởi</span>
-                <div class="contact-name" title="Nguyễn Như Duy">
-                    <h5>Nguyễn Như Duy</h5>
-                </div>
-                <div class="phone-contact">
-                    <a-button type="primary" block>
-                        Gọi cho tôi
-                    </a-button>
-                </div>
-                <div class="send-email">
-                    <a-button type="primary" block style="background-color:green">
-                        Email cho tôi
-                    </a-button>
+                <div class="sidebar-block">
+                    <div class="sidebar-title">Nhà trọ theo quận</div>
+                    <div class="sidebar-item"><a href="">Quan Cau Giay</a></div>
+                    <div class="sidebar-item"><a href="">Quan Hoan Kiem</a></div>
+                    <div class="sidebar-item"><a href="">Quan Tay Ho</a></div>
+                    <div class="sidebar-item"><a href="">Quan Ba Dinh</a></div>
+                    <div class="sidebar-item"><a href="">Quan Bac Tu liem</a></div>
+                    <div class="sidebar-item"><a href="">Quan Ha Dong</a></div>
                 </div>
             </div>
         </div>
@@ -263,6 +276,7 @@ export default {
     border-bottom: 1px solid #f2f2f2;
     box-sizing: border-box;
     float: left;
+    display: bloxk;
 }
 .short-info-item {
     padding-left : 48px;
@@ -335,10 +349,17 @@ span.full-desc-title {
     display: block;
 }
 .product-comment-box {
+    display: block;
     font-weight: bold;
     font-size: 20px;
     margin-top : 50px;
     margin-bottom : 50px
+}
+.comment-box-title {
+    padding-bottom : 30px
+}
+.submit-button {
+    float: right;
 }
 .product-suggest {
     width: inherit;
@@ -362,8 +383,7 @@ span.full-desc-title {
     text-decoration-style: solid;
     border: 1px solid rgb(242, 242, 242);
     border-radius: 4px;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     padding-bottom: 8px;
     padding-top: 8px;
     display: block;
@@ -378,7 +398,6 @@ span.full-desc-title {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    border-bottom: 1px solid rgb(242, 242, 242) ;
 }
 .title {
     width: 112px;
@@ -390,7 +409,6 @@ span.full-desc-title {
     width: calc(100% - 112px);
     box-sizing: border-box;
     font-size: 14px;
-    text-decoration-style: solid;
     line-height: 20px;
     color: rgb(44, 44, 44);
 }
@@ -453,13 +471,17 @@ span.section-title {
     display: -webkit-box;
 }
 .project-item a {
+    display : flex;
+    align-items: center;
     position: absolute;
     box-sizing: border-box;
     right: 16px;
     top: 16px;
-    float: right;
     color: red;
     text-decoration: none;
+}
+.project-item a span {
+    padding-right : 5px
 }
 .project-item span.value {
     box-sizing: border-box;
@@ -474,8 +496,24 @@ span.section-title {
     width: 210px;
     height: auto;
     display: block;
+}
+.sidebar-block {
+    margin-bottom : 15px;
     border: 1px solid #f2f2f2;
-    background-color: azure;
+    padding: 10px;
+    background-color: #f2f2f2;
+}
+.sidebar-block a {
+    text-decoration: none;
+    color: black;
+}
+.sidebar-block .sidebar-title {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+.sidebar-block .sidebar-item {
+    line-height: 30px;
 }
 .sidebar-avatar {
     display: flex;
