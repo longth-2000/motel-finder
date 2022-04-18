@@ -57,6 +57,9 @@ export default {
     increaseLike(articleID) {
         return BaseRepository.post(`/accomodations/increase-like/${articleID}`);
     },
+    decreaseLike(articleID) {
+        return BaseRepository.delete(`/accomodations/decrease-like/${articleID}`);
+    },
     getSummary() {
         return BaseRepository.get('/accomodations/manage/summary')
     },

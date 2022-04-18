@@ -62,6 +62,7 @@
                     <a-select-option
                       v-for="(district, index) in districts"
                       :key="index"
+                      :value="district.name"
                     >
                       {{ district.name }}
                     </a-select-option>
@@ -170,7 +171,10 @@
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
-          <div class="see-more" v-if="seeMore.new == false && newArticle.length > 8">
+          <div
+            class="see-more"
+            v-if="seeMore.new == false && newArticle.length > 8"
+          >
             <a-button @click="seeMore.new = true">Xem thêm</a-button>
           </div>
         </div>
@@ -188,20 +192,26 @@
           <a-row class="row-hidden" v-if="seeMore.favorite == true">
             <a-col
               :span="6"
-              v-for="(card, index) in favoriteArticle.slice(8, favoriteArticle.length)"
+              v-for="(card, index) in favoriteArticle.slice(
+                8,
+                favoriteArticle.length
+              )"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
             </a-col>
           </a-row>
-          <div class="see-more" v-if="seeMore.favorite == false && favoriteArticle.length > 8">
+          <div
+            class="see-more"
+            v-if="seeMore.favorite == false && favoriteArticle.length > 8"
+          >
             <a-button @click="seeMore.favorite = true">Xem thêm</a-button>
           </div>
         </div>
         <div class="motel-by-district">
           <h4 class="title-motel">Phòng trọ theo quận</h4>
           <div class="big-district">
-            <a href="">
+            <a :href="'/tim-kiem?handle=search&district=' + districts[0].name">
               <div class="district-name">
                 <h5>{{ districts[0].name }}</h5>
               </div>
@@ -215,7 +225,9 @@
           </div>
           <div class="small-district">
             <div class="small-place">
-              <a href="">
+              <a
+                :href="'/tim-kiem?handle=search&district=' + districts[1].name"
+              >
                 <div class="small-district-name">
                   <h5>{{ districts[1].name }}</h5>
                 </div>
@@ -228,7 +240,9 @@
               </a>
             </div>
             <div class="small-place">
-              <a href="">
+              <a
+                :href="'/tim-kiem?handle=search&district=' + districts[4].name"
+              >
                 <div class="small-district-name">
                   <h5>{{ districts[4].name }}</h5>
                 </div>
@@ -241,7 +255,9 @@
               </a>
             </div>
             <div class="small-place">
-              <a href="">
+              <a
+                :href="'/tim-kiem?handle=search&district=' + districts[3].name"
+              >
                 <div class="small-district-name">
                   <h5>{{ districts[3].name }}</h5>
                 </div>
@@ -254,7 +270,9 @@
               </a>
             </div>
             <div class="small-place">
-              <a href="">
+              <a
+                :href="'/tim-kiem?handle=search&district=' + districts[2].name"
+              >
                 <div class="small-district-name">
                   <h5>{{ districts[2].name }}</h5>
                 </div>
@@ -271,25 +289,33 @@
       </div>
       <div class="bottom-carousel">
         <div class="row-display">
-          <div
+          <a
             v-for="(item, index) in districts.slice(5, 12)"
             :key="index"
-            class="bottom-carousel-item"
+            :href="'/tim-kiem?handle=search&district=' + item.name"
+            class="router-link"
           >
-            {{ item.name }}
-          </div>
+            <div class="bottom-carousel-item">
+              {{ item.name }}
+            </div>
+          </a>
         </div>
         <div class="see-more" id="see-more" v-if="seeMore.district == false">
           <a-button @click="seeMore.district = true">Xem thêm</a-button>
         </div>
         <div class="row-hidden" v-if="seeMore.district == true">
-          <div
+          <a
             v-for="(item, index) in districts.slice(12, districts.length)"
             :key="index"
-            class="bottom-carousel-item"
+            :href="'/tim-kiem?handle=search&district=' + item.name"
+            class="router-link"
           >
-            {{ item.name }}
-          </div>
+            <div
+              class="bottom-carousel-item"
+            >
+              {{ item.name }}
+            </div>
+          </a>
         </div>
       </div>
     </div>
@@ -322,7 +348,7 @@ export default {
         { name: "Chung cư mini", id: 4 },
       ],
       user: localStorage.getItem("user"),
-      average:0
+      average: 0,
     };
   },
   created() {
@@ -353,17 +379,15 @@ export default {
             const responseAddress = responses[0];
             const responseFavorite = responses[1];
             const responseNew = responses[2];
-            const responseEval = responses[3]
+            const responseEval = responses[3];
             this.districts = responseAddress.data.districts;
             this.favoriteArticle = responseFavorite.data.data;
             this.newArticle = responseNew.data.data;
-            this.average = responseEval.data.reduce(
-              (previousValue, currentValue) => {
-                    return previousValue + currentValue.metadata
-              },
-              0
-            ) / (responseEval.data.length);
-            console.log(this.average)
+            this.average =
+              responseEval.data.reduce((previousValue, currentValue) => {
+                return previousValue + currentValue.metadata;
+              }, 0) / responseEval.data.length;
+            console.log(this.average);
           })
         )
         .catch((errors) => {
@@ -501,12 +525,15 @@ export default {
   border: none;
   height: 40px;
 }
-.ant-select-selection__placeholder {
+.homepage .ant-select-selection__placeholder {
   margin-top: -4px !important;
 }
-.ant-select-arrow {
+.homepage.ant-select-arrow {
   display: block;
   margin-top: -12px !important;
+}
+.homepage .ant-select-selection-selected-value {
+  margin-top: 5px;
 }
 @media only screen and (max-width: 992px) {
   .homepage div.big-district {

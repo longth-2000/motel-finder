@@ -194,16 +194,16 @@
       </div>
       <div class="main-sidebar">
         <div class="sidebar-avatar">
-          <a-avatar :size="60" icon="user" />
+          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url"/>
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
-        <div class="contact-name" title="Nguyễn Như Duy">
-          <h5>Nguyễn Như Duy</h5>
+        <div class="contact-name">
+          <h5>{{ motel.ownerId.name.toUpperCase() }}</h5>
         </div>
         <div class="phone-contact" style="position: relative">
           <input
             type="text"
-            value="1234567890"
+            :value="motel.ownerId.phoneNumber"
             id="copy-phone"
             style="position: absolute; top: 1px; left: 3px"
           />
@@ -215,7 +215,7 @@
           >
             <div v-if="!displayInfor.phone">Gọi cho tôi</div>
             <div v-else @click="copyInfor('phone')">
-              <div id="phone-copy">1234567890</div>
+              <div id="phone-copy">{{ motel.ownerId.phoneNumber }}</div>
               <div>Sao chép</div>
             </div>
           </a-button>
@@ -223,7 +223,7 @@
         <div class="send-email" style="position: relative">
           <input
             type="text"
-            value="truonghoanglong305@gmail.com"
+            :value="motel.ownerId.email"
             id="copy-email"
             style="position: absolute; top: 1px; left: 3px"
           />
@@ -234,9 +234,9 @@
             :class="{ changeSize: displayInfor.email }"
             style="background-color: green"
           >
-            <div v-if="!displayInfor.email">email</div>
+            <div v-if="!displayInfor.email">Email</div>
             <div v-else @click="copyInfor('email')">
-              <div id="phone-copy">truonghoanglong305@gmail.com</div>
+              <div id="phone-copy">{{motel.ownerId.email}}</div>
               <div>Sao chép</div>
             </div>
           </a-button>
@@ -316,8 +316,7 @@ export default {
                 },
               });
             });
-            console.log(responseEval.data)
-            
+            console.log(responseEval.data);
           })
         )
         .catch((errors) => {
@@ -409,7 +408,6 @@ export default {
   margin-top: 8px;
 }
 .product-short-info {
-<<<<<<< HEAD
   height: auto;
   width: 100%;
   margin: 0 0 24px 0;
@@ -418,17 +416,6 @@ export default {
   border-bottom: 1px solid #f2f2f2;
   box-sizing: border-box;
   float: left;
-=======
-    height: auto;
-    width: 100%;
-    margin : 24px 0px;
-    padding : 15px 0px;
-    border-top: 1px solid #f2f2f2;
-    border-bottom: 1px solid #f2f2f2;
-    box-sizing: border-box;
-    float: left;
-    display: bloxk;
->>>>>>> adaf0c25ecbde6f230f0c6c47c8d40a8e594980f
 }
 .short-info-item {
   padding-left: 48px;
@@ -496,24 +483,16 @@ span.full-desc-title {
   display: block;
 }
 .product-comment-box {
-<<<<<<< HEAD
   font-weight: bold;
   font-size: 20px;
   margin-top: 50px;
   margin-bottom: 50px;
-=======
-    display: block;
-    font-weight: bold;
-    font-size: 20px;
-    margin-top : 50px;
-    margin-bottom : 50px
->>>>>>> adaf0c25ecbde6f230f0c6c47c8d40a8e594980f
 }
 .comment-box-title {
-    padding-bottom : 30px
+  padding-bottom: 30px;
 }
 .submit-button {
-    float: right;
+  float: right;
 }
 .product-suggest {
   width: inherit;
@@ -533,7 +512,6 @@ span.full-desc-title {
   margin-top: 40px;
 }
 .property-box {
-<<<<<<< HEAD
   font-size: 14px;
   text-decoration-style: solid;
   border: 1px solid rgb(242, 242, 242);
@@ -555,27 +533,6 @@ span.full-desc-title {
   font-weight: 400;
   line-height: 20px;
   border-bottom: 1px solid rgb(242, 242, 242);
-=======
-    font-size: 14px;
-    text-decoration-style: solid;
-    border: 1px solid rgb(242, 242, 242);
-    border-radius: 4px;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    padding-top: 8px;
-    display: block;
-    box-sizing: border-box;
-}
-.line-info {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    margin: 0px 16px 0px 16px;
-    padding: 14px 14px 0px 0px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
->>>>>>> adaf0c25ecbde6f230f0c6c47c8d40a8e594980f
 }
 .title {
   width: 112px;
@@ -583,20 +540,12 @@ span.full-desc-title {
   color: rgb(44, 44, 44);
 }
 .value {
-<<<<<<< HEAD
   width: calc(100% - 112px);
   box-sizing: border-box;
   font-size: 14px;
   text-decoration-style: solid;
   line-height: 20px;
   font-weight: bold;
-=======
-    width: calc(100% - 112px);
-    box-sizing: border-box;
-    font-size: 14px;
-    line-height: 20px;
-    color: rgb(44, 44, 44);
->>>>>>> adaf0c25ecbde6f230f0c6c47c8d40a8e594980f
 }
 .project-info {
   box-sizing: border-box;
@@ -657,7 +606,6 @@ span.section-title {
   display: -webkit-box;
 }
 .project-item a {
-<<<<<<< HEAD
   position: absolute;
   box-sizing: border-box;
   right: 16px;
@@ -665,19 +613,9 @@ span.section-title {
   float: right;
   color: red;
   text-decoration: none;
-=======
-    display : flex;
-    align-items: center;
-    position: absolute;
-    box-sizing: border-box;
-    right: 16px;
-    top: 16px;
-    color: red;
-    text-decoration: none;
->>>>>>> adaf0c25ecbde6f230f0c6c47c8d40a8e594980f
 }
 .project-item a span {
-    padding-right : 5px
+  padding-right: 5px;
 }
 .project-item span.value {
   box-sizing: border-box;
@@ -686,7 +624,6 @@ span.section-title {
 }
 
 .main-sidebar {
-<<<<<<< HEAD
   padding: 10px;
   display: block;
   float: right;
@@ -696,32 +633,6 @@ span.section-title {
   border: 1px solid #f2f2f2;
   background-color: azure;
   border-radius: 5px;
-=======
-    padding: 10px;
-    display: block;
-    float: right;
-    width: 210px;
-    height: auto;
-    display: block;
-}
-.sidebar-block {
-    margin-bottom : 15px;
-    border: 1px solid #f2f2f2;
-    padding: 10px;
-    background-color: #f2f2f2;
-}
-.sidebar-block a {
-    text-decoration: none;
-    color: black;
-}
-.sidebar-block .sidebar-title {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-}
-.sidebar-block .sidebar-item {
-    line-height: 30px;
->>>>>>> adaf0c25ecbde6f230f0c6c47c8d40a8e594980f
 }
 .sidebar-avatar {
   display: flex;
