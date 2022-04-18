@@ -6,7 +6,7 @@ export const router = new Router({
     mode: 'history',
     routes: [{
             path: "/",
-            name: "home",
+            name: "Home",
             meta: {
                 layout: 'default',
             },
@@ -91,8 +91,8 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/thay-doi-mat-khau', '/google/login', 'phong-tro'];
-    const authRequired = !publicPages.includes(to.path);
+    const publicPages = ['Contact', 'Home', 'Auth', 'Admin', 'MotelSearch', 'ResetPassword', 'MotelDetail'];
+    const authRequired = !publicPages.includes(to.name);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
         const id = JSON.parse(localStorage.getItem("user")).id;

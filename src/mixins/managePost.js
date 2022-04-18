@@ -1,6 +1,5 @@
 import { RepositoryFactory } from "../repository/factory";
 var managePostMixin = {
-
     props: {
         getArticle: {
             type: Function,

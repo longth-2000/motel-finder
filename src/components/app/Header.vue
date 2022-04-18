@@ -199,6 +199,7 @@
           <li
             class="menu-items menu-action"
             id="create-post"
+            v-if="setCheckPermisson"
             @click="createPost()"
           >
             <div
@@ -228,7 +229,7 @@ import { mapGetters } from "vuex";
 import authenticationMixin from "../../mixins/authentication";
 import { subject } from "@casl/ability";
 export default {
-  props: ["openNav", "user", "isLogged"],
+  props: ["openNav", "user"],
   mixins: [authenticationMixin],
 
   data() {
@@ -236,7 +237,9 @@ export default {
     return {
       regexEmail: regexEmail,
       checkPermission: false,
-      notificationItems: []
+      notificationItems: [],
+      isLogged : localStorage.getItem('user') == null,
+      isCreatePost:false
     };
   },
   
@@ -254,16 +257,7 @@ export default {
   },
   methods: {
     createPost() {
-      let checkPermission = this.$can("create", subject("User", this.user));
-      if (!this.isLogged) {
-        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "error");
-      } else if (!checkPermission) {
-        this.openNotification(
-          "Cảnh báo",
-          "Bạn không có quyền đăng bài",
-          "error"
-        );
-      } else window.location.href = "/dang-tin";
+      window.location.href = "/dang-tin";
     },
   },
   mounted() {

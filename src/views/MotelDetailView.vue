@@ -50,18 +50,18 @@
               />
               <span class="heart-label" style="padding-left: 5px">Lưu tin</span>
             </div>
-            <div class="short-info-share">
+            <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
                 icon="fa-solid fa-flag"
                 style="margin: 5px 5px 0 0; color: green"
               />
               <span class="share-label" style="padding-left: 5px">Báo cáo</span>
             </div>
-            <div class="short-info-share">
+            <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
                 icon="fa-solid fa-star"
                 style="margin: 0 5px 0 0; color: #faad14; font-size: 20px"
-                @click="showModal('rate')"
+                @click="openModalRate()"
               />
               <a-modal
                 v-model="isVisible.rate"
@@ -136,7 +136,7 @@
             </div>
           </div>
 
-          <div class="product-comment-box">
+          <div class="product-comment-box" v-if="preventRenter">
             <form action="" method="">
               <span class="comment-box-title">Bình luận</span>
               <div class="comment-box" style="margin: 20px 0 0 0">
@@ -194,7 +194,7 @@
       </div>
       <div class="main-sidebar">
         <div class="sidebar-avatar">
-          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url"/>
+          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url" />
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
         <div class="contact-name">
@@ -236,7 +236,7 @@
           >
             <div v-if="!displayInfor.email">Email</div>
             <div v-else @click="copyInfor('email')">
-              <div id="phone-copy">{{motel.ownerId.email}}</div>
+              <div id="phone-copy">{{ motel.ownerId.email }}</div>
               <div>Sao chép</div>
             </div>
           </a-button>
@@ -249,12 +249,19 @@
 import moment from "moment";
 import Carousel from "../components/home/Carousel.vue";
 import { RepositoryFactory } from "../repository/factory";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
+import { subject } from "@casl/ability";
+
 export default {
   name: "MotelDetailView",
   components: {
     Carousel,
+  },
+  props: {
+    user: {
+      type: Object,
+    }
   },
   data() {
     return {
@@ -270,10 +277,21 @@ export default {
       },
       rate: 0,
       rateSend: 0,
+      preventRenter: false,
+
     };
   },
   created() {
     this.getDataArticle();
+  },
+  watch: {
+    user: {
+      handler: function (newVal) {
+        let renterPermission = this.$can("preventRenter", subject("User", newVal));
+        this.preventRenter = (renterPermission) ? true :false
+      },
+      deep: true,
+    },
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
@@ -282,6 +300,7 @@ export default {
     ...mapGetters("modal", ["isVisible"]),
   },
   methods: {
+    ...mapActions("user", ["getUserInfor"]),
     onResponsive() {
       if (window.innerWidth < 500) {
         this.span_responsive = 24;
@@ -306,7 +325,6 @@ export default {
             this.motel = responseArticle.data;
             const id = JSON.parse(localStorage.getItem("user")).id;
             this.isStorage = this.motel.userLiked.includes(id) ? true : false;
-            console.log(responseArticle);
             responseComment.data.forEach((element) => {
               this.comments.push({
                 coment: element.metadata,
@@ -374,6 +392,13 @@ export default {
       copyText.select();
       navigator.clipboard.writeText(copyText.value);
       this.openNotification("Thàng công", "Thông tin đã được copy", "success");
+    },
+    openModalRate() {
+      if (this.isLogged) {
+        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
+      } else {
+        this.showModal("rate");
+      }
     },
   },
 };

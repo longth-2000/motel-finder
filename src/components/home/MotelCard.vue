@@ -1,13 +1,12 @@
 <template lang="">
     <div class="motel-card">
-         <a :href="'/phong-tro/' + card._id" class="router-link">
+         <router-link :to="'/phong-tro/' + card._id" class="router-link">
         <a-card hoverable style="width: 300px">
             <img
                 slot="cover"
                 alt="example"
                 :src="card.images[0].url"
-            />
-            
+            />            
             <template slot="actions" class="ant-card-actions">
                 <a-tooltip placement="bottom">
                     <template #title>
@@ -36,7 +35,7 @@
                 </div>
             </div> 
         </a-card>
-        </a>
+        </router-link>
     </div>
 </template>
 <script>
@@ -60,14 +59,16 @@ export default {
     data() {
         return {
             isStorage:false,
-            id:JSON.parse(this.user).id
+           
         }
     },
     computed: {
       
     },
     created() {
-       this.isStorage = (this.card.userLiked.includes(this.id)) ? true : false
+        if(this.user !== null) {
+            this.isStorage = (this.card.userLiked.includes(this.user._id)) ? true : false
+        } 
     },
     methods:{
         async storageFavorite(articleID){

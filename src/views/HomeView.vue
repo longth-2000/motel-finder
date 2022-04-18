@@ -418,7 +418,7 @@ export default {
           } else endpoint += "&" + element + "=" + this.search[element];
         }
       });
-      window.location.href = endpoint;
+      this.$router.push(endpoint)
     },
   },
 };
