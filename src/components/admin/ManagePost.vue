@@ -71,18 +71,21 @@
                 <td>{{ formatDate(article.createdAt) }}</td>
                 <td>Trương Hoàng Long</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
-                <td><a-tag color="red">Chưa thanh toán</a-tag></td>
-                <td v-if="article.status == postState.reject">
+                <td>
+                  <a-tag color="green" v-if="article.isPaid">Đã thanh toán</a-tag>
+                  <a-tag color="red" v-if="!article.isPaid">Chưa thanh toán</a-tag>
+                </td>
+                <td v-if="article.status == postStatus.reject">
                   <a-tag color="red">
                     Từ chối
                   </a-tag>
                 </td>
-                <td v-if="article.status == postState.agree">
+                <td v-if="article.status == postStatus.agree">
                   <a-tag color="green">
                     Đã duyệt
                   </a-tag>
                 </td>
-                <td v-if="article.status == postState.waiting" class="action-approve">
+                <td v-if="article.status == postStatus.waiting" class="action-approve">
                   <a-button type="danger" @click="handleApprove(article, {status: `rejected`})">Từ chối</a-button
                   ><a-button type="primary" class="button-approve" @click="handleApprove(article, {status: `approved`})">Đồng ý</a-button>
                 </td>
@@ -114,7 +117,7 @@
 import { RepositoryFactory } from "../../repository/factory";
 import { collection, addDoc } from "firebase/firestore"
 import {db} from './../../fire'
-import { postState } from './../../constants/postState'
+import { postStatus } from '../../constants/postStatus'
 import { notificationTypes } from './../../constants/notificationTypes'
 
 export default {
@@ -133,7 +136,7 @@ export default {
         page: 1
       },
       updateTime: Date.now(),
-      postState: postState,
+      postStatus: postStatus,
       notificationTypes: notificationTypes
     };
   },
@@ -175,11 +178,12 @@ export default {
         await RepositoryFactory.get('article').updateState(article._id, state)
         await addDoc(collection(db, "notifications"), {
           user_id: article.ownerId,
-          detail: `Bài đăng của bạn đã ${state.status  == postState.agree ? 'được phê duyệt' : 'bị từ chối'}`,
+          detail: `Bài đăng của bạn đã ${state.status  == this.postStatus.agree ? 'được phê duyệt' : 'bị từ chối'}`,
           state: state.status,
           type: notificationTypes.approveFromAdmin,
           date: new Date().toISOString(),
-          isRead: false
+          is_read: false,
+          post_id: article._id
         });
       } catch(err) {
         console.log('err', err)

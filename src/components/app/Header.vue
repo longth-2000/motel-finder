@@ -94,19 +94,25 @@
               </div>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item v-for="(item, index) in notificationItems" :key="index"> 
+                  <a-menu-item v-for="(item, index) in notificationShow" :key="index"> 
                     <div class="notify-menu">
-                      <div class="notify-icon" style="color: red">
+                      <div class="notify-icon" v-if="item.state == notificationState.refuse" 
+                        style="color:red"
+                      >
                         <font-awesome-icon
                           icon="fa-solid fa-circle-exclamation"
                         />
                       </div>
-                      <div class="notify-content">
+                      <div class="notify-icon" style="color: green" v-if="item.state == notificationState.agree">
+                        <font-awesome-icon icon="fa-solid fa-circle-check" />
+                      </div>
+
+                      <div class="notify-content" @click="handleReadNoti(item.id)">
                         {{item.detail}}
                       </div>
-                      <div class="notify-date">{{item.date}}</div>
-                      <div class="notify-action">
-                        <font-awesome-icon
+                      <div class="notify-date">{{formatDate(item.date)}}</div>
+                      <div class="notify-action" @click="handleDeleteNoti(item.id)">
+                       <font-awesome-icon
                           style="color: red"
                           icon="fa-solid fa-delete-left"
                         />
@@ -149,7 +155,7 @@
                   </a-menu-item> -->
                   <a-menu-item>
                     <a class="router-link" href="/ho-so?type=notification">
-                      <div style="text-align: center; color: blue">
+                      <div style="text-align: center; color: blue" v-if="notificationItems.length > 3">
                         Xem tất cả
                       </div>
                     </a>
@@ -260,6 +266,11 @@ import Login from "../Login.vue";
 import Register from "../Register.vue";
 import { mapGetters } from "vuex";
 import authenticationMixin from "../../mixins/authentication";
+import { notificationState } from './../../constants/notificationState'
+import { notificationTypes } from './../../constants/notificationTypes'
+import { formatDate } from './../..//helper/utils'
+import { collection, deleteDoc, doc, updateDoc } from "firebase/firestore"
+import {db} from './../../fire'
 import { subject } from "@casl/ability";
 export default {
   props: ["openNav", "user", "isLogged"],
@@ -270,7 +281,11 @@ export default {
     return {
       regexEmail: regexEmail,
       checkPermission: false,
-      notificationItems: []
+      notificationItems: [],
+      notificationShow: [],
+      notificationState: notificationState,
+      notificationTypes: notificationTypes,
+      formatDate: formatDate
     };
   },
   
@@ -287,6 +302,7 @@ export default {
     },
   },
   methods: {
+
     createPost() {
       let checkPermission = this.$can("create", subject("User", this.user));
       if (!this.isLogged) {
@@ -299,14 +315,35 @@ export default {
         );
       } else window.location.href = "/dang-tin";
     },
+    async handleReadNoti(id) {
+      await updateDoc(doc(collection(db, "notifications"), id), {
+        is_read: true,
+      })
+    },
+    async handleDeleteNoti(id) {
+      await deleteDoc(doc(collection(db, "notifications"), id))
+    }
   },
   mounted() {
   },
   watch: {
     notifications(val) {
       if(val) {
-        this.notificationItems = val.filter((item) => item.isRead == false)
+        this.notificationItems = val.filter((item) => item.is_read == false && item.user_id == this.user._id)
+        if(this.notificationItems.length > 3) {
+          this.notificationShow = this.notificationItems.slice(0,3)
+        } else {
+          this.notificationShow = this.notificationItems
+        }
       }
+    },
+    'user._id'(val) {
+        this.notificationItems = this.notifications.filter((item) => item.is_read == false && item.user_id == val)
+        if(this.notificationItems.length > 3) {
+          this.notificationShow = this.notificationItems.slice(0,3)
+        } else {
+          this.notificationShow = this.notificationItems
+        }
     }
   }
 };

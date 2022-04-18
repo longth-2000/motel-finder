@@ -1,19 +1,41 @@
 import {db} from './../../../fire'
-import { collection, getDocs, onSnapshot } from "firebase/firestore"
+import { collection, getDocs, onSnapshot, orderBy } from "firebase/firestore"
 export const mutations = {
     notifications: (state) => {
-        getDocs(collection(db, "notifications")).then(res => {
+        getDocs(collection(db, "notifications"), orderBy('date', 'desc')).then(res => {
             res.forEach((doc) => {
-                state.notifications.push(doc.data())
+              const data = doc.data()
+              data.id = doc.id
+              state.notifications.push(data)
             });
         })
         // onSnapshot(collection(db, "notifications"), (res) => {
         //     state
         // });
         onSnapshot(collection(db, "notifications"), (snapshot) => {
+          if(state.notifications) {
             snapshot.docChanges().forEach((change) => {
+              const data = change.doc.data()
+              data.id = change.doc.id
               if (change.type === "added") {
-                  state.notifications.push(change.doc.data())
+                if(!(state.notifications.find((item) => item.id == change.doc.id))) {
+                  state.notifications.unshift(data)
+                }
+                //   console.log("New city: ", change.doc.id);
+              }
+              if (change.type === "modified") {
+                let noti = state.notifications
+                const index = noti.findIndex((item) => item.id == change.doc.id)
+                noti[index] = data
+                state.notifications = [...noti]
+              }
+                //   console.log("New city: ", change.doc.id);
+              if (change.type === "removed") {
+                let noti = state.notifications
+                const index = noti.findIndex((item) => item.id == change.doc.id)
+                noti.splice(index, 1)
+
+                state.notifications = [...noti]
                 //   console.log("New city: ", change.doc.id);
               }
             //   if (change.type === "modified") {
@@ -23,6 +45,7 @@ export const mutations = {
             //       console.log("Removed city: ", change.doc.id);
             //   }
             });
+          }       
           });
     },
 }
