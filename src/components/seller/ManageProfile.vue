@@ -1,5 +1,5 @@
 <template>
-  <div style="background:white; height:100%">
+  <div style="background: white; height: 100%">
     <div id="title-component-profile">
       <span>THAY ĐỔI THÔNG TIN CÁ NHÂN</span>
     </div>
@@ -99,19 +99,19 @@ export default {
     async createProfile() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      else {
+      else { 
+        const regexAvatarGoogle = /googleusercontent/;
         this.onSpinning();
         let checkImageEmpty = Object.keys(this.imageAvatar).length === 0;
         this.manageProfile.id = JSON.parse(localStorage.getItem("user")).id;
         if (!checkImageEmpty) {
           let formData = new FormData();
           formData.append("file", this.imageAvatar);
-          const { public_id } = this.manageProfile.avatar;
+          const { public_id, url } = this.manageProfile.avatar;
           const ImageResponse = await RepositoryFactory.get("app").uploadImage(
             formData
           );
-
-          if (public_id !== 'null') {
+          if (public_id !== "null" && !regexAvatarGoogle.test(url)) {
             const ImageDelete = await RepositoryFactory.get("app").deleteImage(
               public_id.split()
             );
@@ -120,45 +120,38 @@ export default {
           this.manageProfile.avatar = ImageResponse.data;
         } else {
           const { public_id, url } = this.manageProfile.avatar;
-          this.manageProfile.avatar =
-            public_id === "" || public_id === "null"
-              ? {
-                  public_id: "null",
-                  url: "https://file4.batdongsan.com.vn/images/default-user-avatar-blue.jpg",
-                }
-              : {
-                  public_id,
-                  url,
-                };
+          if (public_id === "" || public_id === "null") {
+            if (regexAvatarGoogle.test(url))
+              this.manageProfile.avatar = {
+                public_id: "null",
+                url: url,
+              };
+            else
+              this.manageProfile.avatar = {
+                public_id: "null",
+                url: "https://file4.batdongsan.com.vn/images/default-user-avatar-blue.jpg",
+              };
+          } else {
+            this.manageProfile.avatar = {
+              public_id,
+              url,
+            };
+          }
         }
         if (this.manageProfile.date !== undefined) {
           this.manageProfile.birthDay =
             this.manageProfile.date.format("YYYY-MM-DD");
-          delete this.manageProfile.date;
         }
         const { data } = await RepositoryFactory.get("user").updateUser(
           this.manageProfile
         );
         this.GET_USER(this.manageProfile);
-        console.log(data)
         this.offSpinning();
         this.openNotification("Thành công", data.message, "success");
-      }
+      } 
     },
     async getUser() {
       const data = await this.getUserInfor();
-      let deletedArray = [
-        "isApproved",
-        "_id",
-        "email",
-        "role",
-        "__v",
-        "createdAt",
-        "updatedAt",
-      ];
-      deletedArray.forEach((item) => {
-        delete data[item];
-      });
       for (let property in data) {
         if (property === "birthDay") {
           this.manageProfile.date = moment(data.birthDay, "YYYY-MM-DD");

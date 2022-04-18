@@ -21,12 +21,15 @@ export default {
     },
     filterArticle(page, status, query) {
         let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id + '&status=' + status
-        let paramsArray = ['isRented', 'isApproved', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
+        let paramsArray = ['isRented', 'state', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
         paramsArray.forEach(element => {
             if (query[element] !== undefined)
                 endpoint += '&' + element + '=' + query[element]
         })
         return BaseRepository.get(endpoint);
+    },
+    filterArticleByUser(id) {
+        return BaseRepository.get(`/accomodations/user/accomod?id=${id}&status=posted`)
     },
     deleteMultiple(idArr) {
         return BaseRepository.post('accomodations/delete-multiple', {
@@ -54,6 +57,15 @@ export default {
     increaseLike(articleID) {
         return BaseRepository.post(`/accomodations/increase-like/${articleID}`);
     },
+    decreaseLike(articleID) {
+        return BaseRepository.delete(`/accomodations/decrease-like/${articleID}`);
+    },
+    getSummary() {
+        return BaseRepository.get('/accomodations/manage/summary')
+    },
+    getAllPosts(query) {
+        return BaseRepository.get(`/accomodations/manage/posts?limit=${query.limit}&page=${query.page}`);
+    },
     payment(idArticle) {
         return BaseRepository.get(`accomodations/payment/${idArticle}`);
     },
@@ -63,5 +75,18 @@ export default {
             type: 'comment',
             comment: comment
         });
+    },
+    updateState(id, query) {
+        return BaseRepository.put(`/accomodations/manage/update-state/${id}`, query)
+    },
+    rate(idArticle, rate) {
+        return BaseRepository.post('report', {
+            id: idArticle,
+            type: 'evaluation',
+            content: rate
+        });
+    },
+    getRate(id) {
+        return BaseRepository.get(`/report/evaluation/${id}`)
     }
 }

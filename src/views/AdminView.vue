@@ -490,6 +490,10 @@ nav .profile-details i {
 .right-side {
   text-align: center;
 }
+.pagination {
+  display: flex;
+  justify-content: right;
+}
 /* Responsive Media Query */
 @media (max-width: 1240px) {
   .sidebar {

@@ -8,6 +8,26 @@ const setup = (axiosInstance) => {
             if (accessToken) {
                 config.headers["Authorization"] = 'Bearer ' + accessToken;
             }
+            const url = config.url;
+            if (url === '/user/update') {
+                let data = config.data;
+                let deletedArray = [
+                    "state",
+                    "_id",
+                    "email",
+                    "role",
+                    "__v",
+                    "createdAt",
+                    "updatedAt",
+                    "status",
+                    "date",
+                    "resetToken"
+                ];
+                deletedArray.forEach((item) => {
+                    delete data[item];
+                });
+            }
+
             return config;
         },
         (error) => {

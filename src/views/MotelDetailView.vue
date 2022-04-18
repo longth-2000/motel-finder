@@ -53,9 +53,27 @@
             <div class="short-info-share">
               <font-awesome-icon
                 icon="fa-solid fa-flag"
-                style="margin: 5px 5px 0 0"
+                style="margin: 5px 5px 0 0; color: green"
               />
               <span class="share-label" style="padding-left: 5px">Báo cáo</span>
+            </div>
+            <div class="short-info-share">
+              <font-awesome-icon
+                icon="fa-solid fa-star"
+                style="margin: 0 5px 0 0; color: #faad14; font-size: 20px"
+                @click="showModal('rate')"
+              />
+              <a-modal
+                v-model="isVisible.rate"
+                centered
+                title="Đánh giá bài đăng"
+                @ok="sendRate(motel._id)"
+              >
+                <a-rate v-model="rateSend" />
+              </a-modal>
+              <span class="share-label" style="padding-left: 5px"
+                >Đánh giá</span
+              >
             </div>
           </div>
           <div class="product-full-description">
@@ -67,8 +85,8 @@
             <br />
             {{ setType(motel.type) }}. Diện tích {{ motel.area }} m2. Giá tiền
             {{ motel.price.quantity }}VND/{{ motel.price.unit }}
-            <br/>
-             Gần những cơ sở công cộng như {{motel.public_location}}
+            <br />
+            Gần những cơ sở công cộng như {{ motel.public_location }}
             <br />
             II. Cơ cở vật chất
             <br />
@@ -111,6 +129,10 @@
                   motel.sameOwner ? "Chung chủ" : "Không chung chủ"
                 }}</span>
               </div>
+              <div class="line-info">
+                <span class="title">Đánh giá:</span>
+                <a-rate v-model="rate" :disabled="true" allow-half />
+              </div>
             </div>
           </div>
 
@@ -141,16 +163,11 @@
                   <p slot="content">
                     {{ comment.coment }}
                   </p>
-                  <a-tooltip
-                    slot="datetime"
-                    :title="moment().format('YYYY-MM-DD HH:mm:ss')"
-                  >
-                    <span>{{ moment().fromNow() }}</span>
-                  </a-tooltip>
                 </a-comment>
               </div>
             </form>
           </div>
+
           <div class="product-short-info">
             <div class="short-info-item">
               <span class="title">Ngày đăng</span>
@@ -177,18 +194,51 @@
       </div>
       <div class="main-sidebar">
         <div class="sidebar-avatar">
-          <a-avatar :size="60" icon="user" />
+          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url"/>
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
-        <div class="contact-name" title="Nguyễn Như Duy">
-          <h5>Nguyễn Như Duy</h5>
+        <div class="contact-name">
+          <h5>{{ motel.ownerId.name.toUpperCase() }}</h5>
         </div>
-        <div class="phone-contact">
-          <a-button type="primary" block> Gọi cho tôi </a-button>
+        <div class="phone-contact" style="position: relative">
+          <input
+            type="text"
+            :value="motel.ownerId.phoneNumber"
+            id="copy-phone"
+            style="position: absolute; top: 1px; left: 3px"
+          />
+          <a-button
+            type="primary"
+            block
+            @click="displayInfor.phone = true"
+            :class="{ changeSize: displayInfor.phone }"
+          >
+            <div v-if="!displayInfor.phone">Gọi cho tôi</div>
+            <div v-else @click="copyInfor('phone')">
+              <div id="phone-copy">{{ motel.ownerId.phoneNumber }}</div>
+              <div>Sao chép</div>
+            </div>
+          </a-button>
         </div>
-        <div class="send-email">
-          <a-button type="primary" block style="background-color: green">
-            Email cho tôi
+        <div class="send-email" style="position: relative">
+          <input
+            type="text"
+            :value="motel.ownerId.email"
+            id="copy-email"
+            style="position: absolute; top: 1px; left: 3px"
+          />
+          <a-button
+            type="primary"
+            block
+            @click="displayInfor.email = true"
+            :class="{ changeSize: displayInfor.email }"
+            style="background-color: green"
+          >
+            <div v-if="!displayInfor.email">Email</div>
+            <div v-else @click="copyInfor('email')">
+              <div id="phone-copy">{{motel.ownerId.email}}</div>
+              <div>Sao chép</div>
+            </div>
           </a-button>
         </div>
       </div>
@@ -199,6 +249,7 @@
 import moment from "moment";
 import Carousel from "../components/home/Carousel.vue";
 import { RepositoryFactory } from "../repository/factory";
+import { mapGetters } from "vuex";
 import axios from "axios";
 export default {
   name: "MotelDetailView",
@@ -213,6 +264,12 @@ export default {
       comments: [],
       textComment: "",
       isStorage: false,
+      displayInfor: {
+        phone: false,
+        email: false,
+      },
+      rate: 0,
+      rateSend: 0,
     };
   },
   created() {
@@ -220,6 +277,9 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
+  },
+  computed: {
+    ...mapGetters("modal", ["isVisible"]),
   },
   methods: {
     onResponsive() {
@@ -242,10 +302,11 @@ export default {
           axios.spread((...responses) => {
             const responseArticle = responses[0];
             const responseComment = responses[1];
+            const responseEval = responses[2];
             this.motel = responseArticle.data;
             const id = JSON.parse(localStorage.getItem("user")).id;
             this.isStorage = this.motel.userLiked.includes(id) ? true : false;
-            console.log(responseComment);
+            console.log(responseArticle);
             responseComment.data.forEach((element) => {
               this.comments.push({
                 coment: element.metadata,
@@ -255,6 +316,7 @@ export default {
                 },
               });
             });
+            console.log(responseEval.data);
           })
         )
         .catch((errors) => {
@@ -275,6 +337,19 @@ export default {
       console.log(data);
       this.comments.push(data.data);
     },
+    async sendRate(articleID) {
+      const { data } = await RepositoryFactory.get("article").rate(
+        articleID,
+        this.rateSend
+      );
+      console.log(data);
+      this.openNotification(
+        "Thành công",
+        "Đánh giá của bạn đã được lưu",
+        "success"
+      );
+      this.closeModal("rate");
+    },
     async storageFavorite(articleID) {
       if (this.isLogged) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
@@ -293,6 +368,12 @@ export default {
           );
         }
       }
+    },
+    copyInfor(infor) {
+      var copyText = document.getElementById("copy-" + infor);
+      copyText.select();
+      navigator.clipboard.writeText(copyText.value);
+      this.openNotification("Thàng công", "Thông tin đã được copy", "success");
     },
   },
 };
@@ -406,6 +487,12 @@ span.full-desc-title {
   font-size: 20px;
   margin-top: 50px;
   margin-bottom: 50px;
+}
+.comment-box-title {
+  padding-bottom: 30px;
+}
+.submit-button {
+  float: right;
 }
 .product-suggest {
   width: inherit;
@@ -527,6 +614,9 @@ span.section-title {
   color: red;
   text-decoration: none;
 }
+.project-item a span {
+  padding-right: 5px;
+}
 .project-item span.value {
   box-sizing: border-box;
   display: -webkit-box;
@@ -537,7 +627,7 @@ span.section-title {
   padding: 10px;
   display: block;
   float: right;
-  width: 210px;
+  width: 250px;
   height: auto;
   display: block;
   border: 1px solid #f2f2f2;
@@ -563,13 +653,15 @@ span.section-title {
 .send-email {
   display: block;
   border-radius: 4px;
-  border: 1px solid rgb(151, 150, 150);
   margin-top: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   height: 30px;
 }
 .colorHeart {
   color: red;
+}
+.changeSize {
+  height: 50px;
 }
 ::v-deep .ant-carousel .slick-slider {
   height: 400px;
@@ -579,6 +671,10 @@ span.section-title {
 }
 ::v-deep .anticon {
   vertical-align: 0.2rem;
+}
+::v-deep .ant-modal-body {
+  width: 35%;
+  margin: 0 auto;
 }
 @media screen and (max-width: 1400px) {
   .main-sidebar {

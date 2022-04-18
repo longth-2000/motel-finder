@@ -9,6 +9,8 @@ export const state = () => ({
         purchase: false,
         stateExpired: false,
         stateMotel: false,
-        stateApproved: false
+        stateApproved: false,
+        rate: false,
+        role: false
     }
 })

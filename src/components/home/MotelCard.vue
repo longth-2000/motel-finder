@@ -1,13 +1,12 @@
 <template lang="">
     <div class="motel-card">
+         <a :href="'/phong-tro/' + card._id" class="router-link">
         <a-card hoverable style="width: 300px">
-            <a :href="'/phong-tro/' + card._id" class="router-link">
-              <img
+            <img
                 slot="cover"
                 alt="example"
                 :src="card.images[0].url"
             />
-            </a>
             
             <template slot="actions" class="ant-card-actions">
                 <a-tooltip placement="bottom">
@@ -15,7 +14,7 @@
                        <span>Bấm để lưu tin</span>
                     </template>
 
-                    <font-awesome-icon @click ="storageFavorite(card._id)" icon="fa-solid fa-heart" :class="{ colorHeart: isStorage}"/>
+                    <font-awesome-icon @click.prevent ="storageFavorite(card._id)" icon="fa-solid fa-heart" :class="{ colorHeart: isStorage}"/>
                 </a-tooltip>
             </template>
             <a-card-meta :title="card.detailedPost.title" >
@@ -30,14 +29,14 @@
                     <div>{{card.area}} m2</div>
                 </div>
             </div>
-            <!-- <div>{{card.address.ward}}, {{card.address.district}}</div> --> 
-            <div style="margin-left:15px">{{card._id}}</div>
+            <div style="margin-left:15px">{{card.address.ward}}, {{card.address.district}}</div> -
             <div>
                 <div style="margin:15px 80px 15px; width:53%">
-                    <a-rate :default-value="card.point" allow-half />
+                    <a-rate :default-value="card.point" allow-half :disabled="true"/>
                 </div>
             </div> 
         </a-card>
+        </a>
     </div>
 </template>
 <script>
