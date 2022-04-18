@@ -11,7 +11,6 @@
                         <a-breadcrumb-item>Chi tiết</a-breadcrumb-item>
                     </a-breadcrumb>
                 </div>
-                <br/>
                 <h3 class="result-label">
                     Nhà cho thuê quận Nam Từ Liêm
                 </h3>
@@ -114,7 +113,7 @@ export default {
     font-size: 14px;
     line-height: 20px;
     box-sizing: border-box;
-    display: block;
+    display: inline-block;
     margin: 0px 0px 16px 0px;
     width: 100%;
     height: auto;
@@ -124,7 +123,7 @@ export default {
     box-shadow: 0px 4px 6px 0px rgb(44 44 44 / 4%);
 }
 .main-content {
-    width: 1000px;
+    width: 80%;
     margin-right: 30px;
     display: inline-block; 
     padding-bottom: 50px;
@@ -138,7 +137,11 @@ export default {
     text-decoration: none solid rgb(44, 44, 44) auto;
 }
 .motel-result {
-    margin-bottom: 50px;
+    margin: auto;
+    box-sizing: border-box;
+    width: calc(100%);
+    display: block;
+    z-index: 1;
 }
 .motel-card-image {
     border: 1px none black;
@@ -338,6 +341,9 @@ export default {
 @media screen and (max-width: 1400px) {
     .main-sidebar {
         display: none;
+    }
+    .motel-result {
+        width: 130%;
     }
 }
 </style>

@@ -126,6 +126,11 @@
                             <span class="title">Mã tin</span>
                             <span class="value" style="display: inline">5 PN</span>
                         </div>
+                        <div class="report-post" @click="openReport">
+                            <a-button type="danger" icon="warning">
+                                <span>Bao cao</span>
+                            </a-button>
+                        </div>
                     </div>
                 </div>
                 <div class="product-comment-box">
@@ -209,22 +214,28 @@
                 </div>
             </div>
         </div>
+        <div class="report-modal" v-show="isReportOpened == true">
+            <ReportModal />
+        </div>
     </div>
 </template>
 <script>
 import MotelCard from '../components/home/MotelCard.vue'
 import SearchBar from '../components/search/SearchBar.vue'
 import Carousel from '../components/home/Carousel.vue'
+import ReportModal from '../components/user/ReportModal.vue'
 export default {
     name: 'MotelDetailView',
     components: {
         SearchBar,
         Carousel,
-        MotelCard
+        MotelCard,
+        ReportModal
     },
     data() {
         return {
-            span_responsive : 6
+            span_responsive : 6,
+            isReportOpened : false
         }
     },
     mounted() {
@@ -240,6 +251,9 @@ export default {
             } else if(window.innerWidth < 1180) {
                 this.span_responsive = 8
             } else this.span_responsive = 6
+        },
+        openReport() {
+            this.isReportOpened = true;
         }
     }
 }
@@ -255,7 +269,7 @@ export default {
     margin : 24px 0px 8px 0px
 }
 .main-content {
-    width: 1000px;
+    width: 80%;
     margin-right: 30px;
     display: inline-block;  
 }
@@ -488,7 +502,11 @@ span.section-title {
     display: -webkit-box;
     float: right;
 }
-
+.report-post {
+    float: right;
+    position: relative;
+    height: 40px;
+}
 .main-sidebar {
     padding: 10px;
     display: block;
@@ -538,6 +556,11 @@ span.section-title {
 @media screen and (max-width: 1400px) {
     .main-sidebar {
         display: none;
+    }
+    .main-content {
+        width: 100%;
+        margin-right: 30px;
+        display: inline-block;  
     }
 }
 </style>

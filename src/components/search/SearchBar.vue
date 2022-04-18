@@ -184,7 +184,7 @@ div.search-dropdown {
     padding-bottom: inherit;
 }
 div.search-dropdown div.search-dropdown-cell {
-    width: 130px;
+    width: 100px;
     margin-right: 10px; 
     border-right: 1px solid var(--bs-gray-200);
     float: left;
@@ -194,6 +194,7 @@ div.search-dropdown div.search-dropdown-cell {
     padding-top: 12px;
 }
 .dropdown-list {
+    width: 100px;
     position: absolute;
     display: block;
     right: initial;
@@ -202,8 +203,9 @@ div.search-dropdown div.search-dropdown-cell {
     z-index: 2;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
-.dropdown-list .search-dropdown-cell {
+div.dropdown-list div.search-dropdown-cell {
     clear: both;
+    width: 100%;
     display: block;
     padding : 12px 16px;
     text-decoration: none;
@@ -223,14 +225,17 @@ div.search-dropdown div.search-dropdown-cell {
     height : inherit;
 }
 @media screen and (max-width: 1500px)  {
+    div.search-dropdown {
+        display: block;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 1160px)  {
     div.search-box {
         float: none;
         width: 100%;
         display: block;
-    }
-    div.search-dropdown {
-        display: block;
-        width: 100%;
     }
 }
 </style>
