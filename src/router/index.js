@@ -91,7 +91,7 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/thay-doi-mat-khau', '/google/login'];
+    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/thay-doi-mat-khau', '/google/login', 'phong-tro'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {

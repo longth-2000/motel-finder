@@ -94,7 +94,7 @@
               </div>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item v-for="(item, index) in notificationItems" :key="index"> 
+                  <a-menu-item v-for="(item, index) in notificationItems.slice(0,5)" :key="index"> 
                     <div class="notify-menu">
                       <div class="notify-icon" style="color: red">
                         <font-awesome-icon
@@ -113,40 +113,6 @@
                       </div>
                     </div>
                   </a-menu-item>
-                  <!-- <a-menu-item>
-                    <div class="notify-menu">
-                      <div class="notify-icon" style="color: green">
-                        <font-awesome-icon icon="fa-solid fa-circle-check" />
-                      </div>
-                      <div class="notify-content">
-                        Bài đăng của bạn đã bị từ chối bởi quản trị viên
-                      </div>
-                      <div class="notify-date">20/2/2020</div>
-                      <div class="notify-action">
-                        <font-awesome-icon
-                          style="color: red"
-                          icon="fa-solid fa-delete-left"
-                        />
-                      </div>
-                    </div>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <div class="notify-menu">
-                      <div class="notify-icon" style="color: green">
-                        <font-awesome-icon icon="fa-solid fa-circle-check" />
-                      </div>
-                      <div class="notify-content">
-                        Bài đăng của bạn đã bị từ chối bởi quản trị viên
-                      </div>
-                      <div class="notify-date">20/2/2020</div>
-                      <div class="notify-action">
-                        <font-awesome-icon
-                          style="color: red"
-                          icon="fa-solid fa-delete-left"
-                        />
-                      </div>
-                    </div>
-                  </a-menu-item> -->
                   <a-menu-item>
                     <a class="router-link" href="/ho-so?type=notification">
                       <div style="text-align: center; color: blue">
