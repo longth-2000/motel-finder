@@ -69,7 +69,7 @@
                 title="Đánh giá bài đăng"
                 @ok="sendRate(motel._id)"
               >
-                <a-rate  v-model="rateSend"/>
+                <a-rate v-model="rateSend" />
               </a-modal>
               <span class="share-label" style="padding-left: 5px"
                 >Đánh giá</span
@@ -131,7 +131,7 @@
               </div>
               <div class="line-info">
                 <span class="title">Đánh giá:</span>
-                <a-rate v-model="rate" :disabled="true" allow-half/>
+                <a-rate v-model="rate" :disabled="true" allow-half />
               </div>
             </div>
           </div>
@@ -163,7 +163,6 @@
                   <p slot="content">
                     {{ comment.coment }}
                   </p>
-                  
                 </a-comment>
               </div>
             </form>
@@ -269,8 +268,8 @@ export default {
         phone: false,
         email: false,
       },
-      rate: 2.5,
-      rateSend:0
+      rate: 0,
+      rateSend: 0,
     };
   },
   created() {
@@ -303,6 +302,7 @@ export default {
           axios.spread((...responses) => {
             const responseArticle = responses[0];
             const responseComment = responses[1];
+            const responseEval = responses[2];
             this.motel = responseArticle.data;
             const id = JSON.parse(localStorage.getItem("user")).id;
             this.isStorage = this.motel.userLiked.includes(id) ? true : false;
@@ -316,6 +316,8 @@ export default {
                 },
               });
             });
+            console.log(responseEval.data)
+            
           })
         )
         .catch((errors) => {
@@ -342,8 +344,12 @@ export default {
         this.rateSend
       );
       console.log(data);
-      this.openNotification('Thành công', 'Đánh giá của bạn đã được lưu', 'success')
-      this.closeModal('rate')
+      this.openNotification(
+        "Thành công",
+        "Đánh giá của bạn đã được lưu",
+        "success"
+      );
+      this.closeModal("rate");
     },
     async storageFavorite(articleID) {
       if (this.isLogged) {

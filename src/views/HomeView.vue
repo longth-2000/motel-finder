@@ -298,6 +298,7 @@
 <script>
 import MotelCard from "../components/home/MotelCard.vue";
 import axios from "axios";
+
 export default {
   name: "HomeView",
   components: {
@@ -321,6 +322,7 @@ export default {
         { name: "Chung cư mini", id: 4 },
       ],
       user: localStorage.getItem("user"),
+      average:0
     };
   },
   created() {
@@ -339,9 +341,11 @@ export default {
         "https://backend-api-production.up.railway.app/accomodations/renter/list?sortByLike=true&limit=20";
       let newAPI =
         "https://backend-api-production.up.railway.app/accomodations/renter/list?limit=20";
+
       const requestAddress = axios.get(addressAPI);
       const requestFavorite = axios.get(favouriteAPI);
       const requestNew = axios.get(newAPI);
+
       axios
         .all([requestAddress, requestFavorite, requestNew])
         .then(
@@ -349,9 +353,17 @@ export default {
             const responseAddress = responses[0];
             const responseFavorite = responses[1];
             const responseNew = responses[2];
+            const responseEval = responses[3]
             this.districts = responseAddress.data.districts;
             this.favoriteArticle = responseFavorite.data.data;
             this.newArticle = responseNew.data.data;
+            this.average = responseEval.data.reduce(
+              (previousValue, currentValue) => {
+                    return previousValue + currentValue.metadata
+              },
+              0
+            ) / (responseEval.data.length);
+            console.log(this.average)
           })
         )
         .catch((errors) => {

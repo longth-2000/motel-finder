@@ -183,20 +183,20 @@ export default {
       let validation = this.checkValidation(this.check, this.$v);
       console.log(validation);
       if (!validation) return;
-      else {
-        try {
+      else { 
+       try {
           const { data } = await RepositoryFactory.get("user").register({
             email: this.user.email,
             password: this.user.password,
             role: this.user.role,
           });
           console.log(data);
-          this.handleAfterSign(data.data)
+          this.handleAfterSign(data.data);
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
         }
-      }
+     } 
     },
   },
 };

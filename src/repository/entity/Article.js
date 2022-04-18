@@ -82,5 +82,8 @@ export default {
             type: 'evaluation',
             content: rate
         });
+    },
+    getRate(id) {
+        return BaseRepository.get(`/report/evaluation/${id}`)
     }
 }
