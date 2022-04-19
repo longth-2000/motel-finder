@@ -10,7 +10,12 @@
             <a-breadcrumb-item>Cho thuê</a-breadcrumb-item>
             <a-breadcrumb-item></a-breadcrumb-item>
             <a-breadcrumb-item
-              ><a :href="'/tim-kiem?handle=search&district=' + motel.address.district">{{ motel.address.district }}</a></a-breadcrumb-item
+              ><a
+                :href="
+                  '/tim-kiem?handle=search&district=' + motel.address.district
+                "
+                >{{ motel.address.district }}</a
+              ></a-breadcrumb-item
             >
             <a-breadcrumb-item>Chi tiết</a-breadcrumb-item>
           </a-breadcrumb>
@@ -155,10 +160,7 @@
               <div>
                 <a-comment v-for="(comment, index) in comments" :key="index">
                   <a slot="author">{{ comment.username }}</a>
-                  <a-avatar
-                    slot="avatar"
-                    :src="comment.avatar.url"
-                  />
+                  <a-avatar slot="avatar" :src="comment.avatar.url" />
                   <p slot="content">
                     {{ comment.coment }}
                   </p>
@@ -316,10 +318,13 @@ export default {
     getDataArticle() {
       let articleAPI = `https://backend-api-production.up.railway.app/accomodations/${this.$route.params.id}`;
       let commentAPI = `https://backend-api-production.up.railway.app/report/comment/${this.$route.params.id}`;
+      let evalAPI = `https://backend-api-production.up.railway.app/report/evaluation/${this.$route.params.id}`;
+
       const requestArticle = axios.get(articleAPI);
       const requestComment = axios.get(commentAPI);
+      const requestEval = axios.get(evalAPI);
       axios
-        .all([requestArticle, requestComment])
+        .all([requestArticle, requestComment, requestEval])
         .then(
           axios.spread((...responses) => {
             const responseArticle = responses[0];
@@ -338,6 +343,13 @@ export default {
               });
             });
             console.log(responseEval.data);
+            let rateStar = responseEval.data.reduce(
+              (previousValue, currentValue) =>
+                previousValue + currentValue.metadata,
+              0
+            ) / (responseEval.data.length);
+            this.rate = parseFloat((Math.round(rateStar * 2) / 2).toFixed(1))
+            console.log(this.rate)
           })
         )
         .catch((errors) => {
