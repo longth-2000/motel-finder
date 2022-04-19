@@ -46,7 +46,6 @@
     <section class="home-section">
       <nav>
         <div class="sidebar-button">
-          
           <span class="dashboard">Dashboard</span>
         </div>
         <div class="search-box">
@@ -56,13 +55,27 @@
           <!--<img src="images/profile.jpg" alt="">-->
           <span class="admin_name">test@outlook.com</span>
           <i class="bx bx-chevron-down">
-            <font-awesome-icon icon="fa-solid fa-envelope" style="margin-left:20px"/>
+            <font-awesome-icon
+              icon="fa-solid fa-envelope"
+              style="margin-left: 20px"
+            />
           </i>
         </div>
       </nav>
 
       <div class="home-content">
         <component :is="component"></component>
+        <div>
+          <div class="icon-chat" @click="handleChat()">
+            <div>
+              <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
+            </div>
+            <div>Chat</div>
+          </div>
+          <div class="content-chat" v-if="displayChat === true">
+            <Chat @change-display="changeDisplay" />
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -71,12 +84,14 @@
 import ManageUser from "../components/admin/ManageUser.vue";
 import ManagePost from "../components/admin/ManagePost.vue";
 import Statistics from "../components/admin/Statistics.vue";
+import Chat from "../components/chat/VueChat.vue";
 
 export default {
   components: {
     ManageUser,
     ManagePost,
     Statistics,
+    Chat,
   },
   data() {
     return {
@@ -87,6 +102,7 @@ export default {
         Statistics: false,
       },
       urlParams: "",
+      displayChat: false,
     };
   },
   watch: {
@@ -132,7 +148,12 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    
+    changeDisplay(mess) {
+      this.displayChat = mess;
+    },
+    handleChat() {
+      this.displayChat = true;
+    },
   },
 };
 </script>
@@ -496,6 +517,32 @@ nav .profile-details i {
   display: flex;
   justify-content: right;
 }
+.icon-chat {
+  width: 50px;
+  height: 50px;
+  background: #096dd9;
+  position: fixed;
+  z-index: 2;
+  right: 30px;
+  top: 600px;
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  font-size: 15px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#icon {
+  font-size: 20px;
+}
+.content-chat {
+  width: 400px;
+  position: fixed;
+  top: 200px;
+  z-index: 2;
+  right: 20px;
+}
 /* Responsive Media Query */
 @media (max-width: 1260px) {
   .sidebar {
@@ -522,7 +569,7 @@ nav .profile-details i {
     left: 220px;
   }
   .sidebar .nav-links li .links_name {
-    opacity: 0;  
+    opacity: 0;
   }
 }
 @media (max-width: 1150px) {

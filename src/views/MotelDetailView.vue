@@ -10,7 +10,7 @@
             <a-breadcrumb-item>Cho thuê</a-breadcrumb-item>
             <a-breadcrumb-item></a-breadcrumb-item>
             <a-breadcrumb-item
-              ><a href="">{{ motel.address.district }}</a></a-breadcrumb-item
+              ><a :href="'/tim-kiem?handle=search&district=' + motel.address.district">{{ motel.address.district }}</a></a-breadcrumb-item
             >
             <a-breadcrumb-item>Chi tiết</a-breadcrumb-item>
           </a-breadcrumb>
@@ -136,7 +136,7 @@
             </div>
           </div>
 
-          <div class="product-comment-box" v-if="preventRenter">
+          <div class="product-comment-box">
             <form action="" method="">
               <span class="comment-box-title">Bình luận</span>
               <div class="comment-box" style="margin: 20px 0 0 0">
@@ -149,7 +149,7 @@
               </div>
               <div class="submit-button">
                 <a-button type="primary" @click="sendComment(motel._id)">
-                  Comment
+                  Bình luận
                 </a-button>
               </div>
               <div>
@@ -158,7 +158,6 @@
                   <a-avatar
                     slot="avatar"
                     :src="comment.avatar.url"
-                    alt="Han Solo"
                   />
                   <p slot="content">
                     {{ comment.coment }}
@@ -194,11 +193,11 @@
       </div>
       <div class="main-sidebar">
         <div class="sidebar-avatar">
-          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url"/>
+          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url" />
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
         <div class="contact-name">
-          <h5 style="text-transform:uppercase">{{ motel.ownerId.name }}</h5>
+          <h5 style="text-transform: uppercase">{{ motel.ownerId.name }}</h5>
         </div>
         <div class="phone-contact" style="position: relative">
           <input
@@ -236,7 +235,7 @@
           >
             <div v-if="!displayInfor.email">Email</div>
             <div v-else @click="copyInfor('email')">
-              <div id="phone-copy">{{motel.ownerId.email}}</div>
+              <div id="phone-copy">{{ motel.ownerId.email }}</div>
               <div>Sao chép</div>
             </div>
           </a-button>
@@ -261,7 +260,7 @@ export default {
   props: {
     user: {
       type: Object,
-    }
+    },
   },
   data() {
     return {
@@ -278,18 +277,21 @@ export default {
       rate: 0,
       rateSend: 0,
       preventRenter: false,
-
+      isLogged: localStorage.getItem("user"),
     };
   },
   created() {
-    this.getDataArticle(); 
+    this.getDataArticle();
   },
   watch: {
     user: {
       handler: function (newVal) {
-        console.log(newVal)
-        let renterPermission = this.$can("preventRenter", subject("User", newVal));
-        this.preventRenter = (renterPermission) ? true :false
+        console.log(newVal);
+        let renterPermission = this.$can(
+          "preventRenter",
+          subject("User", newVal)
+        );
+        this.preventRenter = renterPermission ? true : false;
       },
       deep: true,
     },
@@ -349,12 +351,22 @@ export default {
       if (type === 4) return "chung cư mini";
     },
     async sendComment(articleID) {
-      const { data } = await RepositoryFactory.get("article").comment(
-        articleID,
-        this.textComment
-      );
-      console.log(data);
-      this.comments.push(data.data);
+      if (!this.isLogged) {
+        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
+      } else if (this.preventRenter) {
+        const { data } = await RepositoryFactory.get("article").comment(
+          articleID,
+          this.textComment
+        );
+        console.log(data);
+        this.comments.push(data.data);
+      } else {
+        this.openNotification(
+          "Cảnh báo",
+          "Chủ trọ không thể bình luận bài viết",
+          "warning"
+        );
+      }
     },
     async sendRate(articleID) {
       const { data } = await RepositoryFactory.get("article").rate(
@@ -370,7 +382,7 @@ export default {
       this.closeModal("rate");
     },
     async storageFavorite(articleID) {
-      if (this.isLogged) {
+      if (!this.isLogged) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
       } else {
         if (this.isStorage) this.isStorage = false;
@@ -395,11 +407,7 @@ export default {
       this.openNotification("Thàng công", "Thông tin đã được copy", "success");
     },
     openModalRate() {
-      if (this.isLogged) {
-        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
-      } else {
-        this.showModal("rate");
-      }
+      this.showModal("rate");
     },
   },
 };

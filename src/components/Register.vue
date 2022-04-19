@@ -27,8 +27,8 @@
           </p>
         </a-form-item>
         <a-form-item style="margin-bottom: 20px">
-          <div style="display: flex">
-            <div>
+          <div class="input-form-register" style="display: flex; justify-content:space-between">
+            <div class="input-form-item" style="width:49%">
               <a-input
                 type="password"
                 placeholder="Mật khẩu"
@@ -36,7 +36,7 @@
                 :class="{
                   'is-invalid-form': check.isSubmit && $v.user.password.$error,
                 }"
-                style="width: 230px"
+                
               >
                 <a-icon
                   slot="prefix"
@@ -63,11 +63,11 @@
                 Mật khẩu chỉ bao gồm chữ cái và số
               </p>
             </div>
-            <div style="margin-left: 12px">
+            <div class="input-form-item" style="width:49%">
               <a-input
                 type="password"
                 placeholder="Nhập lại mật khẩu"
-                style="width: 230px"
+                
                 :class="{
                   'is-invalid-form':
                     check.isSubmit && $v.user.confirmPassword.$error,
@@ -212,5 +212,13 @@ export default {
 .register-form .condition {
   margin-top: -10px;
   margin-bottom: 0;
+}
+@media only screen and (max-width: 576px) {
+  .input-form-register {
+    display: block !important;
+  }
+  .input-form-item {
+    width: 100% !important;
+  }
 }
 </style>

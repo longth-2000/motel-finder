@@ -28,9 +28,11 @@
               margin: 2px 10px;
               text-align:center
             "
+            class="motel-icon"
+            @click.prevent ="storageFavorite(card._id)"
           >
             <div style="margin: 2px 2px 0px 6px">
-              <font-awesome-icon icon="fa-solid fa-heart" color="white" />
+              <font-awesome-icon icon="fa-solid fa-heart" color="white" :class="{ colorHeart: isStorage}"/>
             </div>
             <div style="margin: 0px 10px 0px 3px">LIKE</div>
           </div>
@@ -48,16 +50,15 @@
             text-align: center;
             font-family: 'DM Serif Display';
             font-weight: bold;
-            position:absolute;
-            top:220px;
-            left:50px
+            margin-top:25px
           "
         >
           <span style="font-size:27px">{{ card.price.quantity }}</span
           >/<span>{{ card.price.unit }}</span>
         </div>
       </div>
-      <div class="motel-select">Xem chi tiết</div>
+      <a :href="'/phong-tro/' + card._id" class="router-link"><div class="motel-select">Xem chi tiết</div></a>
+      
     </div>
   </div>
 </template>
@@ -120,7 +121,7 @@ export default {
   font-family: "Open Sans";
 }
 .motel-card {
-  width: 300px;
+
   height: 520px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgb(44 44 44 / 4%);
@@ -161,10 +162,13 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 .motel-rate {
   display: flex;
+}
+.motel-icon:hover {
+  cursor: pointer;
 }
 .motel-detail .detail {
   height: 20px;
@@ -183,7 +187,7 @@ export default {
 }
 .motel-notify {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -208,5 +212,11 @@ export default {
 }
 .colorHeart {
   color: red;
+}
+@media only screen and (max-width: 768px) {
+  .motel-card {
+    width: 80%;
+    margin: 0 auto;
+  }
 }
 </style>

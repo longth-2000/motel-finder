@@ -38,7 +38,7 @@
             </div>
             <div class="search-dropdown container-fluid">
               <div class="row">
-                <div class="result-image col-3 col-sm-6 col-md-4">
+                <div class="result-image col-12 col-sm-6 col-md-4">
                   <a-select
                     placeholder="Loại phòng"
                     style="width: 93%"
@@ -53,7 +53,7 @@
                     </a-select-option>
                   </a-select>
                 </div>
-                <div class="result-image col-3 col-sm-6 col-md-4">
+                <div class="result-image col-12 col-sm-6 col-md-4">
                   <a-select
                     style="width: 93%"
                     placeholder="Quận"
@@ -69,7 +69,7 @@
                   </a-select>
                 </div>
 
-                <div class="result-image col-3 col-sm-6 col-md-4">
+                <div class="result-image col-12 col-sm-6 col-md-4">
                   <a-select
                     ref="select"
                     style="width: 93%"
@@ -86,7 +86,7 @@
                     <a-select-option value="300-0">Trên 300</a-select-option>
                   </a-select>
                 </div>
-                <div class="result-image col-3 col-sm-6 col-md-4">
+                <div class="result-image col-12 col-sm-6 col-md-4">
                   <a-select
                     ref="select"
                     style="width: 93%"
@@ -100,7 +100,7 @@
                     <a-select-option value="5">4+</a-select-option>
                   </a-select>
                 </div>
-                <div class="result-image col-3 col-sm-6 col-md-4">
+                <div class="result-image col-12 col-sm-6 col-md-4">
                   <a-select
                     ref="select"
                     style="width: 93%"
@@ -151,26 +151,28 @@
     </div>
     <div class="container pt-5">
       <div class="content">
-        <div class="motel">
+        <div class="motel container-fluid">
           <h4 class="title-motel">Phòng trọ mới nhất</h4>
-          <a-row>
-            <a-col
-              :span="6"
+          <div class="row">
+            <div
+              class="col-12 col-md-6 col-lg-3"
+              style="margin: 10px 0"
               v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
-            </a-col>
-          </a-row>
-          <a-row class="row-hidden" v-if="seeMore.new == true">
-            <a-col
-              :span="6"
+            </div>
+          </div>
+          <div class="row" v-if="seeMore.new == true">
+            <div
+              class="col-12 col-md-6 col-lg-3"
+              style="margin: 10px 0"
               v-for="(card, index) in newArticle.slice(8, newArticle.length)"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
-            </a-col>
-          </a-row>
+            </div>
+          </div>
           <div
             class="see-more"
             v-if="seeMore.new == false && newArticle.length > 8"
@@ -178,19 +180,23 @@
             <a-button @click="seeMore.new = true">Xem thêm</a-button>
           </div>
         </div>
-        <div class="popular-motel">
+        <div class="popular-motel container-fluid" style="margin-top: 50px">
           <h4 class="title-motel">Phòng trọ được yêu thích</h4>
-          <a-row>
-            <a-col
+          <div class="row">
+            <div
+              class="col-12 col-md-6 col-lg-3"
+              style="margin: 10px 0"
               :span="6"
               v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
-            </a-col>
-          </a-row>
-          <a-row class="row-hidden" v-if="seeMore.favorite == true">
-            <a-col
+            </div>
+          </div>
+          <div class="row" v-if="seeMore.favorite == true">
+            <div
+              class="col-12 col-md-6 col-lg-3"
+              style="margin: 10px 0"
               :span="6"
               v-for="(card, index) in favoriteArticle.slice(
                 8,
@@ -199,8 +205,8 @@
               :key="index"
             >
               <MotelCard :card="card" :isLogged="user === null" :user="user" />
-            </a-col>
-          </a-row>
+            </div>
+          </div>
           <div
             class="see-more"
             v-if="seeMore.favorite == false && favoriteArticle.length > 8"
@@ -208,7 +214,11 @@
             <a-button @click="seeMore.favorite = true">Xem thêm</a-button>
           </div>
         </div>
-        <div class="motel-by-district" v-if="districts.length !== 0">
+        <div
+          class="motel-by-district"
+          v-if="districts.length !== 0"
+          style="margin-top: 50px"
+        >
           <h4 class="title-motel">Phòng trọ theo quận</h4>
           <div class="big-district">
             <a :href="'/tim-kiem?handle=search&district=' + districts[0].name">
@@ -310,9 +320,7 @@
             :href="'/tim-kiem?handle=search&district=' + item.name"
             class="router-link"
           >
-            <div
-              class="bottom-carousel-item"
-            >
+            <div class="bottom-carousel-item">
               {{ item.name }}
             </div>
           </a>
@@ -418,7 +426,7 @@ export default {
           } else endpoint += "&" + element + "=" + this.search[element];
         }
       });
-      this.$router.push(endpoint)
+      this.$router.push(endpoint);
     },
   },
 };
@@ -503,6 +511,7 @@ export default {
 
 .homepage .title-motel {
   font-weight: bold;
+  margin-bottom: 20px;
 }
 .homepage div.big-district {
   padding: 10px;
@@ -556,6 +565,14 @@ export default {
   }
   .homepage .search-box-label {
     width: 90%;
+  }
+  .homepage .title-motel {
+     text-align: center;
+  }
+}
+@media only screen and (max-width: 576px) {
+  .homepage .ant-select-selection--single {
+    width: 106%;
   }
 }
 .homepage svg {
