@@ -27,10 +27,11 @@ export default {
   },
   mounted() {
     this.notifications()
+    this.chat()
   },
   methods: {
     ...mapActions("notifications", ["notifications"]),
-
+    ...mapActions("chat", ["chat"]),
   }
 };
 </script>
