@@ -194,7 +194,7 @@
       </div>
       <div class="main-sidebar">
         <div class="sidebar-avatar">
-          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url" />
+          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url"/>
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
         <div class="contact-name">
@@ -236,7 +236,7 @@
           >
             <div v-if="!displayInfor.email">Email</div>
             <div v-else @click="copyInfor('email')">
-              <div id="phone-copy">{{ motel.ownerId.email }}</div>
+              <div id="phone-copy">{{motel.ownerId.email}}</div>
               <div>Sao chép</div>
             </div>
           </a-button>
