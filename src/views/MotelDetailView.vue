@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="motel-detail">
+  <div class="motel-detail" v-if="motel">
     <div class="container">
       <div class="main-content">
         <div class="picture-carousel">
@@ -8,7 +8,7 @@
         <div class="bread-crumb">
           <a-breadcrumb>
             <a-breadcrumb-item>Cho thuê</a-breadcrumb-item>
-            <a-breadcrumb-item><a href="">Nhà trọ</a></a-breadcrumb-item>
+            <a-breadcrumb-item></a-breadcrumb-item>
             <a-breadcrumb-item
               ><a href="">{{ motel.address.district }}</a></a-breadcrumb-item
             >
@@ -17,7 +17,7 @@
         </div>
         <div class="product-detail">
           <h2 class="product-title">
-            {{ motel.detailedPost.title.toUpperCase() }}
+            {{ motel.detailedPost.title }}
           </h2>
           <span class="product-brief">{{ motel.detailedPost.content }}</span>
           <div class="product-short-info">
@@ -198,7 +198,7 @@
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
         <div class="contact-name">
-          <h5>{{ motel.ownerId.name.toUpperCase() }}</h5>
+          <h5 style="text-transform:uppercase">{{ motel.ownerId.name }}</h5>
         </div>
         <div class="phone-contact" style="position: relative">
           <input
@@ -266,7 +266,7 @@ export default {
   data() {
     return {
       span_responsive: 6,
-      motel: {},
+      motel: null,
       moment,
       comments: [],
       textComment: "",
@@ -282,7 +282,7 @@ export default {
     };
   },
   created() {
-    this.getDataArticle();
+    this.getDataArticle(); 
   },
   watch: {
     user: {

@@ -91,6 +91,7 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
+    console.log(to)
     const publicPages = ['Contact', 'Home', 'Auth', 'Admin', 'MotelSearch', 'ResetPassword', 'MotelDetail'];
     const authRequired = !publicPages.includes(to.name);
     const loggedIn = cookie.getCookie('accessToken');
@@ -99,6 +100,9 @@ router.beforeEach((to, from, next) => {
         to.query.id = id;
         to.query.limit = 5;
         next();
+    }
+    if (to.query.type === 'draft-post') {
+        to.query.status = 'draft'
     }
     if (authRequired && !loggedIn) {
         next('/auth');

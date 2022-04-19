@@ -6,8 +6,7 @@ export default {
     register(user) {
         return BaseRepository.post('/user/sign-in', user);
     },
-    getUser() {
-        const { id } = JSON.parse(localStorage.getItem('user'))
+    getUser(id) {
         return BaseRepository.get(`/user/${id}`);
     },
     updateUser(user) {

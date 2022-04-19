@@ -69,7 +69,7 @@
                   }}</span>
                 </td>
                 <td>{{ formatDate(article.createdAt) }}</td>
-                <td>Trương Hoàng Long</td>
+                <td>{{article.ownerId.name}}</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
                 <td>
                   <a-tag color="green" v-if="article.isPaid">Đã thanh toán</a-tag>
@@ -97,12 +97,6 @@
           <a-pagination v-model="current" :total="articleSummary.posts" show-less-items :defaultPageSize="5" />
         </div>
         <div>
-          <!-- <a-pagination
-            v-model="current"
-            :total="50"
-            @change="getArticle"
-            style="float: right"
-          /> -->
         </div>
       </div>
     </div>
@@ -150,7 +144,7 @@ export default {
       const { data } = await RepositoryFactory.get(
         "article"
       ).getMultipleArticle();
-      this.articleArray = data.filter((ele) => ele.status === "posted");
+      this.articleArray = data.filter((ele) => ele.status === "waiting");
       console.log(this.articleArray);
     },
     formatDate(date) {
@@ -167,11 +161,13 @@ export default {
       console.log('get summary..')
       const { data } = await RepositoryFactory.get('article').getSummary()
       this.articleSummary = data.data
+      
     },
     async getAllPosts(query) {
       console.log('get all posts')
       const { data } = await RepositoryFactory.get('article').getAllPosts(query)
       this.articleArray = data.data
+      console.log(this.articleArray)
     },
     async handleApprove(article, state) {
       try {

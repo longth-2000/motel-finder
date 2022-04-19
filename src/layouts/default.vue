@@ -13,7 +13,7 @@
         </div>
         <div>Chat</div>
       </div>
-      <slot :user="{long:'njdsv'}"></slot>
+      <slot ></slot>
       <div class="content-chat" v-if="displayChat === true">
         <Chat @change-display="changeDisplay" />
       </div>

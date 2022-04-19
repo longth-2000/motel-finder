@@ -7,22 +7,22 @@
       </div>
       <ul class="nav-links">
         <li
-          :class="{ adminActive: isActive.ManageUser }"
           @click="changeComponent('ManageUser', 'manage-user')"
+          :class="{ adminActive: isActive.ManageUser }"
         >
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-user" />
           <span class="links_name">Quản lí người dùng</span>
         </li>
         <li
-          :class="{ adminActive: isActive.ManagePost }"
           @click="changeComponent('ManagePost', 'manage-post')"
+          :class="{ adminActive: isActive.ManagePost }"
         >
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-book" />
           <span class="links_name">Quản lí bài đăng</span>
         </li>
         <li
-          :class="{ adminActive: isActive.Statistics }"
           @click="changeComponent('Statistics', 'statistics')"
+          :class="{ adminActive: isActive.Statistics }"
         >
           <font-awesome-icon
             class="icon-dashboard"
@@ -160,6 +160,7 @@ export default {
   height: 80px;
   display: flex;
   align-items: center;
+  position: relative;
 }
 .sidebar .logo-details i {
   font-size: 28px;
@@ -182,6 +183,7 @@ export default {
   height: 80px;
   line-height: 80px;
   cursor: pointer;
+  position: relative;
 }
 .sidebar .nav-links li a {
   height: 100%;
@@ -203,6 +205,7 @@ export default {
   font-size: 18px;
   font-weight: 400;
   white-space: nowrap;
+  position: absolute;
 }
 .sidebar .nav-links .log_out {
   position: absolute;
@@ -390,7 +393,6 @@ nav .profile-details i {
 .home-content .sales-boxes {
   display: flex;
   justify-content: space-between;
-  /* padding: 0 20px; */
 }
 
 /* left box */
@@ -495,7 +497,7 @@ nav .profile-details i {
   justify-content: right;
 }
 /* Responsive Media Query */
-@media (max-width: 1240px) {
+@media (max-width: 1260px) {
   .sidebar {
     width: 60px;
   }
@@ -520,7 +522,7 @@ nav .profile-details i {
     left: 220px;
   }
   .sidebar .nav-links li .links_name {
-    opacity: 0;
+    opacity: 0;  
   }
 }
 @media (max-width: 1150px) {

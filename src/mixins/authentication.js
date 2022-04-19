@@ -10,8 +10,8 @@ var authenticationMixin = {
     },
     methods: {
         logged() {
-            var accessToken = cookie.getCookie("accessToken");
-            this.isLogin = accessToken === "" ? false : true;
+            let user = localStorage.getItem('user');
+            this.isLogin = user ? true : false;
         },
         isLogout() {
             cookie.deleteCookie('accessToken');
