@@ -133,7 +133,7 @@ export default {
       this.formValidation.status = status;
       let lengthImage = Object.keys(this.imageMotel).length > 1;
       if (!lengthImage) {
-        if (status == "posted") {
+        if (status == "waiting") {
           this.openNotification(
             "Cảnh báo",
             "Bạn phải tải từ hai ảnh trở lên",
@@ -172,13 +172,13 @@ export default {
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      this.callApi("posted");
+      this.callApi("waiting");
     },
     async updatePost() {
        this.onSpinning();
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      this.formValidation.status = "posted";
+      this.formValidation.status = "waiting";
       let lengthImage = Object.keys(this.imageMotel).length > 0;
       if (lengthImage) {
         let formData = new FormData();
@@ -230,7 +230,7 @@ export default {
     },
     createDraft() {
       let status = this.$route.query.status;
-      if (status === "posted" || status === "draft") {
+      if (status === "waiting" || status === "draft") {
         window.onbeforeunload = function () {
           return null;
         };

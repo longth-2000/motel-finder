@@ -1,6 +1,5 @@
 import { RepositoryFactory } from "../repository/factory";
 var managePostMixin = {
-
     props: {
         getArticle: {
             type: Function,
@@ -20,6 +19,7 @@ var managePostMixin = {
             this.current = current
             const { data, total } = await this.getArticle(current, this.state);
             this.articleArray = data
+            console.log(this.articleArray)
             this.total = total
         },
         handleCheck(id, event) {

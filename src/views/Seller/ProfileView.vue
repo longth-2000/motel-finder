@@ -213,12 +213,10 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    async getArticleByUser(page, status) {
-      console.log(status);
+    async getArticleByUser(page) {
       let query = this.$route.query;
       const { data } = await RepositoryFactory.get("article").filterArticle(
         page,
-        status,
         query
       );
       return data.data;

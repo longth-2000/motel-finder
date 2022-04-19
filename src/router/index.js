@@ -6,7 +6,7 @@ export const router = new Router({
     mode: 'history',
     routes: [{
             path: "/",
-            name: "home",
+            name: "Home",
             meta: {
                 layout: 'default',
             },
@@ -91,14 +91,18 @@ export const router = new Router({
     ],
 })
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/lien-he', '/', '/auth', '/admin/manage', '/tim-kiem', '/thay-doi-mat-khau', '/google/login'];
-    const authRequired = !publicPages.includes(to.path);
+    console.log(to)
+    const publicPages = ['Contact', 'Home', 'Auth', 'Admin', 'MotelSearch', 'ResetPassword', 'MotelDetail'];
+    const authRequired = !publicPages.includes(to.name);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
         const id = JSON.parse(localStorage.getItem("user")).id;
         to.query.id = id;
         to.query.limit = 5;
         next();
+    }
+    if (to.query.type === 'draft-post') {
+        to.query.status = 'draft'
     }
     if (authRequired && !loggedIn) {
         next('/auth');

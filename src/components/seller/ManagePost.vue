@@ -132,17 +132,17 @@
             <td>
               <a-tag
                 :color="
-                  post.state === 1
+                  post.status === 'waiting'
                     ? 'blue'
-                    : post.state === 2
+                    : post.status === 'approved'
                     ? 'green'
                     : 'red'
                 "
               >
                 {{
-                  post.state === 1
+                  post.status === 'waiting'
                     ? "Chưa duyệt"
-                    : post.state === 2
+                    : post.status === 'approved'
                     ? "Chấp nhận"
                     : "Từ chối"
                 }}
@@ -208,11 +208,11 @@
               >
                 <a-button type="danger"> Xóa </a-button>
               </a-popconfirm>
-              <a :href="'/dang-tin?id=' + post._id + '&status=posted'">
+              <a :href="'/dang-tin?id=' + post._id + '&status=waiting'">
                 <a-button
                   id="edit-post-btn"
                   type="primary"
-                  :disabled="post.state === 1 ? false : true"
+                  :disabled="post.status === 'waiting' ? false : true"
                 >
                   Sửa
                 </a-button>
@@ -257,7 +257,7 @@ export default {
       stateFilter: "",
       paymentMoney: 1,
       moneyPurchase: 0,
-      state: "posted",
+      state: "waiting",
       articleArray: [],
       postArr: [],
       resultFilter: {},
@@ -304,7 +304,7 @@ export default {
         result.type === "stateMotel"
           ? "isRented"
           : result.type === "stateApproved"
-          ? "state"
+          ? "status"
           : "isExpired";
       this.resultFilter = {
         type: type,
@@ -337,14 +337,15 @@ export default {
       this.openNotification("Thành công", "Cập nhật thành công", "success");
     },
     startFilter() {
+      console.log(this.resultFilter)
       let queryFilter =
         this.resultFilter.type === "isRented"
           ? {
               isRented: this.resultFilter.value,
             }
-          : this.resultFilter.type === "state"
+          : this.resultFilter.type === "status"
           ? {
-              state: this.resultFilter.value,
+              status: this.resultFilter.value,
             }
           : {
               isExpired: this.resultFilter.value,

@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="motel-detail">
+  <div class="motel-detail" v-if="motel">
     <div class="container">
       <div class="main-content">
         <div class="picture-carousel">
@@ -8,7 +8,7 @@
         <div class="bread-crumb">
           <a-breadcrumb>
             <a-breadcrumb-item>Cho thuê</a-breadcrumb-item>
-            <a-breadcrumb-item><a href="">Nhà trọ</a></a-breadcrumb-item>
+            <a-breadcrumb-item></a-breadcrumb-item>
             <a-breadcrumb-item
               ><a href="">{{ motel.address.district }}</a></a-breadcrumb-item
             >
@@ -17,7 +17,7 @@
         </div>
         <div class="product-detail">
           <h2 class="product-title">
-            {{ motel.detailedPost.title.toUpperCase() }}
+            {{ motel.detailedPost.title }}
           </h2>
           <span class="product-brief">{{ motel.detailedPost.content }}</span>
           <div class="product-short-info">
@@ -50,18 +50,18 @@
               />
               <span class="heart-label" style="padding-left: 5px">Lưu tin</span>
             </div>
-            <div class="short-info-share">
+            <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
                 icon="fa-solid fa-flag"
                 style="margin: 5px 5px 0 0; color: green"
               />
               <span class="share-label" style="padding-left: 5px">Báo cáo</span>
             </div>
-            <div class="short-info-share">
+            <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
                 icon="fa-solid fa-star"
                 style="margin: 0 5px 0 0; color: #faad14; font-size: 20px"
-                @click="showModal('rate')"
+                @click="openModalRate()"
               />
               <a-modal
                 v-model="isVisible.rate"
@@ -136,7 +136,7 @@
             </div>
           </div>
 
-          <div class="product-comment-box">
+          <div class="product-comment-box" v-if="preventRenter">
             <form action="" method="">
               <span class="comment-box-title">Bình luận</span>
               <div class="comment-box" style="margin: 20px 0 0 0">
@@ -198,7 +198,7 @@
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
         <div class="contact-name">
-          <h5>{{ motel.ownerId.name.toUpperCase() }}</h5>
+          <h5 style="text-transform:uppercase">{{ motel.ownerId.name }}</h5>
         </div>
         <div class="phone-contact" style="position: relative">
           <input
@@ -249,17 +249,24 @@
 import moment from "moment";
 import Carousel from "../components/home/Carousel.vue";
 import { RepositoryFactory } from "../repository/factory";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
+import { subject } from "@casl/ability";
+
 export default {
   name: "MotelDetailView",
   components: {
     Carousel,
   },
+  props: {
+    user: {
+      type: Object,
+    }
+  },
   data() {
     return {
       span_responsive: 6,
-      motel: {},
+      motel: null,
       moment,
       comments: [],
       textComment: "",
@@ -270,10 +277,22 @@ export default {
       },
       rate: 0,
       rateSend: 0,
+      preventRenter: false,
+
     };
   },
   created() {
-    this.getDataArticle();
+    this.getDataArticle(); 
+  },
+  watch: {
+    user: {
+      handler: function (newVal) {
+        console.log(newVal)
+        let renterPermission = this.$can("preventRenter", subject("User", newVal));
+        this.preventRenter = (renterPermission) ? true :false
+      },
+      deep: true,
+    },
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
@@ -282,6 +301,7 @@ export default {
     ...mapGetters("modal", ["isVisible"]),
   },
   methods: {
+    ...mapActions("user", ["getUserInfor"]),
     onResponsive() {
       if (window.innerWidth < 500) {
         this.span_responsive = 24;
@@ -306,7 +326,6 @@ export default {
             this.motel = responseArticle.data;
             const id = JSON.parse(localStorage.getItem("user")).id;
             this.isStorage = this.motel.userLiked.includes(id) ? true : false;
-            console.log(responseArticle);
             responseComment.data.forEach((element) => {
               this.comments.push({
                 coment: element.metadata,
@@ -374,6 +393,13 @@ export default {
       copyText.select();
       navigator.clipboard.writeText(copyText.value);
       this.openNotification("Thàng công", "Thông tin đã được copy", "success");
+    },
+    openModalRate() {
+      if (this.isLogged) {
+        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
+      } else {
+        this.showModal("rate");
+      }
     },
   },
 };

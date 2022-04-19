@@ -208,7 +208,7 @@
             <a-button @click="seeMore.favorite = true">Xem thêm</a-button>
           </div>
         </div>
-        <div class="motel-by-district">
+        <div class="motel-by-district" v-if="districts.length !== 0">
           <h4 class="title-motel">Phòng trọ theo quận</h4>
           <div class="big-district">
             <a :href="'/tim-kiem?handle=search&district=' + districts[0].name">
@@ -390,8 +390,8 @@ export default {
             console.log(this.average);
           })
         )
-        .catch((errors) => {
-          console.log(errors);
+        .catch((error) => {
+          console.log(error);
         });
     },
     searchMotel() {
@@ -418,7 +418,7 @@ export default {
           } else endpoint += "&" + element + "=" + this.search[element];
         }
       });
-      window.location.href = endpoint;
+      this.$router.push(endpoint)
     },
   },
 };
