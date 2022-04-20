@@ -9,7 +9,7 @@
               Email 
             </td>
             <td class="form">
-               {{email}}
+               {{this.checkLogged().email}}
             </td>
           </tr>
           <tr>
@@ -83,7 +83,7 @@ export default {
   mixins: [childrenValidation],
   data() {
     return{
-      email:JSON.parse(localStorage.getItem("user")).email,
+     
     }
   }
 };

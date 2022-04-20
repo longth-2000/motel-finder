@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import cookie from "../helper/cookie"
+import VueJwtDecode from "vue-jwt-decode";
 Vue.use(Router)
 export const router = new Router({
     mode: 'history',
@@ -96,7 +97,7 @@ router.beforeEach((to, from, next) => {
     const authRequired = !publicPages.includes(to.name);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
-        const id = JSON.parse(localStorage.getItem("user")).id;
+        const { id } = VueJwtDecode.decode(loggedIn);
         to.query.id = id;
         to.query.limit = 5;
         next();

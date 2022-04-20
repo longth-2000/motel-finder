@@ -1,6 +1,7 @@
 <template>
   <div class="auth-component">
     <Login class="auth-frame"  :isAuthenticated="true" />
+    
   </div>
 </template>
 <script>

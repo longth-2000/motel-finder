@@ -7,6 +7,7 @@
             <img src="" alt="LongTH" style="width:100%">
             <div class="container">
               <h2>Trương Hoàng Long</h2>
+              
               <p class="title">CEO &amp; Founder</p>
               <p>Some text that describes me lorem ipsum ipsum lorem.</p>
               <p>example@example.com</p>

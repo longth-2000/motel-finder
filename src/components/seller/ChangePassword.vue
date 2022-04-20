@@ -112,7 +112,7 @@ export default {
     async changePassword() {
       let check = this.checkValidation(this.check, this.$v);
       if (!check) return;
-      let { id } = JSON.parse(localStorage.getItem('user'));
+      let { id } = this.checkLogged();
       try {
         const { data } = await RepositoryFactory.get("user").updatePassword({
           id,

@@ -160,7 +160,7 @@
               v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
-              <MotelCard :card="card" :isLogged="user === null" :user="user" />
+              <MotelCard :card="card"  />
             </div>
           </div>
           <div class="row" v-if="seeMore.new == true">
@@ -170,7 +170,7 @@
               v-for="(card, index) in newArticle.slice(8, newArticle.length)"
               :key="index"
             >
-              <MotelCard :card="card" :isLogged="user === null" :user="user" />
+              <MotelCard :card="card"  />
             </div>
           </div>
           <div
@@ -190,7 +190,7 @@
               v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
-              <MotelCard :card="card" :isLogged="user === null" :user="user" />
+              <MotelCard :card="card"  />
             </div>
           </div>
           <div class="row" v-if="seeMore.favorite == true">
@@ -204,7 +204,7 @@
               )"
               :key="index"
             >
-              <MotelCard :card="card" :isLogged="user === null" :user="user" />
+              <MotelCard :card="card"  />
             </div>
           </div>
           <div
@@ -297,6 +297,7 @@
           </div>
         </div>
       </div>
+      
       <div class="bottom-carousel">
         <div class="row-display">
           <a
@@ -355,12 +356,11 @@ export default {
         { name: "Chung cư nguyên căn", id: 3 },
         { name: "Chung cư mini", id: 4 },
       ],
-      user: localStorage.getItem("user"),
-      average: 0,
     };
   },
   created() {
     this.getData();
+    console.log(this.checkLogged())
   },
   methods: {
     handleMenuClick(e) {
@@ -387,15 +387,10 @@ export default {
             const responseAddress = responses[0];
             const responseFavorite = responses[1];
             const responseNew = responses[2];
-            const responseEval = responses[3];
             this.districts = responseAddress.data.districts;
             this.favoriteArticle = responseFavorite.data.data;
             this.newArticle = responseNew.data.data;
-            this.average =
-              responseEval.data.reduce((previousValue, currentValue) => {
-                return previousValue + currentValue.metadata;
-              }, 0) / responseEval.data.length;
-            console.log(this.average);
+            
           })
         )
         .catch((error) => {
@@ -574,10 +569,6 @@ export default {
   .homepage .ant-select-selection--single {
     width: 106%;
   }
-}
-.homepage svg {
-  position: relative;
-  vertical-align: 0%;
 }
 .homepage div.ant-row > * {
   padding: 10px;

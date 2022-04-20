@@ -1,6 +1,7 @@
 <template>
   <div class="header">
     <div class="header-left">
+      
       <div class="header-logo">
         <img src="../../assets/logo.png" alt="" />
       </div>
@@ -270,7 +271,6 @@ export default {
     },
   },
   methods: {
-
     createPost() {
       window.location.href = "/dang-tin";
     },

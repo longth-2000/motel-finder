@@ -53,7 +53,9 @@
                 :class="{ colorHeart: isStorage }"
                 @click="storageFavorite(motel._id)"
               />
-              <span class="heart-label" style="padding-left: 5px">Lưu tin</span>
+              <span class="heart-label" style="padding-left: 5px">{{
+                !isStorage ? "Lưu tin" : "Xóa tin đã lưu"
+              }}</span>
             </div>
             <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
@@ -206,7 +208,7 @@
             type="text"
             :value="motel.ownerId.phoneNumber"
             id="copy-phone"
-            style="position: absolute; top: 1px; left: 3px"
+            style="position: absolute; top: 1px; left: 3px; opacity: 0"
           />
           <a-button
             type="primary"
@@ -226,7 +228,7 @@
             type="text"
             :value="motel.ownerId.email"
             id="copy-email"
-            style="position: absolute; top: 1px; left: 3px"
+            style="position: absolute; top: 1px; left: 3px; opacity: 0"
           />
           <a-button
             type="primary"
@@ -279,7 +281,7 @@ export default {
       rate: 0,
       rateSend: 0,
       preventRenter: false,
-      isLogged: localStorage.getItem("user"),
+      logged: this.checkLogged(),
     };
   },
   created() {
@@ -331,8 +333,6 @@ export default {
             const responseComment = responses[1];
             const responseEval = responses[2];
             this.motel = responseArticle.data;
-            const id = JSON.parse(localStorage.getItem("user")).id;
-            this.isStorage = this.motel.userLiked.includes(id) ? true : false;
             responseComment.data.forEach((element) => {
               this.comments.push({
                 coment: element.metadata,
@@ -342,14 +342,17 @@ export default {
                 },
               });
             });
-            console.log(responseEval.data);
-            let rateStar = responseEval.data.reduce(
-              (previousValue, currentValue) =>
-                previousValue + currentValue.metadata,
-              0
-            ) / (responseEval.data.length);
-            this.rate = parseFloat((Math.round(rateStar * 2) / 2).toFixed(1))
-            console.log(this.rate)
+            let rateStar =
+              responseEval.data.reduce(
+                (previousValue, currentValue) =>
+                  previousValue + currentValue.metadata,
+                0
+              ) / responseEval.data.length;
+            this.rate = parseFloat((Math.round(rateStar * 2) / 2).toFixed(1));
+            if (this.logged) {
+              const { _id } = this.user;
+              this.isStorage = this.motel.userLiked.includes(_id) ? true : false;
+            }
           })
         )
         .catch((errors) => {
@@ -363,7 +366,7 @@ export default {
       if (type === 4) return "chung cư mini";
     },
     async sendComment(articleID) {
-      if (!this.isLogged) {
+      if (!this.logged) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
       } else if (this.preventRenter) {
         const { data } = await RepositoryFactory.get("article").comment(
@@ -394,11 +397,21 @@ export default {
       this.closeModal("rate");
     },
     async storageFavorite(articleID) {
-      if (!this.isLogged) {
+      if (!this.logged) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
       } else {
-        if (this.isStorage) this.isStorage = false;
-        else {
+        if (this.isStorage) {
+          this.isStorage = false;
+          const { data } = await RepositoryFactory.get("article").decreaseLike(
+            articleID
+          );
+          console.log(data);
+          this.openNotification(
+            "Thành công",
+            "Bạn đã xóa tin này khỏi danh sách yêu thích",
+            "success"
+          );
+        } else {
           this.isStorage = true;
           const { data } = await RepositoryFactory.get("article").increaseLike(
             articleID
@@ -721,6 +734,9 @@ span.section-title {
 ::v-deep .ant-modal-body {
   width: 35%;
   margin: 0 auto;
+}
+::v-deep .ant-comment {
+  width: 90%;
 }
 @media screen and (max-width: 1400px) {
   .main-sidebar {

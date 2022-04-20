@@ -10,12 +10,10 @@ var authenticationMixin = {
     },
     methods: {
         logged() {
-            let user = localStorage.getItem('user');
-            this.isLogin = user ? true : false;
+            this.isLogin = this.checkLogged();
         },
         isLogout() {
             cookie.deleteCookie('accessToken');
-            localStorage.removeItem("user");
             window.location.href = "/"
         },
     },
