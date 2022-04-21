@@ -32,6 +32,7 @@ export default {
   },
   mounted() {
     this.notifications()
+    this.chat()
   },
   methods: {
     ...mapActions("notifications", ["notifications"]),
@@ -39,8 +40,9 @@ export default {
     async getUser() {
       const user = await this.getUserInfor();
       this.user = user;
-    }
+    },
 
+    ...mapActions("chat", ["chat"]),
   }
 };
 </script>
