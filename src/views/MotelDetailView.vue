@@ -10,7 +10,12 @@
             <a-breadcrumb-item>Cho thuê</a-breadcrumb-item>
             <a-breadcrumb-item></a-breadcrumb-item>
             <a-breadcrumb-item
-              ><a href="">{{ motel.address.district }}</a></a-breadcrumb-item
+              ><a
+                :href="
+                  '/tim-kiem?handle=search&district=' + motel.address.district
+                "
+                >{{ motel.address.district }}</a
+              ></a-breadcrumb-item
             >
             <a-breadcrumb-item>Chi tiết</a-breadcrumb-item>
           </a-breadcrumb>
@@ -48,7 +53,9 @@
                 :class="{ colorHeart: isStorage }"
                 @click="storageFavorite(motel._id)"
               />
-              <span class="heart-label" style="padding-left: 5px">Lưu tin</span>
+              <span class="heart-label" style="padding-left: 5px">{{
+                !isStorage ? "Lưu tin" : "Xóa tin đã lưu"
+              }}</span>
             </div>
             <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
@@ -136,7 +143,7 @@
             </div>
           </div>
 
-          <div class="product-comment-box" v-if="preventRenter">
+          <div class="product-comment-box">
             <form action="" method="">
               <span class="comment-box-title">Bình luận</span>
               <div class="comment-box" style="margin: 20px 0 0 0">
@@ -149,17 +156,13 @@
               </div>
               <div class="submit-button">
                 <a-button type="primary" @click="sendComment(motel._id)">
-                  Comment
+                  Bình luận
                 </a-button>
               </div>
               <div>
                 <a-comment v-for="(comment, index) in comments" :key="index">
                   <a slot="author">{{ comment.username }}</a>
-                  <a-avatar
-                    slot="avatar"
-                    :src="comment.avatar.url"
-                    alt="Han Solo"
-                  />
+                  <a-avatar slot="avatar" :src="comment.avatar.url" />
                   <p slot="content">
                     {{ comment.coment }}
                   </p>
@@ -194,18 +197,18 @@
       </div>
       <div class="main-sidebar">
         <div class="sidebar-avatar">
-          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url"/>
+          <a-avatar :size="60" icon="user" :src="motel.ownerId.avatar.url" />
         </div>
         <span class="prefix-contact-name">Được đăng bởi</span>
         <div class="contact-name">
-          <h5 style="text-transform:uppercase">{{ motel.ownerId.name }}</h5>
+          <h5 style="text-transform: uppercase">{{ motel.ownerId.name }}</h5>
         </div>
         <div class="phone-contact" style="position: relative">
           <input
             type="text"
             :value="motel.ownerId.phoneNumber"
             id="copy-phone"
-            style="position: absolute; top: 1px; left: 3px"
+            style="position: absolute; top: 1px; left: 3px; opacity: 0"
           />
           <a-button
             type="primary"
@@ -225,7 +228,7 @@
             type="text"
             :value="motel.ownerId.email"
             id="copy-email"
-            style="position: absolute; top: 1px; left: 3px"
+            style="position: absolute; top: 1px; left: 3px; opacity: 0"
           />
           <a-button
             type="primary"
@@ -236,7 +239,7 @@
           >
             <div v-if="!displayInfor.email">Email</div>
             <div v-else @click="copyInfor('email')">
-              <div id="phone-copy">{{motel.ownerId.email}}</div>
+              <div id="phone-copy">{{ motel.ownerId.email }}</div>
               <div>Sao chép</div>
             </div>
           </a-button>
@@ -261,7 +264,7 @@ export default {
   props: {
     user: {
       type: Object,
-    }
+    },
   },
   data() {
     return {
@@ -278,21 +281,24 @@ export default {
       rate: 0,
       rateSend: 0,
       preventRenter: false,
-
+      logged: this.checkLogged(),
     };
   },
   created() {
-    this.getDataArticle(); 
+    this.getDataArticle();
   },
   watch: {
     user: {
       handler: function (newVal) {
-        console.log(newVal)
-        let renterPermission = this.$can("preventRenter", subject("User", newVal));
-        this.preventRenter = (renterPermission) ? true :false
+        let renterPermission = this.$can(
+          "preventRenter",
+          subject("User", newVal)
+        );
+        this.preventRenter = renterPermission ? true : false;
       },
       deep: true,
     },
+    
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
@@ -314,18 +320,19 @@ export default {
     getDataArticle() {
       let articleAPI = `https://backend-api-production.up.railway.app/accomodations/${this.$route.params.id}`;
       let commentAPI = `https://backend-api-production.up.railway.app/report/comment/${this.$route.params.id}`;
+      let evalAPI = `https://backend-api-production.up.railway.app/report/evaluation/${this.$route.params.id}`;
+
       const requestArticle = axios.get(articleAPI);
       const requestComment = axios.get(commentAPI);
+      const requestEval = axios.get(evalAPI);
       axios
-        .all([requestArticle, requestComment])
+        .all([requestArticle, requestComment, requestEval])
         .then(
           axios.spread((...responses) => {
             const responseArticle = responses[0];
             const responseComment = responses[1];
             const responseEval = responses[2];
             this.motel = responseArticle.data;
-            const id = JSON.parse(localStorage.getItem("user")).id;
-            this.isStorage = this.motel.userLiked.includes(id) ? true : false;
             responseComment.data.forEach((element) => {
               this.comments.push({
                 coment: element.metadata,
@@ -335,7 +342,17 @@ export default {
                 },
               });
             });
-            console.log(responseEval.data);
+            let rateStar =
+              responseEval.data.reduce(
+                (previousValue, currentValue) =>
+                  previousValue + currentValue.metadata,
+                0
+              ) / responseEval.data.length;
+            this.rate = parseFloat((Math.round(rateStar * 2) / 2).toFixed(1));
+            if (this.logged) {
+              const { _id } = this.user;
+              this.isStorage = this.motel.userLiked.includes(_id) ? true : false;
+            }
           })
         )
         .catch((errors) => {
@@ -349,12 +366,22 @@ export default {
       if (type === 4) return "chung cư mini";
     },
     async sendComment(articleID) {
-      const { data } = await RepositoryFactory.get("article").comment(
-        articleID,
-        this.textComment
-      );
-      console.log(data);
-      this.comments.push(data.data);
+      if (!this.logged) {
+        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
+      } else if (this.preventRenter) {
+        const { data } = await RepositoryFactory.get("article").comment(
+          articleID,
+          this.textComment
+        );
+        console.log(data);
+        this.comments.push(data.data);
+      } else {
+        this.openNotification(
+          "Cảnh báo",
+          "Chủ trọ không thể bình luận bài viết",
+          "warning"
+        );
+      }
     },
     async sendRate(articleID) {
       const { data } = await RepositoryFactory.get("article").rate(
@@ -370,11 +397,21 @@ export default {
       this.closeModal("rate");
     },
     async storageFavorite(articleID) {
-      if (this.isLogged) {
+      if (!this.logged) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
       } else {
-        if (this.isStorage) this.isStorage = false;
-        else {
+        if (this.isStorage) {
+          this.isStorage = false;
+          const { data } = await RepositoryFactory.get("article").decreaseLike(
+            articleID
+          );
+          console.log(data);
+          this.openNotification(
+            "Thành công",
+            "Bạn đã xóa tin này khỏi danh sách yêu thích",
+            "success"
+          );
+        } else {
           this.isStorage = true;
           const { data } = await RepositoryFactory.get("article").increaseLike(
             articleID
@@ -395,11 +432,7 @@ export default {
       this.openNotification("Thàng công", "Thông tin đã được copy", "success");
     },
     openModalRate() {
-      if (this.isLogged) {
-        this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
-      } else {
-        this.showModal("rate");
-      }
+      this.showModal("rate");
     },
   },
 };
@@ -701,6 +734,9 @@ span.section-title {
 ::v-deep .ant-modal-body {
   width: 35%;
   margin: 0 auto;
+}
+::v-deep .ant-comment {
+  width: 90%;
 }
 @media screen and (max-width: 1400px) {
   .main-sidebar {

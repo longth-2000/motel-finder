@@ -22,8 +22,7 @@ var signMixin = {
             let decodeToken = VueJwtDecode.decode(accessToken);
             document.cookie = `accessToken=${accessToken}`;
             localStorage.setItem("refreshToken", refreshToken);
-            const { id, email, role } = decodeToken;
-            localStorage.setItem("user", JSON.stringify({ id, email }));
+            const { role } = decodeToken;
             let endpoint =
                 role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
             console.log(endpoint)

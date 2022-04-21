@@ -27,8 +27,11 @@
           </p>
         </a-form-item>
         <a-form-item style="margin-bottom: 20px">
-          <div style="display: flex">
-            <div>
+          <div
+            class="input-form-register"
+            style="display: flex; justify-content: space-between"
+          >
+            <div class="input-form-item" style="width: 49%">
               <a-input
                 type="password"
                 placeholder="Mật khẩu"
@@ -36,7 +39,6 @@
                 :class="{
                   'is-invalid-form': check.isSubmit && $v.user.password.$error,
                 }"
-                style="width: 230px"
               >
                 <a-icon
                   slot="prefix"
@@ -63,11 +65,10 @@
                 Mật khẩu chỉ bao gồm chữ cái và số
               </p>
             </div>
-            <div style="margin-left: 12px">
+            <div class="input-form-item" style="width: 49%">
               <a-input
                 type="password"
                 placeholder="Nhập lại mật khẩu"
-                style="width: 230px"
                 :class="{
                   'is-invalid-form':
                     check.isSubmit && $v.user.confirmPassword.$error,
@@ -149,6 +150,8 @@
 <script>
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
+import VueJwtDecode from "vue-jwt-decode";
+
 import {
   required,
   sameAs,
@@ -183,20 +186,28 @@ export default {
       let validation = this.checkValidation(this.check, this.$v);
       console.log(validation);
       if (!validation) return;
-      else { 
-       try {
+      else {
+        try {
           const { data } = await RepositoryFactory.get("user").register({
             email: this.user.email,
             password: this.user.password,
             role: this.user.role,
           });
           console.log(data);
-          this.handleAfterSign(data.data);
+          let { accessToken, refreshToken } = data.data;
+          let decodeToken = VueJwtDecode.decode(accessToken);
+          document.cookie = `accessToken=${accessToken}`;
+          localStorage.setItem("refreshToken", refreshToken);
+          const { role } = decodeToken;
+          let endpoint =
+            role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
+          console.log(endpoint);
+          window.location.href = endpoint;
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
         }
-     } 
+      }
     },
   },
 };
@@ -212,5 +223,13 @@ export default {
 .register-form .condition {
   margin-top: -10px;
   margin-bottom: 0;
+}
+@media only screen and (max-width: 576px) {
+  .input-form-register {
+    display: block !important;
+  }
+  .input-form-item {
+    width: 100% !important;
+  }
 }
 </style>

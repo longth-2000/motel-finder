@@ -4,16 +4,16 @@
       <img :src="card.images[0].url" />
     </div>
     <div class="motel-content">
-      <div class="motel-descript" style="position:relative">
+      <div class="motel-descript" style="position: relative">
         <div class="motel-title">
           {{ card.detailedPost.title }}
         </div>
         <div class="motel-rate">
           <a-rate
-            :default-value="3"
-            allow-half
-            :disabled="true"
             style="font-size: 14px"
+            v-model="rateStar"
+            :disabled="true"
+            allow-half
           />
           <div
             style="
@@ -33,8 +33,16 @@
           >
             <div style="margin: 2px 2px 0px 6px">
               <font-awesome-icon icon="fa-solid fa-heart" color="white" :class="{ colorHeart: isStorage}"/>
+            @click.prevent="storageFavorite(card._id)"
+          >
+            <div style="margin: 0px 2px 0px 6px">
+              <font-awesome-icon
+                icon="fa-solid fa-heart"
+                color="white"
+                :class="{ colorHeart: isStorage }"
+              />
             </div>
-            <div style="margin: 0px 10px 0px 3px">LIKE</div>
+            <div style="margin: 0px 10px 0px 3px">{{isStorage ? 'UNLIKE' : 'LIKE'}}</div>
           </div>
         </div>
         <div class="motel-detail" style="display: flex; margin: 20px 0">
@@ -50,15 +58,16 @@
             text-align: center;
             font-family: 'DM Serif Display';
             font-weight: bold;
-            margin-top:25px
+            margin-top: 25px;
           "
         >
-          <span style="font-size:27px">{{ card.price.quantity }}</span
+          <span style="font-size: 27px">{{ card.price.quantity }}</span
           >/<span>{{ card.price.unit }}</span>
         </div>
       </div>
-      <a :href="'/phong-tro/' + card._id" class="router-link"><div class="motel-select">Xem chi tiết</div></a>
-      
+      <a :href="'/bat-dong-san/' + card._id" class="router-link"
+        ><div class="motel-select">Xem chi tiết</div></a
+      >
     </div>
   </div>
 </template>
@@ -72,34 +81,39 @@ export default {
     },
     card: {
       type: Object,
-    },
-    isLogged: {
-      type: Boolean,
-    },
-    user: {
-      type: String,
-    },
+    }
   },
   data() {
     return {
       isStorage: false,
+      rateStar: 0,
+      user:this.checkLogged()
     };
   },
   computed: {},
   created() {
-    if (this.user !== null) {
-      this.isStorage = this.card.userLiked.includes(this.user._id)
-        ? true
-        : false;
+    if (this.user) {
+      this.isStorage = this.card.userLiked.includes(this.user.id) ? true : false; 
     }
+    this.getRate();
   },
   methods: {
     async storageFavorite(articleID) {
-      if (this.isLogged) {
+      if (!this.user) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
       } else {
-        if (this.isStorage) this.isStorage = false;
-        else {
+        if (this.isStorage) {
+          this.isStorage = false;
+          const { data } = await RepositoryFactory.get("article").decreaseLike(
+            articleID
+          );
+          console.log(data);
+          this.openNotification(
+            "Thành công",
+            "Bạn đã xóa tin này khỏi danh sách yêu thích",
+            "success"
+          );
+        } else {
           this.isStorage = true;
           const { data } = await RepositoryFactory.get("article").increaseLike(
             articleID
@@ -113,6 +127,21 @@ export default {
         }
       }
     },
+    async getRate() {
+      const { data } = await RepositoryFactory.get("article").getRate(
+        this.card._id
+      );
+      let rateStar = data.reduce(
+        (previousValue, currentValue) => previousValue + currentValue.metadata,
+        0
+      );
+      this.rateStar =
+        data.length === 0
+          ? 0
+          : parseFloat(
+              (Math.round((rateStar / data.length) * 2) / 2).toFixed(1)
+            );
+    },
   },
 };
 </script>
@@ -121,7 +150,6 @@ export default {
   font-family: "Open Sans";
 }
 .motel-card {
-  width: 300px;
   height: 520px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgb(44 44 44 / 4%);
@@ -212,5 +240,11 @@ export default {
 }
 .colorHeart {
   color: red;
+}
+@media only screen and (max-width: 768px) {
+  .motel-card {
+    width: 80%;
+    margin: 0 auto;
+  }
 }
 </style>

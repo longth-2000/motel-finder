@@ -119,6 +119,8 @@
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
+import VueJwtDecode from "vue-jwt-decode";
+
 
 export default {
   props: {
@@ -153,7 +155,15 @@ export default {
       else {
         try {
           const { data } = await RepositoryFactory.get("user").login(this.user);
-          this.handleAfterSign(data.data);
+          let { accessToken, refreshToken } = data.data;
+            let decodeToken = VueJwtDecode.decode(accessToken);
+            document.cookie = `accessToken=${accessToken}`;
+            localStorage.setItem("refreshToken", refreshToken);
+            const { role } = decodeToken;
+            let endpoint =
+                role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
+            console.log(endpoint)
+            window.location.href = endpoint;
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
@@ -163,12 +173,19 @@ export default {
     async authGoogle() {
       const google = await this.$gAuth.signIn();
       console.log(google);
-      const { id_token } = (google.xc) ? google.xc : google.wc;
+      const { id_token } = google.xc ? google.xc : google.wc;
       const { data } = await RepositoryFactory.get("app").loginGoogle(
         id_token,
         this.role
       );
-      this.handleAfterSign(data.data) 
+      let { accessToken, refreshToken } = data.data;
+      let decodeToken = VueJwtDecode.decode(accessToken);
+      document.cookie = `accessToken=${accessToken}`;
+      localStorage.setItem("refreshToken", refreshToken);
+      const { role } = decodeToken;
+      let endpoint = role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
+      console.log(endpoint);
+      window.location.href = endpoint;
     },
   },
 };

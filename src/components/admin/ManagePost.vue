@@ -69,7 +69,7 @@
                   }}</span>
                 </td>
                 <td>{{ formatDate(article.createdAt) }}</td>
-                <td>{{article.ownerId.name}}</td>
+                <td>Lê Văn Long</td>
                 <td>{{ formatDate(article.postExpired) }}</td>
                 <td>
                   <a-tag color="green" v-if="article.isPaid">Đã thanh toán</a-tag>
