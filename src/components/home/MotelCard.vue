@@ -29,10 +29,6 @@
               text-align:center
             "
             class="motel-icon"
-            @click.prevent ="storageFavorite(card._id)"
-          >
-            <div style="margin: 2px 2px 0px 6px">
-              <font-awesome-icon icon="fa-solid fa-heart" color="white" :class="{ colorHeart: isStorage}"/>
             @click.prevent="storageFavorite(card._id)"
           >
             <div style="margin: 0px 2px 0px 6px">
