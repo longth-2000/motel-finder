@@ -239,7 +239,6 @@ import { notificationTypes } from './../../constants/notificationTypes'
 import { formatDate } from './../..//helper/utils'
 import { collection, deleteDoc, doc, updateDoc } from "firebase/firestore"
 import {db} from './../../fire'
-import { subject } from "@casl/ability";
 export default {
   props: ["openNav", "user"],
   mixins: [authenticationMixin],
@@ -265,14 +264,10 @@ export default {
   computed: {
     ...mapGetters("modal", ["isVisible"]),
     ...mapGetters("notifications", ['notifications']),
-
-    setCheckPermisson() {
-      return this.$can("create", subject("User", this.user));
-    },
   },
   methods: {
     createPost() {
-      window.location.href = "/dang-tin";
+      this.$router.push({ path: '/dang-tin' });
     },
     async handleReadNoti(id) {
       await updateDoc(doc(collection(db, "notifications"), id), {

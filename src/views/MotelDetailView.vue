@@ -290,7 +290,6 @@ export default {
   watch: {
     user: {
       handler: function (newVal) {
-        console.log(newVal);
         let renterPermission = this.$can(
           "preventRenter",
           subject("User", newVal)
@@ -299,6 +298,7 @@ export default {
       },
       deep: true,
     },
+    
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);

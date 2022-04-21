@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <div id="title-component-profile">
       <span>TIN ĐÃ ĐĂNG</span>
     </div>
@@ -54,11 +54,11 @@
           <a-menu slot="overlay" @click="handleSort">
             <a-menu-item key="sortByDate/1"> Ngày đăng sớm nhất</a-menu-item>
             <a-menu-item key="sortByDate/-1"> Ngày đăng muộn nhất</a-menu-item>
-            <a-menu-item key="sortByTitle/1">
-              Tiêu đề ( từ A -> Z )
-            </a-menu-item>
             <a-menu-item key="sortByTitle/-1">
-              Tiêu đề ( từ Z -> A )
+              Tiêu đề ( từ A => Z )
+            </a-menu-item>
+            <a-menu-item key="sortByTitle/1">
+              Tiêu đề ( từ Z => A )
             </a-menu-item>
           </a-menu>
           <a-icon slot="icon" type="sort-descending" />
@@ -90,7 +90,7 @@
     <div
       id="content"
       style="
-        margin: 20px 0 0 0;
+       
         background: white;
         padding: 10px 0;
         border-radius: 5px;
@@ -98,7 +98,7 @@
       "
       v-if="articleArray.length > 0"
     >
-      <table class="table">
+      <table class="table" >
         <thead>
           <tr>
             <th>
@@ -140,9 +140,9 @@
                 "
               >
                 {{
-                  post.status === 'waiting'
+                  post.status === "waiting"
                     ? "Chưa duyệt"
-                    : post.status === 'approved'
+                    : post.status === "approved"
                     ? "Chấp nhận"
                     : "Từ chối"
                 }}
@@ -174,7 +174,14 @@
                 v-model="isVisible.purchase"
                 title="Thông báo gia hạn"
                 ok-text="Thanh toán"
-                @ok="redirectPayment(post._id, countPayment(paymentMoney), 'extension', paymentMoney)"
+                @ok="
+                  redirectPayment(
+                    post._id,
+                    countPayment(paymentMoney),
+                    'extension',
+                    paymentMoney
+                  )
+                "
                 cancel-text="Quay lại"
               >
                 <div style="display: flex">
@@ -200,32 +207,52 @@
             </td>
             <td>{{ formatDate(post.createdAt) }}</td>
             <td>
-              <a-popconfirm
-                title="Bạn có chăc chắn muốn xóa bài đăng này?"
-                ok-text="Yes"
-                cancel-text="No"
-                @confirm="confirmDelete(post._id)"
-              >
-                <a-button type="danger"> Xóa </a-button>
-              </a-popconfirm>
-              <a :href="'/dang-tin?id=' + post._id + '&status=waiting'">
+              <div class="normal-action">
+                <a-popconfirm
+                  title="Bạn có chăc chắn muốn xóa bài đăng này?"
+                  ok-text="Yes"
+                  cancel-text="No"
+                  @confirm="confirmDelete(post._id)"
+                >
+                  <a-button type="danger"> Xóa </a-button>
+                </a-popconfirm>
+                <a :href="'/dang-tin?id=' + post._id + '&status=waiting'">
+                  <a-button
+                    id="edit-post-btn"
+                    type="primary"
+                    :disabled="post.status === 'waiting' ? false : true"
+                  >
+                    Sửa
+                  </a-button>
+                </a>
+
                 <a-button
                   id="edit-post-btn"
                   type="primary"
-                  :disabled="post.status === 'waiting' ? false : true"
+                  :disabled="post.isPaid ? true : false"
+                  @click="
+                    redirectPayment(post._id, post.moneyPayment, 'create', null)
+                  "
                 >
-                  Sửa
+                  Thanh toán
                 </a-button>
-              </a>
-
-              <a-button
-                id="edit-post-btn"
-                type="primary"
-                :disabled="post.isPaid ? true : false"
-                @click="redirectPayment(post._id, post.moneyPayment, 'create', null)"
-              >
-                Thanh toán
-              </a-button>
+              </div>
+              <div class="responsive-action">
+                <a-dropdown-button>
+                  Action
+                  <a-menu slot="overlay">
+                    <a-menu-item key="1">
+                      <a-icon type="delete" />Xóa
+                    </a-menu-item>
+                    <a-menu-item key="2">
+                      <a-icon type="edit" />Sửa
+                    </a-menu-item>
+                    <a-menu-item key="3">
+                      <a-icon type="money-collect" />Thanh toán
+                    </a-menu-item>
+                  </a-menu>
+                </a-dropdown-button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -238,7 +265,7 @@
       v-model="current"
       :total="50"
       @change="getMultipleArticle"
-      style="float: right; margin-top:-50px"
+      style="float: right; margin-top: -50px"
     />
   </div>
 </template>
@@ -263,7 +290,7 @@ export default {
       resultFilter: {},
       sortTitle: "Sắp xếp",
       searchTitle: "",
-      id:''
+      id: "",
     };
   },
   computed: {
@@ -312,7 +339,7 @@ export default {
       };
     },
     alertPurchase(event, id) {
-      this.id = id
+      this.id = id;
       let value = event.target.getAttribute("value");
       console.log(value);
       if (value == "false") {
@@ -320,15 +347,18 @@ export default {
       }
     },
     redirectPayment(id, money, state, duration) {
-      let idArticle = (state == 'create') ? id : this.id
-      localStorage.setItem("purchase", JSON.stringify({
-        id:idArticle,
-        money,
-        state,
-        duration
-      }));
-      window.location.href = "/ho-so?type=payment";  
-     },
+      let idArticle = state == "create" ? id : this.id;
+      localStorage.setItem(
+        "purchase",
+        JSON.stringify({
+          id: idArticle,
+          money,
+          state,
+          duration,
+        })
+      );
+      window.location.href = "/ho-so?type=payment";
+    },
     async changeStateArticle(articleID) {
       const { data } = await RepositoryFactory.get(
         "article"
@@ -337,7 +367,7 @@ export default {
       this.openNotification("Thành công", "Cập nhật thành công", "success");
     },
     startFilter() {
-      console.log(this.resultFilter)
+      console.log(this.resultFilter);
       let queryFilter =
         this.resultFilter.type === "isRented"
           ? {
@@ -379,9 +409,9 @@ export default {
 
       if (query.sortByTitle) {
         this.sortTitle =
-          query.sortByTitle === "1"
-            ? "Tiêu đề (Từ A -> Z)"
-            : "Tiêu đề (Từ Z -> A)";
+          query.sortByTitle === "-1"
+            ? "Tiêu đề (Từ A => Z)"
+            : "Tiêu đề (Từ Z => A)";
       }
       if (query.sortByDate) {
         this.sortTitle =
@@ -445,7 +475,7 @@ tbody td {
 }
 
 #edit-post-btn {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 ::v-deep
   .ant-dropdown-button.ant-btn-group
@@ -469,9 +499,20 @@ tbody td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.responsive-action {
+  display: none;
+}
 @media screen and (max-width: 1214px) {
   #edit-post-btn {
     margin-left: 0;
+  }
+}
+@media screen and (max-width: 1300px) {
+  .normal-action {
+    display: none;
+  }
+  .responsive-action {
+    display: block;
   }
 }
 </style>

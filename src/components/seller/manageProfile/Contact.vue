@@ -88,4 +88,10 @@ export default {
   }
 };
 </script>
-<style scoped></style>
+<style scoped>
+@media screen and (max-width: 568px) {
+  .table .form input {
+    width: 90% !important;
+  }
+}
+</style>

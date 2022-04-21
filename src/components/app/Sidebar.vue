@@ -17,7 +17,7 @@
           </a-tooltip>
         </p>
       </div>
-      <div id="icon" style="position: relative">
+      <div id="icon" style="position: relative; top: 10px">
         <a-dropdown placement="bottomRight">
           <div>
             <font-awesome-icon
@@ -108,7 +108,12 @@
         <Register />
       </a-modal>
     </div>
-    <div class="action" id="create-post" @click="showModal('post')">
+    <div
+      class="action"
+      id="create-post"
+      v-if="setCheckPermisson"
+      @click="createPost()"
+    >
       Đăng tin
     </div>
     <a-modal :footer="null">
@@ -116,34 +121,40 @@
     </a-modal>
     <div class="menu">
       <ul>
-        <li class="menu-items" @click="redirectPage('gioi-thieu')">
+        <li class="menu-items" @click="redirectPage('/lien-he')">
           <font-awesome-icon class="icon" icon="fa-solid fa-id-card" /><span
-            >Giới thiệu</span
+            >Liên hệ</span
           >
         </li>
-        <li class="menu-items" @click="redirectPage('chung-cu-mini')">
-          <font-awesome-icon
-            class="icon"
-            icon="fa-solid fa-house-chimney"
-          /><span>Chung cư mini</span>
+        <li
+          class="menu-items"
+          v-if="setCheckPermisson"
+          @click="redirectPage('/ho-so?type=manage-post')"
+        >
+          <font-awesome-icon class="icon" icon="fa-solid fa-list" /><span
+            >Quản lí tin đăng</span
+          >
         </li>
-        <li class="menu-items" @click="redirectPage('phong-tro')">
-          <font-awesome-icon
-            class="icon"
-            icon="fa-solid fa-house-chimney"
-          /><span>Phòng trọ</span>
+        <li class="menu-items" v-else @click="redirectPage('/lien-he')">
+          <font-awesome-icon class="icon" icon="fa-solid fa-id-card" /><span
+            >Bài đăng yêu thích</span
+          >
         </li>
-        <li class="menu-items" @click="redirectPage('nha-nguyen-can')">
-          <font-awesome-icon
-            class="icon"
-            icon="fa-solid fa-house-chimney"
-          /><span>Nhà nguyên căn</span>
+        <li
+          class="menu-items"
+          @click="redirectPage('/ho-so?type=change-password')"
+        >
+          <font-awesome-icon class="icon" icon="fa-solid fa-key" /><span
+            >Đổi mật khẩu</span
+          >
         </li>
-        <li class="menu-items" @click="redirectPage('chung-cu-nguyen-can')">
-          <font-awesome-icon
-            class="icon"
-            icon="fa-solid fa-house-chimney"
-          /><span>Chung cư nguyên căn</span>
+        <li
+          class="menu-items"
+          @click="redirectPage('/ho-so?type=manage-profile')"
+        >
+          <font-awesome-icon class="icon" icon="fa-solid fa-user" /><span
+            >Quản lí thông tin cá nhân</span
+          >
         </li>
         <li
           v-if="isLogin"
@@ -193,7 +204,7 @@ export default {
       }
     },
     redirectPage(endpoint) {
-      this.$router.push(`/bai-dang?type=${endpoint}`);
+      this.$router.push(endpoint);
       this.closeNav();
     },
   },
