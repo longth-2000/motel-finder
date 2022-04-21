@@ -1,4 +1,3 @@
-import cookie from "../helper/cookie"
 import VueJwtDecode from "vue-jwt-decode";
 
 export default {
@@ -6,7 +5,7 @@ export default {
         Vue.mixin({
             methods: {
                 checkLogged() {
-                    let accessToken = cookie.getCookie('accessToken')
+                    let accessToken = localStorage.getItem('accessToken')
                     if (!accessToken) {
                         return false
                     } else {
