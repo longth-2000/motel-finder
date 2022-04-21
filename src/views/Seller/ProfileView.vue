@@ -198,7 +198,7 @@ export default {
       }
       this.urlParams = urlParams.split("-").map(this.capitalize).join("");
       this.component = this.urlParams;
-      const id = JSON.parse(localStorage.getItem("user")).id;
+      const { id } = this.checkLogged();
       const { data } = await RepositoryFactory.get(
         "article"
       ).filterArticleByUser(id);
@@ -350,5 +350,19 @@ export default {
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
+}
+@media screen and (max-width: 1024px) {
+   .manage-column {
+     display: none;
+   }
+}
+@media screen and (max-width: 568px){
+  .profile-content {
+    width: 100%;
+  }
+  .manage-content {
+    margin: 0;
+    width: 100%;
+  }
 }
 </style>

@@ -8,7 +8,7 @@
             <td class="label">
               Họ và tên <span class="require-sign">(*)</span>
             </td>
-            <td class="form">
+            <td class="form name">
               <a-input
                 placeholder="Nhập tên của bạn"
                 v-model="value.name"
@@ -57,13 +57,7 @@
           <tr>
             <td class="label">Địa chỉ <span class="require-sign">(*)</span></td>
             <td class="form">
-              <div
-                style="
-                  display: flex;
-                  width: 80%;
-                  justify-content: space-between;
-                "
-              >
+              <div class="form-address">
                 <div class="address">
                   <a-select
                     placeholder="Quận/huyện"
@@ -116,7 +110,7 @@
                 <div class="address">
                   <a-input
                     placeholder="Địa chỉ cụ thể"
-                    style="width:100%"
+                    style="width: 100%"
                     v-model="value.address.detail"
                     :class="{
                       'is-invalid-form':
@@ -173,7 +167,7 @@ export default {
       if (oldVal !== undefined) {
         this.value.address = {
           district: this.value.address.district,
-          ward:newVal
+          ward: newVal,
         };
       }
     },
@@ -184,7 +178,32 @@ export default {
 .address {
   width: 30%;
 }
+.form-address {
+  display: flex;
+  width: 80%;
+  justify-content: space-between;
+}
 ::v-deep .ant-calendar-picker-input {
   width: 100% !important;
+}
+@media screen and (max-width: 1024px) {
+}
+@media screen and (max-width: 568px) {
+  .name input {
+    width: 90% !important;
+  }
+  .form-address {
+    display: block;
+  }
+  .address {
+    width: 112%;
+    margin-bottom: 20px;
+  }
+  .address input {
+    width: 100% !important;
+  }
+  ::v-deep .ant-calendar-picker {
+    width: 90%;
+  }
 }
 </style>

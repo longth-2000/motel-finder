@@ -61,7 +61,7 @@
           >/<span>{{ card.price.unit }}</span>
         </div>
       </div>
-      <a :href="'/phong-tro/' + card._id" class="router-link"
+      <a :href="'/bat-dong-san/' + card._id" class="router-link"
         ><div class="motel-select">Xem chi tiết</div></a
       >
     </div>

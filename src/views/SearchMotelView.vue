@@ -22,7 +22,7 @@
         <div class="motel-result">
           <div class="motel-card-detail">
             <a
-              :href="'phong-tro/' + post._id"
+              :href="'/bat-dong-san/' + post._id"
               class="motel-link router-link"
               v-for="(post, index) in posts.data"
               :key="index"
