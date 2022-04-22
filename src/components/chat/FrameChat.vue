@@ -26,16 +26,24 @@
             />
           </div>
         </div>
-        <div v-for="(conver, index) in conversations" :key="index" @click="setConversation(conver)">
+        <div
+          v-for="(conver, index) in conversations.filter(
+            (value, indexFirst, self) => indexFirst === self.findIndex((item) => item.id === value.id)
+
+          )"
+          :key="index"
+          @click="displayChat(conver)"
+        >
           <div class="friend-drawer friend-drawer--onhover">
-            <img class="profile-image" src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/optimus-prime.jpeg" alt="" />
+            <img class="profile-image" :src="conver.avatar" alt="" />
             <div class="text">
-              <h6>Long</h6>
-              <p class="text-muted">hihihih</p>
+              <h6>{{ conver.name }}</h6>
+              <p class="text-muted">{{ conver.message[0].message }}</p>
             </div>
-            <span class="time text-muted small">13:21</span>
+            <span class="time text-muted small">{{
+              timeConverter(conver.message[0].date)
+            }}</span>
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -43,8 +51,7 @@
 </template>
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
-/* import { RepositoryFactory } from "../../repository/factory";
- */export default {
+export default {
   props: {
     conversations: {
       type: Array,
@@ -52,23 +59,50 @@ import { mapActions, mapGetters, mapMutations } from "vuex";
   },
   data() {
     return {
-      participants:[]
+      participants: [],
     };
   },
   methods: {
     ...mapActions("user", ["getUserInfor"]),
-    ...mapMutations("chat", ["setConversation"]),
+    ...mapMutations("chat", ["setConversation", "openChatFrame"]),
     hideChatList() {
+      this.$emit("hide-chat", false);
+    },
+    timeConverter(UNIX_timestamp) {
+      var timestamp = new Date(UNIX_timestamp);
+      var months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      var month = months[timestamp.getMonth()];
+      var date = timestamp.getDate();
+      var hour = timestamp.getHours();
+      var min = timestamp.getMinutes();
+      var time = date + " " + month + " " + hour + ":" + min;
+      return time;
+    },
+    displayChat(conver) {
+      this.setConversation(conver);
+      this.openChatFrame(true);
       this.$emit("hide-chat", false);
     },
   },
   created() {
+    console.log(this.conversations);
   },
-  watch: {
-    
-  },
+  watch: {},
   computed: {
-    ...mapGetters('chat', ['chat']),
+    ...mapGetters("chat", ["chat"]),
   },
 };
 </script>
@@ -158,7 +192,7 @@ input:focus {
 }
 .friend-drawer .text {
   margin-left: 12px;
-  width: 70%;
+  width: 60%;
 }
 .friend-drawer .text h6 {
   margin-top: 6px;
@@ -169,6 +203,7 @@ input:focus {
 }
 .friend-drawer .time {
   color: grey;
+  padding: 15px 0;
 }
 .friend-drawer--onhover:hover {
   background: #74b9ff;

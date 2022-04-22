@@ -1,4 +1,5 @@
 export const state = () => ({
     chat: [],
-    conversation: {}
+    conversation: {},
+    isOpen: false
 })

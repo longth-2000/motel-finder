@@ -76,7 +76,10 @@ export const mutations = {
         });
     },
     setConversation(state, payload) {
-        console.log(payload)
         state.conversation = payload
+    },
+    openChatFrame(state, payload) {
+        state.isOpen = payload
     }
+
 }

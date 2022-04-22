@@ -70,12 +70,16 @@
             <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
             <div>Chat</div>
           </div>
-          <div class="content-chat" v-if="displayChat">
-            <Chat @change-display="changeDisplay" role="admin" :owner="owner_id" />
+          <div class="content-chat" v-if="isOpen">
+            <Chat
+              role="admin"
+              :owner="conversation.id"
+              chatTitle="Trò chuyện với chủ trọ"
+            />
           </div>
         </div>
         <div class="frame-chat" v-if="displayChatList">
-          <Frame @hide-chat="hideChatList" :conversations="privateConversation"/>
+          <Frame @hide-chat="hideChatList" :conversations="conversations" />
         </div>
       </div>
     </section>
@@ -86,16 +90,16 @@ import ManageUser from "../components/admin/ManageUser.vue";
 import ManagePost from "../components/admin/ManagePost.vue";
 import Statistics from "../components/admin/Statistics.vue";
 import Chat from "../components/chat/VueChat.vue";
-import Frame from "../components/chat/FrameChat.vue"
-import { mapGetters } from 'vuex'
-
+import Frame from "../components/chat/FrameChat.vue";
+import { mapGetters } from "vuex";
+import { RepositoryFactory } from "../repository/factory";
 export default {
   components: {
     ManageUser,
     ManagePost,
     Statistics,
     Chat,
-    Frame
+    Frame,
   },
   data() {
     return {
@@ -106,11 +110,10 @@ export default {
         Statistics: false,
       },
       urlParams: "",
-      displayChat: false,
-      displayChatIcon:true,
-      displayChatList:false,
+      displayChatIcon: true,
+      displayChatList: false,
       conversations: [],
-      owner_id: null
+      owner_id: null,
     };
   },
   watch: {
@@ -119,26 +122,48 @@ export default {
       this.isActive[oldVal] = false;
     },
     chat(val) {
-      val.forEach(item => {
+      console.log(this);
+      /* val.forEach(item => {
         if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
             this.conversations.push(item)
         }
+      }); */
+      let conversation = val.filter(
+        (value, index, self) =>
+          index === self.findIndex((item) => item.owner_id === value.owner_id)
+      );
+      console.log(conversation);
+      conversation.forEach(async (value) => {
+        const { data } = await RepositoryFactory.get("user").getUser(
+          value.owner_id
+        );
+        let message = val
+          .filter((message) => message.owner_id === value.owner_id)
+          .map((item) => ({
+            message: item.message,
+            date: item.created_at,
+          }))
+          .sort(function (before, after) {
+            return after.date - before.date;
+          });
+        this.conversations.push({
+          id: value.owner_id,
+          name: data.email,
+          avatar: data.avatar.url,
+          message: message,
+        });
       });
-    }
+      
+    },
   },
   created() {
     this, this.setURL();
   },
-  computed:{
-      ...mapGetters("chat", ['chat']),
-      privateConversation() {
-        console.log(this.conversations)
-        return []
-      }
-    },
-    
-  methods: {
+  computed: {
+    ...mapGetters("chat", ["chat", "isOpen", "conversation"]),
+  },
 
+  methods: {
     setURL() {
       var query = this.$route.query;
       var checkExistedType = Object.prototype.hasOwnProperty.call(
@@ -172,21 +197,17 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    changeDisplay(mess) {
-      this.displayChat = mess;
-    },
+    
     handleChat() {
       this.displayChatList = true;
-      this.displayChatIcon = false
+      this.displayChatIcon = false;
     },
     hideChatList(mess) {
       this.displayChatList = mess;
-      this.displayChatIcon = true
-    }
+      this.displayChatIcon = true;
+    },
   },
-  mounted() {
-
-  },
+  mounted() {},
 };
 </script>
 <style>
@@ -577,8 +598,8 @@ nav .profile-details i {
 }
 .frame-chat {
   position: absolute;
-  bottom: 0;
-  right:0
+  bottom: 40px;
+  right: 20px;
 }
 /* Responsive Media Query */
 @media (max-width: 1260px) {
