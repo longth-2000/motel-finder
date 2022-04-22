@@ -66,15 +66,16 @@
       <div class="home-content">
         <component :is="component"></component>
         <div>
-          <div class="icon-chat">
-            <div @click="handleChat(item)" v-for="(item, index) in conversations " :key="index">
-              <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
-            </div>
+          <div class="icon-chat" @click="handleChat()" v-if="displayChatIcon">
+            <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
             <div>Chat</div>
           </div>
-          <div class="content-chat" v-if="displayChat === true">
+          <div class="content-chat" v-if="displayChat">
             <Chat @change-display="changeDisplay" role="admin" :owner="owner_id" />
           </div>
+        </div>
+        <div class="frame-chat" v-if="displayChatList">
+          <Frame @hide-chat="hideChatList" :conversations="privateConversation"/>
         </div>
       </div>
     </section>
@@ -85,6 +86,7 @@ import ManageUser from "../components/admin/ManageUser.vue";
 import ManagePost from "../components/admin/ManagePost.vue";
 import Statistics from "../components/admin/Statistics.vue";
 import Chat from "../components/chat/VueChat.vue";
+import Frame from "../components/chat/FrameChat.vue"
 import { mapGetters } from 'vuex'
 
 export default {
@@ -93,6 +95,7 @@ export default {
     ManagePost,
     Statistics,
     Chat,
+    Frame
   },
   data() {
     return {
@@ -104,6 +107,8 @@ export default {
       },
       urlParams: "",
       displayChat: false,
+      displayChatIcon:true,
+      displayChatList:false,
       conversations: [],
       owner_id: null
     };
@@ -119,7 +124,6 @@ export default {
             this.conversations.push(item)
         }
       });
-      console.log('admin view', this.conversations)
     }
   },
   created() {
@@ -127,6 +131,10 @@ export default {
   },
   computed:{
       ...mapGetters("chat", ['chat']),
+      privateConversation() {
+        console.log(this.conversations)
+        return []
+      }
     },
     
   methods: {
@@ -167,10 +175,14 @@ export default {
     changeDisplay(mess) {
       this.displayChat = mess;
     },
-    handleChat(item) {
-      this.displayChat = true;
-      this.owner_id = item.owner_id
+    handleChat() {
+      this.displayChatList = true;
+      this.displayChatIcon = false
     },
+    hideChatList(mess) {
+      this.displayChatList = mess;
+      this.displayChatIcon = true
+    }
   },
   mounted() {
 
@@ -562,6 +574,11 @@ nav .profile-details i {
   top: 200px;
   z-index: 2;
   right: 20px;
+}
+.frame-chat {
+  position: absolute;
+  bottom: 0;
+  right:0
 }
 /* Responsive Media Query */
 @media (max-width: 1260px) {

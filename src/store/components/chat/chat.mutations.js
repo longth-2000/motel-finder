@@ -1,4 +1,4 @@
-import {db} from '../../../fire'
+import { db } from '../../../fire'
 import { collection, getDocs, onSnapshot, orderBy } from "firebase/firestore"
 // export const mutations = {
 //     chat: (state) => {
@@ -28,51 +28,55 @@ import { collection, getDocs, onSnapshot, orderBy } from "firebase/firestore"
 //     },
 // }
 export const mutations = {
-  chat: (state) => {
-      getDocs(collection(db, "conversations"), orderBy('created_at', 'desc')).then(res => {
-          res.forEach((doc) => {
-            const data = doc.data()
-            data.id = doc.id
-            state.chat.push(data)
-          });
-      })
-      // onSnapshot(collection(db, "notifications"), (res) => {
-      //     state
-      // });
-      onSnapshot(collection(db, "conversations"), (snapshot) => {
-        if(state.chat) {
-          snapshot.docChanges().forEach((change) => {
-            const data = change.doc.data()
-            data.id = change.doc.id
-            if (change.type === "added") {
-              if(!(state.chat.find((item) => item.id == change.doc.id))) {
-                state.chat.push(data)
-              }
-              //   console.log("New city: ", change.doc.id);
-            }
-            if (change.type === "modified") {
-              let noti = state.chat
-              const index = noti.findIndex((item) => item.id == change.doc.id)
-              noti[index] = data
-              state.chat = [...noti]
-            }
-              //   console.log("New city: ", change.doc.id);
-            if (change.type === "removed") {
-              let noti = state.chat
-              const index = noti.findIndex((item) => item.id == change.doc.id)
-              noti.splice(index, 1)
+    chat: (state) => {
+        getDocs(collection(db, "conversations"), orderBy('created_at', 'desc')).then(res => {
+                res.forEach((doc) => {
+                    const data = doc.data()
+                    data.id = doc.id
+                    state.chat.push(data)
+                });
+            })
+            // onSnapshot(collection(db, "notifications"), (res) => {
+            //     state
+            // });
+        onSnapshot(collection(db, "conversations"), (snapshot) => {
+            if (state.chat) {
+                snapshot.docChanges().forEach((change) => {
+                    const data = change.doc.data()
+                    data.id = change.doc.id
+                    if (change.type === "added") {
+                        if (!(state.chat.find((item) => item.id == change.doc.id))) {
+                            state.chat.push(data)
+                        }
+                        //   console.log("New city: ", change.doc.id);
+                    }
+                    if (change.type === "modified") {
+                        let noti = state.chat
+                        const index = noti.findIndex((item) => item.id == change.doc.id)
+                        noti[index] = data
+                        state.chat = [...noti]
+                    }
+                    //   console.log("New city: ", change.doc.id);
+                    if (change.type === "removed") {
+                        let noti = state.chat
+                        const index = noti.findIndex((item) => item.id == change.doc.id)
+                        noti.splice(index, 1)
 
-              state.chat = [...noti]
-              //   console.log("New city: ", change.doc.id);
+                        state.chat = [...noti]
+                            //   console.log("New city: ", change.doc.id);
+                    }
+                    //   if (change.type === "modified") {
+                    //       console.log("Modified city: ", change.doc.id);
+                    //   }
+                    //   if (change.type === "removed") {
+                    //       console.log("Removed city: ", change.doc.id);
+                    //   }
+                });
             }
-          //   if (change.type === "modified") {
-          //       console.log("Modified city: ", change.doc.id);
-          //   }
-          //   if (change.type === "removed") {
-          //       console.log("Removed city: ", change.doc.id);
-          //   }
-          });
-        }       
         });
-  },
+    },
+    setConversation(state, payload) {
+        console.log(payload)
+        state.conversation = payload
+    }
 }
