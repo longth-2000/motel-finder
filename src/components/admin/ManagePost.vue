@@ -173,7 +173,7 @@ export default {
       try {
         await RepositoryFactory.get('article').updateState(article._id, state)
         await addDoc(collection(db, "notifications"), {
-          user_id: article.ownerId,
+          user: article.ownerId,
           detail: `Bài đăng của bạn đã ${state.status  == this.postStatus.agree ? 'được phê duyệt' : 'bị từ chối'}`,
           state: state.status,
           type: notificationTypes.approveFromAdmin,
