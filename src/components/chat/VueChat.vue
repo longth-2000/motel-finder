@@ -83,7 +83,6 @@ export default {
       conversations: [],
       chatItems: [],
       visible: true,
-
       myself: {},
       messages: [],
       placeholder: "send your message",
@@ -134,7 +133,7 @@ export default {
         },
       },
       timestampConfig: {
-        format: "HH:mm",
+        format: "HH:mm dd/MM/yyyy",
         relative: false,
       },
       // there are other options, you can check them here
@@ -179,6 +178,24 @@ export default {
   },
   methods: {
     ...mapMutations("chat", ["setConversation", "openChatFrame"]),
+    timeConverter(UNIX_timestamp) {
+      if (UNIX_timestamp) {
+        var timestamp = new Date(UNIX_timestamp);
+        var month = timestamp.getMonth();
+        var date = timestamp.getDate();
+        var hour = timestamp.getHours();
+        var min = timestamp.getMinutes();
+        var sec = timestamp.getSeconds();
+        return {
+          year: 2011,
+          month: month,
+          day: date,
+          hour: hour,
+          minute: min,
+          second: sec,
+        };
+      }
+    },
     onType: function () {
       //here you can set any behavior
     },
@@ -268,7 +285,7 @@ export default {
             content: item.message,
             myself: item.role == "owner" ? true : false,
             participantId: 1,
-            timestamp: new Date(item.created_at),
+            timestamp: this.timeConverter(item.created_at),
             type: "text",
           });
         });
@@ -284,7 +301,7 @@ export default {
             content: item.message,
             myself: item.role == "admin" ? true : false,
             participantId: 1,
-            timestamp: new Date(item.created_at),
+            timestamp: this.timeConverter(item.created_at),
             type: "text",
           });
         });
@@ -305,7 +322,7 @@ export default {
           content: item.message,
           myself: item.role == "admin" ? true : false,
           participantId: 1,
-          timestamp: new Date(item.created_at),
+          timestamp: this.timeConverter(item.created_at),
           type: "text",
         });
       });
@@ -325,7 +342,7 @@ export default {
           content: item.message,
           myself: item.role == "owner" ? true : false,
           participantId: 1,
-          timestamp: new Date(item.created_at),
+          timestamp: this.timeConverter(item.created_at),
           type: "text",
         });
       });
@@ -338,11 +355,12 @@ export default {
         return new Date(a.created_at) - new Date(b.created_at);
       });
       chatInCoversation.map((item) => {
+        console.log(this.timeConverter(item.created_at));
         this.messages.push({
           content: item.message,
           myself: item.role == "admin" ? true : false,
           participantId: 1,
-          timestamp: new Date(item.created_at),
+          timestamp: this.timeConverter(item.created_at),
           type: "text",
         });
       });

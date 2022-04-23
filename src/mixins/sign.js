@@ -20,7 +20,7 @@ var signMixin = {
         handleAfterSign(data) {
             let { accessToken, refreshToken } = data;
             let decodeToken = VueJwtDecode.decode(accessToken);
-            localStorage.setItem("accessToken", accessToken);
+            document.cookie = `accessToken=${accessToken}`;
             localStorage.setItem("refreshToken", refreshToken);
             const { role } = decodeToken;
             let endpoint =

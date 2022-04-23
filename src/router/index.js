@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import VueJwtDecode from "vue-jwt-decode";
+import cookie from "../helper/cookie"
+
 Vue.use(Router)
 export const router = new Router({
     mode: 'history',
@@ -93,7 +95,7 @@ export const router = new Router({
 router.beforeEach((to, from, next) => {
     const publicPages = ['Contact', 'Home', 'Auth', 'Admin', 'MotelSearch', 'ResetPassword', 'MotelDetail'];
     const authRequired = !publicPages.includes(to.name);
-    const loggedIn = localStorage.getItem('accessToken')
+    const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
         console.log(VueJwtDecode.decode(loggedIn))
         const { id } = VueJwtDecode.decode(loggedIn);

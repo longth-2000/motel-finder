@@ -1,11 +1,12 @@
 import VueJwtDecode from "vue-jwt-decode";
+import cookie from "../helper/cookie"
 
 export default {
     install(Vue) {
         Vue.mixin({
             methods: {
                 checkLogged() {
-                    let accessToken = localStorage.getItem('accessToken')
+                    let accessToken = cookie.getCookie('accessToken')
                     if (!accessToken) {
                         return false
                     } else {
