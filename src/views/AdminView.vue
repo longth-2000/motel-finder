@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="frame-chat" v-if="displayChatList">
-          <Frame @hide-chat="hideChatList" :conversations="conversations" />
+          <Frame @hide-chat="hideChatList" :conversations="conversations" :updated="updated" />
         </div>
       </div>
     </section>
@@ -114,6 +114,8 @@ export default {
       displayChatList: false,
       conversations: [],
       owner_id: null,
+      mark: [],
+      updated: new Date()
     };
   },
   watch: {
@@ -122,7 +124,10 @@ export default {
       this.isActive[oldVal] = false;
     },
     chat(val) {
-      console.log(this);
+      this.updated = new Date()
+
+      if(this.mark.length == val.length) return
+      this.mark = [...val]
       /* val.forEach(item => {
         if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
             this.conversations.push(item)
@@ -130,32 +135,31 @@ export default {
       }); */
       let conversation = val.filter(
         (value, index, self) =>
-          index === self.findIndex((item) => item.owner_id === value.owner_id)
+          index === self.findIndex((item) => value.owner_id === item.owner_id)
       );
-      console.log(conversation);
-      conversation.forEach(async (value) => {
-        const { data } = await RepositoryFactory.get("user").getUser(
-          value.owner_id
-        );
-        let message = val
-          .filter((message) => message.owner_id === value.owner_id)
-          .map((item) => ({
-            message: item.message,
-            date: item.created_at,
-          }))
-          .sort(function (before, after) {
-            return after.date - before.date;
+      this.conversations = []
+        conversation.forEach(async (value) => {
+          const { data } = await RepositoryFactory.get("user").getUser(
+            value.owner_id
+          );
+          let message = val
+            .filter((message) => message.owner_id === value.owner_id)
+            .map((item) => ({
+              message: item.message,
+              date: item.created_at,
+            }))
+            .sort(function (before, after) {
+              return after.date - before.date;
+            });
+          this.conversations.push({
+            id: value.owner_id,
+            name: data.email,
+            avatar: data.avatar.url,
+            message: message,
           });
-        this.conversations.push({
-          id: value.owner_id,
-          name: data.email,
-          avatar: data.avatar.url,
-          message: message,
         });
-      });
-      
-    },
-  },
+      }
+     },
   created() {
     this, this.setURL();
   },

@@ -1,5 +1,7 @@
 import {db} from './../../../fire'
 import { collection, getDocs, onSnapshot, orderBy } from "firebase/firestore"
+let isFirst = true;
+
 export const mutations = {
     notifications: (state) => {
         getDocs(collection(db, "notifications"), orderBy('date', 'desc')).then(res => {
@@ -13,6 +15,10 @@ export const mutations = {
         //     state
         // });
         onSnapshot(collection(db, "notifications"), (snapshot) => {
+          if(isFirst) {
+            isFirst = false
+            return 
+          }
           if(state.notifications) {
             snapshot.docChanges().forEach((change) => {
               const data = change.doc.data()

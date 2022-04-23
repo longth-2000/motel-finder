@@ -56,10 +56,16 @@ export default {
     conversations: {
       type: Array,
     },
+    updated: {
+      type: Date,
+    },
+
   },
   data() {
     return {
       participants: [],
+      time: null,
+      convers: this.conversations
     };
   },
   methods: {
@@ -100,7 +106,11 @@ export default {
   created() {
     console.log(this.conversations);
   },
-  watch: {},
+  watch: {
+    updated(val) {
+      this.time = val
+    }
+  },
   computed: {
     ...mapGetters("chat", ["chat"]),
   },

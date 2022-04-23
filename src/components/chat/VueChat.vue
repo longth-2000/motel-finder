@@ -225,6 +225,7 @@ export default {
       this.openChatFrame(false);
       this.visible = false;
       console.log(this.userInfor);
+      this.$emit('onClose', true)
     },
     onImageSelected(files) {
       let src = null

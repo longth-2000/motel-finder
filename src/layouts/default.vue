@@ -15,7 +15,7 @@
       </div>
       <slot ></slot>
       <div class="content-chat" v-if="displayChat === true">
-        <Chat chatTitle="Trò chuyện với admin" @change-display="changeDisplay" role="owner" />
+        <Chat chatTitle="Trò chuyện với admin" @change-display="changeDisplay" role="owner" @onClose="handleClose" />
       </div>
     </div>
     <div class="footer">
@@ -92,8 +92,11 @@ export default {
       this.displayChat = mess;
     },
     handleChat() {
-      this.displayChat = true;
+      this.displayChat = !this.displayChat;
     },
+    handleClose() {
+      this.displayChat = false;
+    }
   },
 };
 </script>
