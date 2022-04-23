@@ -66,14 +66,14 @@
       <div class="home-content">
         <component :is="component"></component>
         <div>
-          <div class="icon-chat" @click="handleChat()">
-            <div>
+          <div class="icon-chat">
+            <div @click="handleChat(item)" v-for="(item, index) in conversations " :key="index">
               <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
             </div>
             <div>Chat</div>
           </div>
           <div class="content-chat" v-if="displayChat === true">
-            <Chat @change-display="changeDisplay" />
+            <Chat @change-display="changeDisplay" role="admin" :owner="owner_id" />
           </div>
         </div>
       </div>
@@ -85,6 +85,7 @@ import ManageUser from "../components/admin/ManageUser.vue";
 import ManagePost from "../components/admin/ManagePost.vue";
 import Statistics from "../components/admin/Statistics.vue";
 import Chat from "../components/chat/VueChat.vue";
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -103,6 +104,8 @@ export default {
       },
       urlParams: "",
       displayChat: false,
+      conversations: [],
+      owner_id: null
     };
   },
   watch: {
@@ -110,11 +113,24 @@ export default {
       this.isActive[newVal] = true;
       this.isActive[oldVal] = false;
     },
+    chat(val) {
+      val.forEach(item => {
+        if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
+            this.conversations.push(item)
+        }
+      });
+      console.log('admin view', this.conversations)
+    }
   },
   created() {
     this, this.setURL();
   },
+  computed:{
+      ...mapGetters("chat", ['chat']),
+    },
+    
   methods: {
+
     setURL() {
       var query = this.$route.query;
       var checkExistedType = Object.prototype.hasOwnProperty.call(
@@ -151,9 +167,13 @@ export default {
     changeDisplay(mess) {
       this.displayChat = mess;
     },
-    handleChat() {
+    handleChat(item) {
       this.displayChat = true;
+      this.owner_id = item.owner_id
     },
+  },
+  mounted() {
+
   },
 };
 </script>
@@ -519,7 +539,7 @@ nav .profile-details i {
 }
 .icon-chat {
   width: 50px;
-  height: 50px;
+  height: auto;
   background: #096dd9;
   position: fixed;
   z-index: 2;

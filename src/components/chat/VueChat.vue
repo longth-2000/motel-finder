@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="max-height: 500px; overflow: auto">
       <Chat v-if="visible"
         :participants="participants"
         :myself="setMyself"
@@ -31,58 +31,63 @@
 import {Chat} from 'vue-quick-chat';
 import 'vue-quick-chat/dist/vue-quick-chat.css';
 import { mapGetters } from 'vuex'
+import { collection, addDoc } from "firebase/firestore"
+import {db} from './../../fire'
 export default {
+    props: ['role', 'chatTitle', 'owner'],
     components: {
         Chat
     },
     computed:{
         ...mapGetters('user', ['userInfor']),
+        ...mapGetters("chat", ['chat']),
+
         setMyself() {
             return {
-                name:this.userInfor.name,
+                // name:this.userInfor.name,
                 id:2,
-                profilePicture:this.userInfor.avatar.url
+                // profilePicture:this.userInfor.avatar.url
             }
         } 
     },
     
     data() {
         return {
+            conversations: [],
+            chatItems: [],
             visible: true,
             participants: [
                 {
-                    name: 'Admin',
+                    name: this.role == 'owner' ? 'Admin': '',
                     id: 1,
-                    profilePicture: 'https://upload.wikimedia.org/wikipedia/en/thumb/a/a1/NafSadh_Profile.jpg/768px-NafSadh_Profile.jpg'
+                    profilePicture: 'https://file4.batdongsan.com.vn/images/default-user-avatar-blue.jpg'
                 }
             ],
             myself: {
-                
             },
             messages: [
-                {
-                    content: 'received messages',
-                    myself: false,
-                    participantId: 1,
-                    timestamp: {year: 2019, month: 3, day: 5, hour: 20, minute: 10, second: 3, millisecond: 123},
-                    type: 'text'
-                },
-                {
-                    content: 'sent messages',
-                    myself: true,
-                    participantId: 3,
-                    timestamp: {year: 2019, month: 4, day: 5, hour: 19, minute: 10, second: 3, millisecond: 123},
-                    type: 'text'
-                },
-                {
-                    content: 'other received messages',
-                    myself: false,
-                    participantId: 2,
-                    timestamp: {year: 2019, month: 5, day: 5, hour: 10, minute: 10, second: 3, millisecond: 123},
-                    type: 'text'
-                }
+                // {
+                //     content: 'received messages',
+                //     myself: false,
+                //     participantId: 1,
+                //     timestamp: {year: 2019, month: 3, day: 5, hour: 20, minute: 10, second: 3, millisecond: 123},
+                //     type: 'text'
+                // },
+                // {
+                //     content: 'received messages',
+                //     myself: true,
+                //     participantId: 1,
+                //     timestamp: new Date().now,
+                //     type: 'text'
+                // },
+                // {
+                //     content: 'received messages',
+                //     myself: true,
+                //     participantId: 1,
+                //     timestamp: {year: 2019, month: 3, day: 5, hour: 20, minute: 10, second: 3, millisecond: 123},
+                //     type: 'text'
+                // },
             ],
-            chatTitle: 'Trò chuyện với admin',
             placeholder: 'send your message',
             colors: {
                 header: {
@@ -116,24 +121,6 @@ export default {
             closeButtonIconSize: "20px",
             asyncMode: false,
             toLoad: [
-                {
-                    content: 'Hey, John Doe! How are you today?',
-                    myself: false,
-                    participantId: 2,
-                    timestamp: {year: 2011, month: 3, day: 5, hour: 10, minute: 10, second: 3, millisecond: 123},
-                    uploaded: true,
-                    viewed: true,
-                    type: 'text'
-                },
-                {
-                    content: "Hey, Adam! I'm feeling really fine this evening.",
-                    myself: true,
-                    participantId: 3,
-                    timestamp: {year: 2010, month: 0, day: 5, hour: 19, minute: 10, second: 3, millisecond: 123},
-                    uploaded: true,
-                    viewed: true,
-                    type: 'text'
-                },
             ],
             scrollBottom: {
                 messageSent: true,
@@ -142,7 +129,7 @@ export default {
             displayHeader:true,
             profilePictureConfig: {
                 others: true,
-                myself: true,
+                // myself: true,
                 styles: {
                     width: '30px',
                     height: '30px',
@@ -212,6 +199,23 @@ export default {
             * yet to the server you have to add the message into the array
             */
             this.messages.push(message);
+            if(this.role == 'owner') {
+                addDoc(collection(db, "conversations"), {
+                    owner_id: this.userInfor._id  || '',
+                    message: message.content,
+                    created_at: Date.now(),
+                    role: this.role,
+                });
+            } else {
+                addDoc(collection(db, "conversations"), {
+                    owner_id: this.owner,
+                    message: message.content,
+                    created_at: Date.now(),
+                    role: this.role,
+                });
+            }
+                
+
 
             /*
             * you can update message state after the server response
@@ -245,6 +249,103 @@ export default {
              * You can add your code here to do whatever you need with the image clicked. A common situation is to display the image clicked in full screen.
              */
             console.log('Image clicked', message.src)
+        }
+    },
+    watch: {
+        chat(val) {
+            this.messages = []
+            if(this.role == 'owner') {
+            console.log('owner', this.userInfor._id)
+            this.chatItems = val.filter((item) => item.owner_id == this.userInfor._id)
+            this.chatItems.sort(function(a,b){
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            this.chatItems.map((item) => {
+                this.messages.push(
+                    {
+                        content: item.message,
+                        myself: item.role == 'owner' ? true : false,
+                        participantId: 1,
+                        timestamp: new Date(item.created_at),
+                        type: 'text'
+                    },
+                )
+            })
+            } else {
+                const chatInCoversation = val.filter((item) => item.owner_id == this.owner )
+                chatInCoversation.sort(function(a,b){
+                    return new Date(a.created_at) - new Date(b.created_at);
+                });
+                chatInCoversation.map((item) => {
+                    this.messages.push(
+                        {
+                            content: item.message,
+                            myself: item.role == 'admin' ? true : false,
+                            participantId: 1,
+                            timestamp: new Date(item.created_at),
+                            type: 'text'
+                        },
+                    )
+                })
+            }
+        },
+        conversations(val) {
+            console.log('conversations', val)
+        },
+        owner(val) {
+            const chatInCoversation = this.chat.filter((item) => item.owner_id == val )
+            chatInCoversation.sort(function(a,b){
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            chatInCoversation.map((item) => {
+                this.messages.push(
+                    {
+                        content: item.message,
+                        myself: item.role == 'admin' ? true : false,
+                        participantId: 1,
+                        timestamp: new Date(item.created_at),
+                        type: 'text'
+                    },
+                )
+            })
+        }
+    },
+    mounted() {
+        this.messages = []
+        if(this.role == 'owner') {
+            this.chatItems = this.chat.filter((item) => item.owner_id == this.userInfor._id)
+            this.chatItems.sort(function(a,b){
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            this.chatItems.map((item) => {
+                this.messages.push(
+                    {
+                        content: item.message,
+                        myself: item.role == 'owner' ? true : false,
+                        participantId: 1,
+                        timestamp: new Date(item.created_at),
+                        type: 'text'
+                    },
+                )
+            })
+        } else {
+            console.log('chat amin', this.chat)
+            const chatInCoversation = this.chat.filter((item) => item.owner_id == this.owner )
+            chatInCoversation.sort(function(a,b){
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            chatInCoversation.map((item) => {
+                this.messages.push(
+                    {
+                        content: item.message,
+                        myself: item.role == 'admin' ? true : false,
+                        participantId: 1,
+                        timestamp: new Date(item.created_at),
+                        type: 'text'
+                    },
+                )
+            })
+            console.log('chat in con', chatInCoversation)
         }
     }
 }
