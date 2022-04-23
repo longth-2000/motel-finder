@@ -74,7 +74,6 @@ import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
 import parentValidationMixin from "../../mixins/validation/postValidation/parentValidation";
 import { RepositoryFactory } from "../../repository/factory";
 import { userState } from "../../constants/userState";
-import cookie from "../../helper/cookie";
 import VueJwtDecode from "vue-jwt-decode";
 
 import { mapActions, mapGetters, mapMutations } from "vuex";
@@ -280,7 +279,7 @@ export default {
     this.showModal("alert");
   },
   async beforeRouteEnter(to, from, next) {
-    let accessToken = cookie.getCookie("accessToken");
+    let accessToken = localStorage.getItem("accessToken");
     const { id } = VueJwtDecode.decode(accessToken);
     const { data } = await RepositoryFactory.get("user").getUser(id);
     let state = data.state;

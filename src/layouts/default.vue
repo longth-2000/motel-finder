@@ -15,7 +15,7 @@
       </div>
       <slot ></slot>
       <div class="content-chat" v-if="displayChat === true">
-        <Chat @change-display="changeDisplay" />
+        <Chat chatTitle="Trò chuyện với admin" @change-display="changeDisplay" role="owner" />
       </div>
     </div>
     <div class="footer">

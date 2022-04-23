@@ -1,7 +1,5 @@
-import cookie from "./cookie"
-
 function authHeader() {
-    let accessToken = cookie.getCookie("accessToken");
+    let accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
         return { Authorization: 'Bearer ' + accessToken };
     } else {

@@ -1,4 +1,3 @@
-import cookie from "../helper/cookie"
 import { subject } from "@casl/ability";
 
 var authenticationMixin = {
@@ -20,7 +19,7 @@ var authenticationMixin = {
             this.isLogin = this.checkLogged();
         },
         isLogout() {
-            cookie.deleteCookie('accessToken');
+            localStorage.removeItem('accessToken');
             window.location.href = "/"
         },
         createPost() {
