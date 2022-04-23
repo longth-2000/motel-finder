@@ -1,5 +1,5 @@
 <template>
-  <div style="max-height: 500px; overflow: auto; width: 100%">
+  <div style="height: 550px; width: 100%">
     <Chat
       v-if="visible"
       :participants="setPaticipant"

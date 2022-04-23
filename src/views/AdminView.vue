@@ -597,8 +597,8 @@ nav .profile-details i {
   right: 20px;
 }
 .frame-chat {
-  position: absolute;
-  bottom: 40px;
+  position: fixed;
+  bottom: 20px;
   right: 20px;
 }
 /* Responsive Media Query */
