@@ -159,6 +159,7 @@ export default {
             let decodeToken = VueJwtDecode.decode(accessToken);
             document.cookie = `accessToken=${accessToken}`;
             localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("accessToken", accessToken);
             const { role } = decodeToken;
             let endpoint =
                 role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
