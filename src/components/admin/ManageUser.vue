@@ -99,6 +99,9 @@
 <script>
 import { RepositoryFactory } from '../../repository/factory';
 import { userState } from './../../constants/userState'
+import { collection, addDoc } from "firebase/firestore"
+import {db} from './../../fire'
+import { notificationTypes } from './../../constants/notificationTypes'
 
 export default {
   data() {
@@ -115,7 +118,8 @@ export default {
         page: 1,
         limit: 5
       },
-      userState: userState
+      userState: userState,
+      notificationTypes: notificationTypes
     }
   },
   methods:{
@@ -134,6 +138,15 @@ export default {
     async handleApprove(owner, state) {
       try {
         await RepositoryFactory.get('user').updateState(owner._id, state);
+        await addDoc(collection(db, "notifications"), {
+          user_id: owner._id,
+          detail: `Tài khoản của bạn đã ${state.state  == this.userState.agree ? 'được phê duyệt' : 'bị từ chối'}`,
+          state: state.state,
+          type: notificationTypes.approveFromAdmin,
+          date: new Date().toISOString(),
+          is_read: false,
+          post_id: ''
+        });
       } catch(err) {
         console.log('err', err)
       }
