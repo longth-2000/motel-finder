@@ -283,7 +283,7 @@ export default {
   watch: {
     notifications(val) {
       if(val) {
-        this.notificationItems = val.filter((item) => item.is_read == false && item.user_id == this.user._id)
+        this.notificationItems = val.filter((item) => item.is_read == false && item.user._id == this.user._id)
         if(this.notificationItems.length > 3) {
           this.notificationShow = this.notificationItems.slice(0,3)
         } else {
@@ -292,7 +292,7 @@ export default {
       }
     },
     'user._id'(val) {
-        this.notificationItems = this.notifications.filter((item) => item.is_read == false && item.user_id == val)
+        this.notificationItems = this.notifications.filter((item) => item.is_read == false && item.user._id == val)
         if(this.notificationItems.length > 3) {
           this.notificationShow = this.notificationItems.slice(0,3)
         } else {
