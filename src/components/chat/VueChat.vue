@@ -34,7 +34,7 @@ import { Chat } from "vue-quick-chat";
 import "vue-quick-chat/dist/vue-quick-chat.css";
 import { mapGetters, mapMutations } from "vuex";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "./../../fire";
+import { db, uploadFile } from "./../../fire";
 export default {
   props: ["role", "chatTitle", "owner"],
   components: {
@@ -226,23 +226,48 @@ export default {
       this.visible = false;
       console.log(this.userInfor);
     },
-    onImageSelected(files, message) {
-      let src =
-        "https://149364066.v2.pressablecdn.com/wp-content/uploads/2017/03/vue.jpg";
-      this.messages.push(message);
-      /**
-       * This timeout simulates a requisition that uploads the image file to the server.
-       * It's up to you implement the request and deal with the response in order to
-       * update the message status and the message URL
-       */
-      setTimeout(
-        (res) => {
-          message.uploaded = true;
-          message.src = res.src;
-        },
-        3000,
-        { src }
-      );
+    onImageSelected(files) {
+      let src = null
+      uploadFile(files.file).then(res => {
+        src = res
+        console.log('src', src)
+        this.messages.push(files.message);
+        /**
+         * This timeout simulates a requisition that uploads the image file to the server.
+         * It's up to you implement the request and deal with the response in order to
+         * update the message status and the message URL
+         */
+        setTimeout(
+          (res) => {
+            files.message.uploaded = true;
+            files.message.src = res.src;
+            if (this.role == "owner") {
+              addDoc(collection(db, "conversations"), {
+                owner_id: this.userInfor._id || "",
+                message: files.message.content,
+                src: files.message.src,
+                preview: files.message.preview,
+                created_at: Date.now(),
+                role: this.role,
+                type: files.message.type,
+              });
+            } else {
+              addDoc(collection(db, "conversations"), {
+                owner_id: this.owner,
+                message: files.message.content,
+                src: files.message.src,
+                preview: files.message.preview,
+                created_at: Date.now(),
+                role: this.role,
+                type: files.message.type
+              });
+            }
+          },
+          3000,
+          { src }
+        );
+      })
+
     },
     onImageClicked(message) {
       /**
@@ -269,7 +294,10 @@ export default {
             myself: item.role == "owner" ? true : false,
             participantId: 1,
             timestamp: new Date(item.created_at),
-            type: "text",
+            type: item.type ? item.type : "text",
+            src: item.src ? item.src : '',
+            preview: item.src ? item.src : '',
+            uploaded: true               
           });
         });
       } else {
@@ -285,7 +313,10 @@ export default {
             myself: item.role == "admin" ? true : false,
             participantId: 1,
             timestamp: new Date(item.created_at),
-            type: "text",
+            type: item.type ? item.type : "text",
+            src: item.src ? item.src : '',
+            preview: item.src ? item.src : '',
+            uploaded: true
           });
         });
       }
@@ -306,7 +337,10 @@ export default {
           myself: item.role == "admin" ? true : false,
           participantId: 1,
           timestamp: new Date(item.created_at),
-          type: "text",
+          type: item.type ? item.type : "text",
+          src: item.src ? item.src : '',
+          preview: item.src ? item.src : '',
+          uploaded: true
         });
       });
     },
@@ -326,7 +360,10 @@ export default {
           myself: item.role == "owner" ? true : false,
           participantId: 1,
           timestamp: new Date(item.created_at),
-          type: "text",
+          type: item.type ? item.type : "text",
+          src: item.src ? item.src : '',
+          preview: item.src ? item.src : '',
+          uploaded: true
         });
       });
     } else {
@@ -343,10 +380,12 @@ export default {
           myself: item.role == "admin" ? true : false,
           participantId: 1,
           timestamp: new Date(item.created_at),
-          type: "text",
+          type: item.type ? item.type : "text",
+          src: item.src ? item.src : '',
+          preview: item.src ? item.src : '',
+          uploaded: true
         });
       });
-      console.log("chat in con", chatInCoversation);
     }
   },
 };
