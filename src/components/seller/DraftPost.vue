@@ -93,7 +93,7 @@
         v-model="current"
         :total="50"
         @change="getMultipleArticle"
-        style="float: right"
+        style="text-align:center; margin-top:50px"
       />
     </div>
   </div>

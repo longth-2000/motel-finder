@@ -68,6 +68,7 @@ export const router = new Router({
             },
             component: () =>
                 import ("../views/AdminView.vue"),
+
         },
         {
             path: "/draft",
@@ -97,10 +98,10 @@ router.beforeEach((to, from, next) => {
     const authRequired = !publicPages.includes(to.name);
     const loggedIn = cookie.getCookie('accessToken');
     if (to.path === "/ho-so") {
-        console.log(VueJwtDecode.decode(loggedIn))
+        const LIMIT = 5
         const { id } = VueJwtDecode.decode(loggedIn);
         to.query.id = id;
-        to.query.limit = 5;
+        to.query.limit = LIMIT;
         next();
     }
     if (to.query.type === 'draft-post') {

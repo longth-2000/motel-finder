@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div id="title-component-profile">
       <span>TIN ĐÃ ĐĂNG</span>
     </div>
@@ -90,15 +90,13 @@
     <div
       id="content"
       style="
-       
         background: white;
-        padding: 10px 0;
+        padding: 10px 10px;
         border-radius: 5px;
         height: 730px;
       "
-      v-if="articleArray.length > 0"
     >
-      <table class="table" >
+      <table class="table" v-if="articleArray.length > 0">
         <thead>
           <tr>
             <th>
@@ -242,12 +240,34 @@
                   Action
                   <a-menu slot="overlay">
                     <a-menu-item key="1">
-                      <a-icon type="delete" />Xóa
+                      <a-popconfirm
+                        title="Bạn có chăc chắn muốn xóa bài đăng này?"
+                        ok-text="Yes"
+                        cancel-text="No"
+                        @confirm="confirmDelete(post._id)"
+                      >
+                        <a-icon type="delete" />Xóa
+                      </a-popconfirm>
                     </a-menu-item>
                     <a-menu-item key="2">
-                      <a-icon type="edit" />Sửa
+                      <a
+                        :href="'/dang-tin?id=' + post._id + '&status=waiting'"
+                        class="router-link"
+                        ><a-icon type="edit" style="margin-right: 8px" />Sửa</a
+                      >
                     </a-menu-item>
-                    <a-menu-item key="3">
+                    <a-menu-item
+                      key="3"
+                      :disabled="post.isPaid ? true : false"
+                      @click="
+                        redirectPayment(
+                          post._id,
+                          post.moneyPayment,
+                          'create',
+                          null
+                        )
+                      "
+                    >
                       <a-icon type="money-collect" />Thanh toán
                     </a-menu-item>
                   </a-menu>
@@ -257,16 +277,16 @@
           </tr>
         </tbody>
       </table>
+      <div v-else class="empty-post-notify">
+        <slot></slot>
+      </div>
+      <a-pagination
+        v-model="current"
+        :total="50"
+        @change="getMultipleArticle"
+        style="margin-top: 50px; text-align: center"
+      />
     </div>
-    <div v-else class="empty-post-notify">
-      <slot></slot>
-    </div>
-    <a-pagination
-      v-model="current"
-      :total="50"
-      @change="getMultipleArticle"
-      style="float: right; margin-top: -50px"
-    />
   </div>
 </template>
 <script>

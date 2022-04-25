@@ -1,7 +1,6 @@
 <template>
   <div class="header">
     <div class="header-left">
-      
       <div class="header-logo">
         <img src="../../assets/logo.png" alt="" />
       </div>
@@ -12,7 +11,7 @@
               <router-link to="/"> <span>Trang chủ</span></router-link>
             </li>
             <li class="menu-items">
-              <router-link to="/lien-he"> <span>Giới thiệu</span></router-link>
+              <router-link to="/lien-he"> <span>Liên hệ</span></router-link>
             </li>
             <li class="menu-items">
               <a-dropdown>
@@ -91,29 +90,46 @@
                   icon="fa-regular fa-bell"
                   style="font-size: 25px"
                 />
-                <div class="nofifycation-data">{{notificationItems.length}}</div>
+                <div class="nofifycation-data">
+                  {{ notificationItems.length }}
+                </div>
               </div>
               <template #overlay>
-                <a-menu>
-                  <a-menu-item v-for="(item, index) in notificationShow" :key="index"> 
+                <a-menu v-if="notificationItems.length === 0">
+                  <a-menu-item
+                    v-for="(item, index) in notificationShow"
+                    :key="index"
+                  >
                     <div class="notify-menu">
-                      <div class="notify-icon" v-if="item.state == notificationState.refuse" 
-                        style="color:red"
+                      <div
+                        class="notify-icon"
+                        v-if="item.state == notificationState.refuse"
+                        style="color: red"
                       >
                         <font-awesome-icon
                           icon="fa-solid fa-circle-exclamation"
                         />
                       </div>
-                      <div class="notify-icon" style="color: green" v-if="item.state == notificationState.agree">
+                      <div
+                        class="notify-icon"
+                        style="color: green"
+                        v-if="item.state == notificationState.agree"
+                      >
                         <font-awesome-icon icon="fa-solid fa-circle-check" />
                       </div>
 
-                      <div class="notify-content" @click="handleReadNoti(item.id)">
-                        {{item.detail}}
+                      <div
+                        class="notify-content"
+                        @click="handleReadNoti(item.id)"
+                      >
+                        {{ item.detail }}
                       </div>
-                      <div class="notify-date">{{formatDate(item.date)}}</div>
-                      <div class="notify-action" @click="handleDeleteNoti(item.id)">
-                       <font-awesome-icon
+                      <div class="notify-date">{{ formatDate(item.date) }}</div>
+                      <div
+                        class="notify-action"
+                        @click="handleDeleteNoti(item.id)"
+                      >
+                        <font-awesome-icon
                           style="color: red"
                           icon="fa-solid fa-delete-left"
                         />
@@ -122,12 +138,18 @@
                   </a-menu-item>
                   <a-menu-item>
                     <a class="router-link" href="/ho-so?type=notification">
-                      <div style="text-align: center; color: blue" v-if="notificationItems.length > 3">
+                      <div
+                        style="text-align: center; color: blue"
+                        v-if="notificationItems.length > 3"
+                      >
                         Xem tất cả
                       </div>
                     </a>
                   </a-menu-item>
                 </a-menu>
+                <a-menu v-else
+                  ><a-menu-item> Không có thông báo </a-menu-item></a-menu
+                >
               </template>
             </a-dropdown>
           </li>
@@ -234,11 +256,11 @@ import Login from "../Login.vue";
 import Register from "../Register.vue";
 import { mapGetters } from "vuex";
 import authenticationMixin from "../../mixins/authentication";
-import { notificationState } from './../../constants/notificationState'
-import { notificationTypes } from './../../constants/notificationTypes'
-import { formatDate } from './../..//helper/utils'
-import { collection, deleteDoc, doc, updateDoc } from "firebase/firestore"
-import {db} from './../../fire'
+import { notificationState } from "./../../constants/notificationState";
+import { notificationTypes } from "./../../constants/notificationTypes";
+import { formatDate } from "./../..//helper/utils";
+import { collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "./../../fire";
 export default {
   props: ["openNav", "user"],
   mixins: [authenticationMixin],
@@ -249,57 +271,60 @@ export default {
       regexEmail: regexEmail,
       checkPermission: false,
       notificationItems: [],
-      isCreatePost:false,
+      isCreatePost: false,
       notificationShow: [],
       notificationState: notificationState,
       notificationTypes: notificationTypes,
-      formatDate: formatDate
+      formatDate: formatDate,
     };
   },
-  
+
   components: {
     Login,
     Register,
   },
   computed: {
     ...mapGetters("modal", ["isVisible"]),
-    ...mapGetters("notifications", ['notifications']),
+    ...mapGetters("notifications", ["notifications"]),
   },
   methods: {
     createPost() {
-      this.$router.push({ path: '/dang-tin' });
+      this.$router.push({ path: "/dang-tin" });
     },
     async handleReadNoti(id) {
       await updateDoc(doc(collection(db, "notifications"), id), {
         is_read: true,
-      })
+      });
     },
     async handleDeleteNoti(id) {
-      await deleteDoc(doc(collection(db, "notifications"), id))
-    }
+      await deleteDoc(doc(collection(db, "notifications"), id));
+    },
   },
-  mounted() {
-  },
+  
   watch: {
     notifications(val) {
-      if(val) {
-        this.notificationItems = val.filter((item) => item.is_read == false && item.user._id == this.user._id)
-        if(this.notificationItems.length > 3) {
-          this.notificationShow = this.notificationItems.slice(0,3)
+      if (val) {
+        this.notificationItems = val.filter(
+          (item) => item.is_read == false && item.user_id == this.user._id
+        );
+        if (this.notificationItems.length > 3) {
+          this.notificationShow = this.notificationItems.slice(0, 3);
         } else {
-          this.notificationShow = this.notificationItems
+          this.notificationShow = this.notificationItems;
         }
       }
     },
-    'user._id'(val) {
-        this.notificationItems = this.notifications.filter((item) => item.is_read == false && item.user._id == val)
-        if(this.notificationItems.length > 3) {
-          this.notificationShow = this.notificationItems.slice(0,3)
-        } else {
-          this.notificationShow = this.notificationItems
-        }
-    }
-  }
+    "user._id"(val) {
+      this.notificationItems = this.notifications.filter(
+        (item) => item.is_read == false && item.user_id == val
+      );
+      if (this.notificationItems.length > 3) {
+        this.notificationShow = this.notificationItems.slice(0, 3);
+      } else {
+        this.notificationShow = this.notificationItems;
+      }
+    },
+  },
 };
 </script>
 <style scoped>

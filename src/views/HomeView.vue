@@ -160,7 +160,7 @@
               v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
-              <MotelCard :card="card"  />
+              <MotelCard :card="card" />
             </div>
           </div>
           <div class="row" v-if="seeMore.new == true">
@@ -170,7 +170,7 @@
               v-for="(card, index) in newArticle.slice(8, newArticle.length)"
               :key="index"
             >
-              <MotelCard :card="card"  />
+              <MotelCard :card="card" />
             </div>
           </div>
           <div
@@ -190,7 +190,7 @@
               v-for="(card, index) in newArticle.slice(0, 8)"
               :key="index"
             >
-              <MotelCard :card="card"  />
+              <MotelCard :card="card" />
             </div>
           </div>
           <div class="row" v-if="seeMore.favorite == true">
@@ -204,7 +204,7 @@
               )"
               :key="index"
             >
-              <MotelCard :card="card"  />
+              <MotelCard :card="card" />
             </div>
           </div>
           <div
@@ -297,7 +297,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bottom-carousel">
         <div class="row-display">
           <a
@@ -360,7 +360,7 @@ export default {
   },
   created() {
     this.getData();
-    console.log(this.checkLogged())
+    console.log(this.checkLogged());
   },
   methods: {
     handleMenuClick(e) {
@@ -390,7 +390,6 @@ export default {
             this.districts = responseAddress.data.districts;
             this.favoriteArticle = responseFavorite.data.data;
             this.newArticle = responseNew.data.data;
-            
           })
         )
         .catch((error) => {
@@ -539,10 +538,13 @@ export default {
 .homepage .ant-select-selection-selected-value {
   margin-top: 5px;
 }
+h4 {
+  background: #bfbfbf;
+  padding: 10px;
+  color: white;
+  margin-right: 10px;
+}
 @media only screen and (max-width: 992px) {
-  .homepage div.big-district {
-    width: 100%;
-  }
   .homepage div.small-place div.small-district-name h5 {
     font-size: 14px;
   }
@@ -562,7 +564,7 @@ export default {
     width: 90%;
   }
   .homepage .title-motel {
-     text-align: center;
+    text-align: center;
   }
 }
 @media only screen and (max-width: 576px) {

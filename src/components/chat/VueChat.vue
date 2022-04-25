@@ -364,6 +364,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.conversation)
     this.messages = [];
     if (this.role == "owner") {
       this.chatItems = this.chat.filter(

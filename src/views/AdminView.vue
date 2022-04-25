@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="sidebar">
+  <div class="admin-view">
+    <div class="sidebar-admin">
       <div class="logo-details">
         <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-house" />
         <span class="logo_name">Motel Finder</span>
@@ -34,18 +34,19 @@
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-heart" />
           <span class="links_name">Phân tích thị hiếu</span>
         </li>
-
-        <li class="log_out">
-          <a href="#">
-            <i class="bx bx-log-out"></i>
-            <span class="links_name">Log out</span>
-          </a>
+        <li>
+          <font-awesome-icon
+            class="icon-dashboard"
+            @click="logoutAdmin()"
+            icon="fa-solid fa-circle-left"
+          />
+          <span class="links_name">Đăng xuất</span>
         </li>
       </ul>
     </div>
     <section class="home-section">
       <nav>
-        <div class="sidebar-button">
+        <div class="sidebar-admin-button">
           <span class="dashboard">Dashboard</span>
         </div>
         <div class="search-box">
@@ -93,6 +94,9 @@ import Chat from "../components/chat/VueChat.vue";
 import Frame from "../components/chat/FrameChat.vue";
 import { mapGetters } from "vuex";
 import { RepositoryFactory } from "../repository/factory";
+import cookie from "../helper/cookie";
+import { userRole } from "../constants/userRole";
+import VueJwtDecode from "vue-jwt-decode";
 export default {
   components: {
     ManageUser,
@@ -122,7 +126,6 @@ export default {
       this.isActive[oldVal] = false;
     },
     chat(val) {
-      console.log(this);
       /* val.forEach(item => {
         if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
             this.conversations.push(item)
@@ -153,7 +156,6 @@ export default {
           message: message,
         });
       });
-      
     },
   },
   created() {
@@ -197,7 +199,7 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    
+
     handleChat() {
       this.displayChatList = true;
       this.displayChatIcon = false;
@@ -206,60 +208,74 @@ export default {
       this.displayChatList = mess;
       this.displayChatIcon = true;
     },
+    logoutAdmin() {
+      cookie.deleteCookie("accessToken");
+      window.location.href = "/";
+    },
   },
   mounted() {},
+  async beforeRouteEnter(to, from , next) {
+    let accessToken = localStorage.getItem("accessToken");
+    const { id } = VueJwtDecode.decode(accessToken);
+    const { data } = await RepositoryFactory.get("user").getUser(id);
+
+    if (data.role === userRole.admin) next();
+    else {
+      next('/');
+    }
+  },
 };
 </script>
 <style>
 /* Googlefont Poppins CDN Link */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-* {
+.admin-view {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-.sidebar {
+.sidebar-admin {
   position: fixed;
   height: 100%;
   width: 240px;
   background: #0a2558;
   transition: all 0.5s ease;
 }
-.sidebar.active {
+.sidebar-admin.active {
   width: 60px;
 }
-.sidebar .logo-details {
+.sidebar-admin .logo-details {
   height: 80px;
   display: flex;
   align-items: center;
   position: relative;
 }
-.sidebar .logo-details i {
+.sidebar-admin .logo-details i {
   font-size: 28px;
   font-weight: 500;
   color: #fff;
   min-width: 60px;
   text-align: center;
 }
-.sidebar .logo-details .logo_name {
+.sidebar-admin .logo-details .logo_name {
   color: #fff;
   font-size: 24px;
   font-weight: 500;
 }
-.sidebar .nav-links {
+.sidebar-admin .nav-links {
   margin-top: 30px;
   padding: 0;
 }
-.sidebar .nav-links li {
+.sidebar-admin .nav-links li {
   list-style: none;
   height: 80px;
   line-height: 80px;
   cursor: pointer;
   position: relative;
 }
-.sidebar .nav-links li a {
+.sidebar-admin .nav-links li a {
   height: 100%;
   width: 100%;
   display: flex;
@@ -268,20 +284,20 @@ export default {
   transition: all 0.4s ease;
 }
 
-.sidebar .nav-links li i {
+.sidebar-admin .nav-links li i {
   min-width: 60px;
   text-align: center;
   font-size: 18px;
   color: #fff;
 }
-.sidebar .nav-links li .links_name {
+.sidebar-admin .nav-links li .links_name {
   color: #fff;
   font-size: 18px;
   font-weight: 400;
   white-space: nowrap;
   position: absolute;
 }
-.sidebar .nav-links .log_out {
+.sidebar-admin .nav-links .log_out {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -294,7 +310,7 @@ export default {
   left: 240px;
   transition: all 0.5s ease;
 }
-.sidebar.active ~ .home-section {
+.sidebar-admin.active ~ .home-section {
   width: calc(100% - 60px);
   left: 60px;
 }
@@ -313,17 +329,17 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   transition: all 0.5s ease;
 }
-.sidebar.active ~ .home-section nav {
+.sidebar-admin.active ~ .home-section nav {
   left: 60px;
   width: calc(100% - 60px);
 }
-.home-section nav .sidebar-button {
+.admin-view .home-section nav .sidebar-admin-button {
   display: flex;
   align-items: center;
   font-size: 24px;
   font-weight: 500;
 }
-nav .sidebar-button i {
+nav .sidebar-admin-button i {
   font-size: 35px;
   margin-right: 10px;
 }
@@ -555,22 +571,22 @@ nav .profile-details i {
   font-weight: 400;
   color: #333;
 }
-.icon-dashboard {
+.admin-view  .icon-dashboard {
   color: white;
   font-size: 20px;
   margin: 0 20px;
 }
-.adminActive {
+.admin-view  .adminActive {
   background: #1890ff;
 }
-.right-side {
+.admin-view  .right-side {
   text-align: center;
 }
 .pagination {
   display: flex;
   justify-content: right;
 }
-.icon-chat {
+.admin-view  .icon-chat {
   width: 50px;
   height: auto;
   background: #096dd9;
@@ -586,7 +602,7 @@ nav .profile-details i {
   border-radius: 5px;
   cursor: pointer;
 }
-#icon {
+.admin-view  #icon {
   font-size: 20px;
 }
 .content-chat {
@@ -603,17 +619,17 @@ nav .profile-details i {
 }
 /* Responsive Media Query */
 @media (max-width: 1260px) {
-  .sidebar {
+  .sidebar-admin {
     width: 60px;
   }
-  .sidebar.active {
+  .sidebar-admin.active {
     width: 220px;
   }
   .home-section {
     width: calc(100% - 60px);
     left: 60px;
   }
-  .sidebar.active ~ .home-section {
+  .sidebar-admin.active ~ .home-section {
     /* width: calc(100% - 220px); */
     overflow: hidden;
     left: 220px;
@@ -622,11 +638,11 @@ nav .profile-details i {
     width: calc(100% - 60px);
     left: 60px;
   }
-  .sidebar.active ~ .home-section nav {
+  .sidebar-admin.active ~ .home-section nav {
     width: calc(100% - 220px);
     left: 220px;
   }
-  .sidebar .nav-links li .links_name {
+  .sidebar-admin .nav-links li .links_name {
     opacity: 0;
   }
 }
@@ -668,22 +684,22 @@ nav .profile-details i {
     width: 100%;
     margin-bottom: 15px;
   }
-  .sidebar.active ~ .home-section nav .profile-details {
+  .sidebar-admin.active ~ .home-section nav .profile-details {
     display: none;
   }
 }
 @media (max-width: 400px) {
-  .sidebar {
+  .sidebar-admin {
     width: 0;
   }
-  .sidebar.active {
+  .sidebar-admin.active {
     width: 60px;
   }
   .home-section {
     width: 100%;
     left: 0;
   }
-  .sidebar.active ~ .home-section {
+  .sidebar-admin.active ~ .home-section {
     left: 60px;
     width: calc(100% - 60px);
   }
@@ -691,7 +707,7 @@ nav .profile-details i {
     width: 100%;
     left: 0;
   }
-  .sidebar.active ~ .home-section nav {
+  .sidebar-admin.active ~ .home-section nav {
     left: 60px;
     width: calc(100% - 60px);
   }

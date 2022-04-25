@@ -13,7 +13,7 @@
       <div class="box">
         <div class="right-side">
           <div class="box-topic">Đã thanh toán</div>
-          <div class="number">{{articleSummary.paid}}</div>
+          <div class="number">{{ articleSummary.paid }}</div>
         </div>
         <i class="bx bxs-cart-add cart two">
           <font-awesome-icon icon="fa-solid fa-money-bill" />
@@ -23,7 +23,7 @@
         <div class="right-side">
           <h3 class="box-topic">Đã phê duyệt</h3>
           <div class="number">
-            {{articleSummary.approved}}
+            {{ articleSummary.approved }}
           </div>
         </div>
         <i class="bx bx-cart cart three">
@@ -61,43 +61,68 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(article, index) in articleArray" :key="index" class="table-article">
-                <td><a-checkbox></a-checkbox></td>
-                <td>
-                  <span class="title-article">{{
-                    article.detailedPost.title
-                  }}</span>
-                </td>
-                <td>{{ formatDate(article.createdAt) }}</td>
-                <td>Lê Văn Long</td>
-                <td>{{ formatDate(article.postExpired) }}</td>
-                <td>
-                  <a-tag color="green" v-if="article.isPaid">Đã thanh toán</a-tag>
-                  <a-tag color="red" v-if="!article.isPaid">Chưa thanh toán</a-tag>
-                </td>
-                <td v-if="article.status == postStatus.reject">
-                  <a-tag color="red">
-                    Từ chối
-                  </a-tag>
-                </td>
-                <td v-if="article.status == postStatus.agree">
-                  <a-tag color="green">
-                    Đã duyệt
-                  </a-tag>
-                </td>
-                <td v-if="article.status == postStatus.waiting" class="action-approve">
-                  <a-button type="danger" @click="handleApprove(article, {status: `rejected`})">Từ chối</a-button
-                  ><a-button type="primary" class="button-approve" @click="handleApprove(article, {status: `approved`})">Đồng ý</a-button>
-                </td>
-              </tr>
+            
+                <tr
+                  v-for="(article, index) in articleArray"
+                  :key="index"
+                  class="table-article"
+                  @click="redirectDetail(article._id)"
+                >
+                  <td><a-checkbox></a-checkbox></td>
+                  <td>
+                    <span class="title-article">{{
+                      article.detailedPost.title
+                    }}</span>
+                  </td>
+                  <td>{{ formatDate(article.createdAt) }}</td>
+                  <td>{{ article.ownerId.name }}</td>
+                  <td>{{ formatDate(article.postExpired) }}</td>
+                  <td>
+                    <a-tag color="green" v-if="article.isPaid"
+                      >Đã thanh toán</a-tag
+                    >
+                    <a-tag color="red" v-if="!article.isPaid"
+                      >Chưa thanh toán</a-tag
+                    >
+                  </td>
+                  <td v-if="article.status == postStatus.reject">
+                    <a-tag color="red"> Từ chối </a-tag>
+                  </td>
+                  <td v-if="article.status == postStatus.agree">
+                    <a-tag color="green"> Đã duyệt </a-tag>
+                  </td>
+                  <td
+                    v-if="article.status == postStatus.waiting"
+                    class="action-approve"
+                  >
+                    <a-button
+                      type="danger"
+                      class="button-reject"
+                      @click.prevent="
+                        handleApprove(article, { status: `rejected` })
+                      "
+                      >Từ chối</a-button
+                    ><a-button
+                      type="primary"
+                      @click.prevent="
+                        handleApprove(article, { status: `approved` })
+                      "
+                      >Đồng ý</a-button
+                    >
+                  </td>
+                </tr>
             </tbody>
           </table>
         </div>
         <div class="pagination">
-          <a-pagination v-model="current" :total="articleSummary.posts" show-less-items :defaultPageSize="5" />
+          <a-pagination
+            v-model="current"
+            :total="articleSummary.posts"
+            show-less-items
+            :defaultPageSize="5"
+          />
         </div>
-        <div>
-        </div>
+        <div></div>
       </div>
     </div>
   </div>
@@ -109,10 +134,10 @@
 </style>
 <script>
 import { RepositoryFactory } from "../../repository/factory";
-import { collection, addDoc } from "firebase/firestore"
-import {db} from './../../fire'
-import { postStatus } from '../../constants/postStatus'
-import { notificationTypes } from './../../constants/notificationTypes'
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "./../../fire";
+import { postStatus } from "../../constants/postStatus";
+import { notificationTypes } from "./../../constants/notificationTypes";
 
 export default {
   data() {
@@ -123,20 +148,20 @@ export default {
         posts: 0,
         paid: 0,
         approved: 0,
-        refused: 0
+        refused: 0,
       },
       query: {
         limit: 5,
-        page: 1
+        page: 1,
       },
       updateTime: Date.now(),
       postStatus: postStatus,
-      notificationTypes: notificationTypes
+      notificationTypes: notificationTypes,
     };
   },
   created() {
-    this.getSummary()
-    this.getAllPosts(this.query)
+    this.getSummary();
+    this.getAllPosts(this.query);
   },
   methods: {
     async getArticle() {
@@ -158,50 +183,55 @@ export default {
       );
     },
     async getSummary() {
-      console.log('get summary..')
-      const { data } = await RepositoryFactory.get('article').getSummary()
-      this.articleSummary = data.data
-      
+      console.log("get summary..");
+      const { data } = await RepositoryFactory.get("article").getSummary();
+      this.articleSummary = data.data;
     },
     async getAllPosts(query) {
-      console.log('get all posts')
-      const { data } = await RepositoryFactory.get('article').getAllPosts(query)
-      this.articleArray = data.data
-      console.log(this.articleArray)
+      console.log("get all posts");
+      const { data } = await RepositoryFactory.get("article").getAllPosts(
+        query
+      );
+      this.articleArray = data.data;
+      console.log(this.articleArray);
     },
     async handleApprove(article, state) {
       try {
-        await RepositoryFactory.get('article').updateState(article._id, state)
+        await RepositoryFactory.get("article").updateState(article._id, state);
         await addDoc(collection(db, "notifications"), {
           user: article.ownerId,
-          detail: `Bài đăng của bạn đã ${state.status  == this.postStatus.agree ? 'được phê duyệt' : 'bị từ chối'}`,
+          detail: `Bài đăng của bạn đã ${
+            state.status == this.postStatus.agree
+              ? "được phê duyệt"
+              : "bị từ chối"
+          }`,
           state: state.status,
           type: notificationTypes.approveFromAdmin,
           date: new Date().toISOString(),
           is_read: false,
-          post_id: article._id
+          post_id: article._id,
         });
-      } catch(err) {
-        console.log('err', err)
+      } catch (err) {
+        console.log("err", err);
       }
-      await this.getSummary()
-      await this.getAllPosts(this.query)
-      this.updateTime = Date.now()
-
+      await this.getSummary();
+      await this.getAllPosts(this.query);
+      this.updateTime = Date.now();
+    },
+    redirectDetail(id) {
+      window.location.href = `/bat-dong-san/${id}`
     }
   },
   watch: {
     current(value) {
-      this.query.page = value
-      this.getAllPosts(this.query)
+      this.query.page = value;
+      this.getAllPosts(this.query);
     },
     updateTime(val) {
-      this.updateTime = val
-    }
+      this.updateTime = val;
+    },
   },
-  mounted() {
-  },
-
+  mounted() {},
 };
 </script>
 <style scoped>
@@ -215,10 +245,15 @@ export default {
   text-overflow: ellipsis;
 }
 .table-article:hover {
-  background: rgba(0,0,0,.1);
+  background: rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
-.button-approve {
-  margin-left: 10px;
+.button-reject {
+  margin-right: 10px;
+}
+@media screen and (max-width: 1024px) {
+  .button-reject {
+    margin-bottom: 10px;
+  }
 }
 </style>

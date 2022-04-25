@@ -1,285 +1,227 @@
 <template>
-  <div class="container">
-    <div class="row no-gutters">
-      <div class="border-right">
-        <div class="settings-tray">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg"
-            alt="Profile img"
-          />
-          <!-- <span class="settings-tray--right">
-            <i class="material-icons">cached</i>
-            <i class="material-icons">message</i>
-            <i class="material-icons">menu</i>
-          </span> -->
-        </div>
-        <div class="search-box">
-          <div class="input-wrapper" style="padding: 0 20px">
-            <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
-            <input placeholder="Search here" type="text" style="height:35px; margin-left:24px"/>
-          </div>
-        </div>
-        <div class="friend-drawer friend-drawer--onhover">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-            alt=""
-          />
-          <div class="text">
-            <h6>Robo Cop</h6>
-            <p class="text-muted">Hey, you're arrested!</p>
-          </div>
-          <span class="time text-muted small">13:21</span>
-        </div>
-        <hr />
-        <div class="friend-drawer friend-drawer--onhover">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/optimus-prime.jpeg"
-            alt=""
-          />
-          <div class="text">
-            <h6>Optimus</h6>
-            <p class="text-muted">Wanna grab a beer?</p>
-          </div>
-          <span class="time text-muted small">00:32</span>
-        </div>
-        <hr />
-        <div class="friend-drawer friend-drawer--onhover">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/real-terminator.png"
-            alt=""
-          />
-          <div class="text">
-            <h6>Skynet</h6>
-            <p class="text-muted">Seen that canned piece of s?</p>
-          </div>
-          <span class="time text-muted small">13:21</span>
-        </div>
-        <hr />
-        <div class="friend-drawer friend-drawer--onhover">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/termy.jpg"
-            alt=""
-          />
-          <div class="text">
-            <h6>Termy</h6>
-            <p class="text-muted">Im studying spanish...</p>
-          </div>
-          <span class="time text-muted small">13:21</span>
-        </div>
-        <hr />
-        <div class="friend-drawer friend-drawer--onhover">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/rick.jpg"
-            alt=""
-          />
-          <div class="text">
-            <h6>Richard</h6>
-            <p class="text-muted">I'm not sure...</p>
-          </div>
-          <span class="time text-muted small">13:21</span>
-        </div>
-        <hr />
-        <div class="friend-drawer friend-drawer--onhover">
-          <img
-            class="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/rachel.jpeg"
-            alt=""
-          />
-          <div class="text">
-            <h6>XXXXX</h6>
-            <p class="text-muted">Hi, wanna see something?</p>
-          </div>
-          <span class="time text-muted small">13:21</span>
+  <div class="about-view">
+    <section class="background firstsection">
+      <div class="box-main">
+        <div class="firstHalf">
+          <p class="text-big">Contact Us</p>
+
+          <p class="text-small">Bạn có thể liên hệ với chúng tôi nếu bạn gặp vấn đề</p>
+
+          <br />
+          <p class="center" style="text-decoration: none; color: white;">
+            
+          </p>
         </div>
       </div>
-    </div>
+    </section>
+    <section class="service">
+      <!-- Heading-->
+      <h1 class="h-primary center" style="margin-top: 30px;font-family: Piazzolla, serif;">
+        Liên hệ với chúng tôi
+      </h1>
+      <div id="service">
+        <div class="box">
+          <!-- Form -->
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Circle-icons-phone.svg/800px-Circle-icons-phone.svg.png"
+            alt="color_image"
+          />
+          <br />
+
+          <p class="center">
+            Số điện thoại: +1800 200 300 400
+          </p>
+        </div>
+        <div class="box">
+          <!-- Email -->
+          <img
+            src="https://cdn0.iconfinder.com/data/icons/apple-apps/100/Apple_Mail-512.png"
+            alt="color_image"
+          />
+          <br />
+
+          <!-- Displaying text at
+                    the center of the box-->
+          <p class="center">
+            Email: 18020853@vnu.edu.com
+          </p>
+        </div>
+        <div class="box">
+          <img
+            src="https://cdn4.vectorstock.com/i/1000x1000/33/28/location-icon-map-address-geographical-position-vector-29053328.jpg"
+            alt="color_image"
+          />
+          <br />
+
+          <!-- Displaying text at
+                    the center of the box-->
+          <p class="center">Địa chỉ: 144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội</p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-
-body {
-  background-color: #3498db;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  
+* {
+    margin: 0;
+    padding: 0;
 }
-
-.container {
-  margin: 60px auto;
-  background: #fff;
-  padding: 0;
-  border-radius: 7px;
-  width: 450px;
-
+ 
+html {
+    scroll-behaviour: smooth;
 }
-
-.profile-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 40px;
+ 
+:root {
+    --navbar-height: 59px;
 }
-
-.settings-tray {
-  background: #eee;
-  padding: 10px 15px;
-  border-radius: 7px;
+ 
+.logo {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.settings-tray .no-gutters {
-  padding: 0;
+ 
+.logo img {
+    width: 33%;
+    border: 2px solid white;
+    border-radius: 50px;
 }
-.settings-tray--right {
-  float: right;
+ 
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    cursor: pointer;
 }
-.settings-tray--right i {
-  margin-top: 10px;
-  font-size: 25px;
-  color: grey;
-  margin-left: 14px;
-  transition: 0.3s;
+ 
+.nav-list {
+    width: 70%;
+    display: flex;
 }
-.settings-tray--right i:hover {
-  color: #74b9ff;
-  cursor: pointer;
+ 
+.nav-list li {
+    list-style: none;
+    padding: 2px 6px;
 }
-
-.search-box {
-  background: #fafafa;
-  padding: 10px 13px;
+ 
+.nav-list li a {
+    text-decoration: none;
+    color: white;
 }
-.search-box .input-wrapper {
-  background: #fff;
-  border-radius: 40px;
+ 
+.nav-list li a:hover {
+    color: grey;
 }
-.search-box .input-wrapper i {
-  color: grey;
-  margin-left: 7px;
-  vertical-align: middle;
+ 
+.rightNav {
+    width: 50;
+    text-align: right;
 }
-
-input {
-  border: none;
-  border-radius: 30px;
-  width: 80%;
+ 
+#search {
+    padding: 5px;
+    font-size: 17px;
+    border: 2px solid grey;
+    border-radius: 9px;
 }
-input::placeholder {
-  color: #e3e3e3;
-  font-weight: 300;
-  margin-left: 20px;
+ 
+.background {
+    background-color: grey;
+    background-blend-mode: darken;
+    background-size: cover;
 }
-input:focus {
-  outline: none;
+ 
+.firstsection {
+    height: 100vh;
 }
-
-.friend-drawer {
-  padding: 10px 15px;
-  display: flex;
-  vertical-align: baseline;
-  background: #fff;
-  transition: 0.3s ease;
+ 
+.box-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    max-width: 50%;
+    margin: auto;
+    height: 80%;
 }
-.friend-drawer--grey {
-  background: #eee;
+ 
+.firstHalf {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
-.friend-drawer .text {
-  margin-left: 12px;
-  width: 70%;
+ 
+.firstHalf img {
+    display: flex;
+    border-radius: 9050px;
 }
-.friend-drawer .text h6 {
-  margin-top: 6px;
-  margin-bottom: 0;
+ 
+.text-big {
+    font-family: "Piazzolla", serif;
+    font-weight: bold;
+    font-size: 41px;
+    text-align: center;
 }
-.friend-drawer .text p {
-  margin: 0;
+ 
+.text-small {
+    font-family: "Sansita Swashed", cursive;
+    font-size: 18px;
+    text-align: center;
 }
-.friend-drawer .time {
-  color: grey;
+ 
+#service {
+    margin: 34px;
+    display: flex;
 }
-.friend-drawer--onhover:hover {
-  background: #74b9ff;
-  cursor: pointer;
+ 
+#service .box {
+    width: 33.33%;
+    padding: 45px;
+    margin: 3px 6px;
+    border-radius: 28px;
 }
-.friend-drawer--onhover:hover p,
-.friend-drawer--onhover:hover h6,
-.friend-drawer--onhover:hover .time {
-  color: #fff !important;
+ 
+#service .box img {
+   width: 100px;
+   height: 100px; 
+   display: block;
+   margin: 0 auto
 }
-
-hr {
-  margin: 5px auto;
-  width: 60%;
+ 
+#service .box p {
+    font-family: sans-serif;
+    text-align: center;
 }
-
-.chat-bubble {
-  padding: 10px 14px;
-  background: #eee;
-  margin: 10px 30px;
-  border-radius: 9px;
-  position: relative;
-  animation: fadeIn 1s ease-in;
+ 
+.btn {
+    padding: 8px 20px;
+    margin: 7px 0;
+    border: 2px solid white;
+    border-radius: 8px;
+    background: none;
+    color: white;
+    cursor: pointer;
 }
-.chat-bubble:after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 0;
-  height: 0;
-  border: 20px solid transparent;
-  border-bottom: 0;
-  margin-top: -10px;
+ 
+.btn-sm {
+    padding: 6px 10px;
+    vertical-align: middle;
 }
-.chat-bubble--left:after {
-  left: 0;
-  border-right-color: #eee;
-  border-left: 0;
-  margin-left: -20px;
+ 
+.center {
+    text-align: center;
 }
-.chat-bubble--right:after {
-  right: 0;
-  border-left-color: #74b9ff;
-  border-right: 0;
-  margin-right: -20px;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.offset-md-9 .chat-bubble {
-  background: #74b9ff;
-  color: #fff;
-}
-
-.chat-box-tray {
-  background: #eee;
-  display: flex;
-  align-items: baseline;
-  padding: 10px 15px;
-  align-items: center;
-  margin-top: 19px;
-  bottom: 0;
-}
-.chat-box-tray input {
-  margin: 0 10px;
-  padding: 6px 2px;
-}
-.chat-box-tray i {
-  color: grey;
-  font-size: 30px;
-  vertical-align: middle;
-}
-.chat-box-tray i:last-of-type {
-  margin-left: 25px;
+ 
+.text-footer {
+    text-align: center;
+    padding: 30px 0;
+    font-family: "Ubuntu", sans-serif;
+    display: flex;
+    justify-content: center;
 }
 </style>

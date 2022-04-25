@@ -188,7 +188,7 @@ export default {
 }
 @media screen and (max-width: 1024px) {
 }
-@media screen and (max-width: 568px) {
+@media screen and (max-width: 992px) {
   .name input {
     width: 90% !important;
   }

@@ -245,6 +245,7 @@ export default {
   height: 100%;
   width: 95%;
   margin-left: 20px;
+  min-width: 500px;
 }
 #title-column {
   width: 100%;
@@ -352,17 +353,10 @@ export default {
   margin-bottom: 20px;
 }
 @media screen and (max-width: 1024px) {
-   .manage-column {
-     display: none;
-   }
+   
 }
 @media screen and (max-width: 568px){
-  .profile-content {
-    width: 100%;
-  }
-  .manage-content {
-    margin: 0;
-    width: 100%;
-  }
+  
+  
 }
 </style>
