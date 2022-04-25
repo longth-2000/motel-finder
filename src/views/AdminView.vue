@@ -1,6 +1,6 @@
 <template>
-  <div class="admin-view">
-    <div class="sidebar-admin">
+  <div>
+    <div class="sidebar">
       <div class="logo-details">
         <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-house" />
         <span class="logo_name">Motel Finder</span>
@@ -34,19 +34,18 @@
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-heart" />
           <span class="links_name">Phân tích thị hiếu</span>
         </li>
-        <li>
-          <font-awesome-icon
-            class="icon-dashboard"
-            @click="logoutAdmin()"
-            icon="fa-solid fa-circle-left"
-          />
-          <span class="links_name">Đăng xuất</span>
+
+        <li class="log_out">
+          <a href="#">
+            <i class="bx bx-log-out"></i>
+            <span class="links_name">Log out</span>
+          </a>
         </li>
       </ul>
     </div>
     <section class="home-section">
       <nav>
-        <div class="sidebar-admin-button">
+        <div class="sidebar-button">
           <span class="dashboard">Dashboard</span>
         </div>
         <div class="search-box">
@@ -94,9 +93,6 @@ import Chat from "../components/chat/VueChat.vue";
 import Frame from "../components/chat/FrameChat.vue";
 import { mapGetters } from "vuex";
 import { RepositoryFactory } from "../repository/factory";
-import cookie from "../helper/cookie";
-import { userRole } from "../constants/userRole";
-import VueJwtDecode from "vue-jwt-decode";
 export default {
   components: {
     ManageUser,
@@ -126,6 +122,7 @@ export default {
       this.isActive[oldVal] = false;
     },
     chat(val) {
+      console.log(this);
       /* val.forEach(item => {
         if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
             this.conversations.push(item)
@@ -156,6 +153,7 @@ export default {
           message: message,
         });
       });
+      
     },
   },
   created() {
@@ -199,7 +197,7 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-
+    
     handleChat() {
       this.displayChatList = true;
       this.displayChatIcon = false;
@@ -208,73 +206,60 @@ export default {
       this.displayChatList = mess;
       this.displayChatIcon = true;
     },
-    logoutAdmin() {
-      cookie.deleteCookie("accessToken");
-      window.location.href = "/";
-    },
   },
   mounted() {},
-  async beforeRouteEnter(to, from , next) {
-    let accessToken = localStorage.getItem("accessToken");
-    const { id } = VueJwtDecode.decode(accessToken);
-    const { data } = await RepositoryFactory.get("user").getUser(id);
-
-    if (data.role === userRole.admin) next();
-    else {
-      next('/');
-    }
-  },
 };
 </script>
 <style>
+/* Googlefont Poppins CDN Link */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-.admin-view {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-.sidebar-admin {
+.sidebar {
   position: fixed;
   height: 100%;
   width: 240px;
   background: #0a2558;
   transition: all 0.5s ease;
 }
-.sidebar-admin.active {
+.sidebar.active {
   width: 60px;
 }
-.sidebar-admin .logo-details {
+.sidebar .logo-details {
   height: 80px;
   display: flex;
   align-items: center;
   position: relative;
 }
-.sidebar-admin .logo-details i {
+.sidebar .logo-details i {
   font-size: 28px;
   font-weight: 500;
   color: #fff;
   min-width: 60px;
   text-align: center;
 }
-.sidebar-admin .logo-details .logo_name {
+.sidebar .logo-details .logo_name {
   color: #fff;
   font-size: 24px;
   font-weight: 500;
 }
-.sidebar-admin .nav-links {
+.sidebar .nav-links {
   margin-top: 30px;
   padding: 0;
 }
-.sidebar-admin .nav-links li {
+.sidebar .nav-links li {
   list-style: none;
   height: 80px;
   line-height: 80px;
   cursor: pointer;
   position: relative;
 }
-.sidebar-admin .nav-links li a {
+.sidebar .nav-links li a {
   height: 100%;
   width: 100%;
   display: flex;
@@ -283,20 +268,20 @@ export default {
   transition: all 0.4s ease;
 }
 
-.sidebar-admin .nav-links li i {
+.sidebar .nav-links li i {
   min-width: 60px;
   text-align: center;
   font-size: 18px;
   color: #fff;
 }
-.sidebar-admin .nav-links li .links_name {
+.sidebar .nav-links li .links_name {
   color: #fff;
   font-size: 18px;
   font-weight: 400;
   white-space: nowrap;
   position: absolute;
 }
-.sidebar-admin .nav-links .log_out {
+.sidebar .nav-links .log_out {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -309,7 +294,7 @@ export default {
   left: 240px;
   transition: all 0.5s ease;
 }
-.sidebar-admin.active ~ .home-section {
+.sidebar.active ~ .home-section {
   width: calc(100% - 60px);
   left: 60px;
 }
@@ -328,17 +313,17 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   transition: all 0.5s ease;
 }
-.sidebar-admin.active ~ .home-section nav {
+.sidebar.active ~ .home-section nav {
   left: 60px;
   width: calc(100% - 60px);
 }
-.home-section nav .sidebar-admin-button {
+.home-section nav .sidebar-button {
   display: flex;
   align-items: center;
   font-size: 24px;
   font-weight: 500;
 }
-nav .sidebar-admin-button i {
+nav .sidebar-button i {
   font-size: 35px;
   margin-right: 10px;
 }
@@ -484,6 +469,7 @@ nav .profile-details i {
   justify-content: space-between;
 }
 
+/* left box */
 .home-content .sales-boxes .recent-sales {
   width: 100%;
   background: #fff;
@@ -535,6 +521,7 @@ nav .profile-details i {
   background: #0d3073;
 }
 
+/* Right box */
 .home-content .sales-boxes .top-sales {
   width: 35%;
   background: #fff;
@@ -568,22 +555,22 @@ nav .profile-details i {
   font-weight: 400;
   color: #333;
 }
-.admin-view  .icon-dashboard {
+.icon-dashboard {
   color: white;
   font-size: 20px;
   margin: 0 20px;
 }
-.admin-view  .adminActive {
+.adminActive {
   background: #1890ff;
 }
-.admin-view  .right-side {
+.right-side {
   text-align: center;
 }
 .pagination {
   display: flex;
   justify-content: right;
 }
-.admin-view  .icon-chat {
+.icon-chat {
   width: 50px;
   height: auto;
   background: #096dd9;
@@ -599,7 +586,7 @@ nav .profile-details i {
   border-radius: 5px;
   cursor: pointer;
 }
-.admin-view  #icon {
+#icon {
   font-size: 20px;
 }
 .content-chat {
@@ -610,22 +597,24 @@ nav .profile-details i {
   right: 20px;
 }
 .frame-chat {
-  position: fixed;
-  bottom: 20px;
+  position: absolute;
+  bottom: 40px;
   right: 20px;
 }
+/* Responsive Media Query */
 @media (max-width: 1260px) {
-  .sidebar-admin {
+  .sidebar {
     width: 60px;
   }
-  .sidebar-admin.active {
+  .sidebar.active {
     width: 220px;
   }
   .home-section {
     width: calc(100% - 60px);
     left: 60px;
   }
-  .sidebar-admin.active ~ .home-section {
+  .sidebar.active ~ .home-section {
+    /* width: calc(100% - 220px); */
     overflow: hidden;
     left: 220px;
   }
@@ -633,11 +622,11 @@ nav .profile-details i {
     width: calc(100% - 60px);
     left: 60px;
   }
-  .sidebar-admin.active ~ .home-section nav {
+  .sidebar.active ~ .home-section nav {
     width: calc(100% - 220px);
     left: 220px;
   }
-  .sidebar-admin .nav-links li .links_name {
+  .sidebar .nav-links li .links_name {
     opacity: 0;
   }
 }
@@ -679,22 +668,22 @@ nav .profile-details i {
     width: 100%;
     margin-bottom: 15px;
   }
-  .sidebar-admin.active ~ .home-section nav .profile-details {
+  .sidebar.active ~ .home-section nav .profile-details {
     display: none;
   }
 }
 @media (max-width: 400px) {
-  .sidebar-admin {
+  .sidebar {
     width: 0;
   }
-  .sidebar-admin.active {
+  .sidebar.active {
     width: 60px;
   }
   .home-section {
     width: 100%;
     left: 0;
   }
-  .sidebar-admin.active ~ .home-section {
+  .sidebar.active ~ .home-section {
     left: 60px;
     width: calc(100% - 60px);
   }
@@ -702,9 +691,9 @@ nav .profile-details i {
     width: 100%;
     left: 0;
   }
-  .sidebar-admin.active ~ .home-section nav {
+  .sidebar.active ~ .home-section nav {
     left: 60px;
     width: calc(100% - 60px);
   }
-}  
+}
 </style>

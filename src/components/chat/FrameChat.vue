@@ -26,38 +26,25 @@
             />
           </div>
         </div>
-        <div style="height:350px; overflow-y:scroll">
-          <div
-            v-for="(conver, index) in conversations.filter(
-              (value, indexFirst, self) =>
-                indexFirst === self.findIndex((item) => item.id === value.id)
-            )"
-            :key="index"
-            @click="displayChat(conver)"
-          >
-            <div class="friend-drawer friend-drawer--onhover">
-              <img class="profile-image" :src="conver.avatar" alt="" />
-              <div class="text">
-                <h6>{{ conver.name }}</h6>
-                <p class="text-muted">{{ conver.message[0].message }}</p>
-              </div>
-              <span class="time text-muted small">{{
-                timeConverter(conver.message[0].date)
-              }}</span>
+        <div
+          v-for="(conver, index) in conversations.filter(
+            (value, indexFirst, self) => indexFirst === self.findIndex((item) => item.id === value.id)
+
+          )"
+          :key="index"
+          @click="displayChat(conver)"
+        >
+          <div class="friend-drawer friend-drawer--onhover">
+            <img class="profile-image" :src="conver.avatar" alt="" />
+            <div class="text">
+              <h6>{{ conver.name }}</h6>
+              <p class="text-muted">{{ conver.message[0].message }}</p>
             </div>
+            <span class="time text-muted small">{{
+              timeConverter(conver.message[0].date)
+            }}</span>
           </div>
         </div>
-
-        <div
-          style="
-            width: 100%;
-            height: 50px;
-            background: #40a9ffa6;
-            border-bottom-left-radius: 7px;
-            border-bottom-right-radius: 7px;
-            margin-top: 20px;
-          "
-        ></div>
       </div>
     </div>
   </div>
@@ -111,7 +98,7 @@ export default {
     },
   },
   created() {
-    
+    console.log(this.conversations);
   },
   watch: {},
   computed: {
@@ -133,7 +120,7 @@ body {
   border-radius: 7px;
   width: 450px;
   z-index: 2;
-  border: 1px solid #f5f5f5;
+  border: 1px solid #e8e8e8;
 }
 
 .profile-image {
@@ -143,7 +130,7 @@ body {
 }
 
 .settings-tray {
-  background: #40a9ffa6;
+  background: #eee;
   padding: 10px 15px;
   border-radius: 7px;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 550px; width: 100%">
+  <div style="max-height: 500px; overflow: auto; width: 100%">
     <Chat
       v-if="visible"
       :participants="setPaticipant"
@@ -34,7 +34,7 @@ import { Chat } from "vue-quick-chat";
 import "vue-quick-chat/dist/vue-quick-chat.css";
 import { mapGetters, mapMutations } from "vuex";
 import { collection, addDoc } from "firebase/firestore";
-import { db, uploadFile } from "./../../fire";
+import { db } from "./../../fire";
 export default {
   props: ["role", "chatTitle", "owner"],
   components: {
@@ -83,6 +83,7 @@ export default {
       conversations: [],
       chatItems: [],
       visible: true,
+
       myself: {},
       messages: [],
       placeholder: "send your message",
@@ -133,7 +134,7 @@ export default {
         },
       },
       timestampConfig: {
-        format: "HH:mm dd/MM/yyyy",
+        format: "HH:mm",
         relative: false,
       },
       // there are other options, you can check them here
@@ -178,25 +179,6 @@ export default {
   },
   methods: {
     ...mapMutations("chat", ["setConversation", "openChatFrame"]),
-    timeConverter(UNIX_timestamp) {
-      if (UNIX_timestamp) {
-        var timestamp = new Date(UNIX_timestamp);
-        var year = timestamp.getFullYear()
-        var month = timestamp.getMonth();
-        var date = timestamp.getDate();
-        var hour = timestamp.getHours();
-        var min = timestamp.getMinutes();
-        var sec = timestamp.getSeconds();
-        return {
-          year: year,
-          month: month,
-          day: date,
-          hour: hour,
-          minute: min,
-          second: sec,
-        };
-      }
-    },
     onType: function () {
       //here you can set any behavior
     },
@@ -244,48 +226,23 @@ export default {
       this.visible = false;
       console.log(this.userInfor);
     },
-    onImageSelected(files) {
-      let src = null
-      uploadFile(files.file).then(res => {
-        src = res
-        console.log('src', src)
-        this.messages.push(files.message);
-        /**
-         * This timeout simulates a requisition that uploads the image file to the server.
-         * It's up to you implement the request and deal with the response in order to
-         * update the message status and the message URL
-         */
-        setTimeout(
-          (res) => {
-            files.message.uploaded = true;
-            files.message.src = res.src;
-            if (this.role == "owner") {
-              addDoc(collection(db, "conversations"), {
-                owner_id: this.userInfor._id || "",
-                message: files.message.content,
-                src: files.message.src,
-                preview: files.message.preview,
-                created_at: Date.now(),
-                role: this.role,
-                type: files.message.type,
-              });
-            } else {
-              addDoc(collection(db, "conversations"), {
-                owner_id: this.owner,
-                message: files.message.content,
-                src: files.message.src,
-                preview: files.message.preview,
-                created_at: Date.now(),
-                role: this.role,
-                type: files.message.type
-              });
-            }
-          },
-          3000,
-          { src }
-        );
-      })
-
+    onImageSelected(files, message) {
+      let src =
+        "https://149364066.v2.pressablecdn.com/wp-content/uploads/2017/03/vue.jpg";
+      this.messages.push(message);
+      /**
+       * This timeout simulates a requisition that uploads the image file to the server.
+       * It's up to you implement the request and deal with the response in order to
+       * update the message status and the message URL
+       */
+      setTimeout(
+        (res) => {
+          message.uploaded = true;
+          message.src = res.src;
+        },
+        3000,
+        { src }
+      );
     },
     onImageClicked(message) {
       /**
@@ -311,11 +268,8 @@ export default {
             content: item.message,
             myself: item.role == "owner" ? true : false,
             participantId: 1,
-            timestamp: this.timeConverter(item.created_at),
-            type: item.type ? item.type : "text",
-            src: item.src ? item.src : '',
-            preview: item.src ? item.src : '',
-            uploaded: true               
+            timestamp: new Date(item.created_at),
+            type: "text",
           });
         });
       } else {
@@ -330,11 +284,8 @@ export default {
             content: item.message,
             myself: item.role == "admin" ? true : false,
             participantId: 1,
-            timestamp: this.timeConverter(item.created_at),
-            type: item.type ? item.type : "text",
-            src: item.src ? item.src : '',
-            preview: item.src ? item.src : '',
-            uploaded: true
+            timestamp: new Date(item.created_at),
+            type: "text",
           });
         });
       }
@@ -354,17 +305,13 @@ export default {
           content: item.message,
           myself: item.role == "admin" ? true : false,
           participantId: 1,
-          timestamp: this.timeConverter(item.created_at),
-          type: item.type ? item.type : "text",
-          src: item.src ? item.src : '',
-          preview: item.src ? item.src : '',
-          uploaded: true
+          timestamp: new Date(item.created_at),
+          type: "text",
         });
       });
     },
   },
   mounted() {
-    console.log(this.conversation)
     this.messages = [];
     if (this.role == "owner") {
       this.chatItems = this.chat.filter(
@@ -378,11 +325,8 @@ export default {
           content: item.message,
           myself: item.role == "owner" ? true : false,
           participantId: 1,
-          timestamp: this.timeConverter(item.created_at),
-          type: item.type ? item.type : "text",
-          src: item.src ? item.src : '',
-          preview: item.src ? item.src : '',
-          uploaded: true
+          timestamp: new Date(item.created_at),
+          type: "text",
         });
       });
     } else {
@@ -394,18 +338,15 @@ export default {
         return new Date(a.created_at) - new Date(b.created_at);
       });
       chatInCoversation.map((item) => {
-        console.log(this.timeConverter(item.created_at));
         this.messages.push({
           content: item.message,
           myself: item.role == "admin" ? true : false,
           participantId: 1,
-          timestamp: this.timeConverter(item.created_at),
-          type: item.type ? item.type : "text",
-          src: item.src ? item.src : '',
-          preview: item.src ? item.src : '',
-          uploaded: true
+          timestamp: new Date(item.created_at),
+          type: "text",
         });
       });
+      console.log("chat in con", chatInCoversation);
     }
   },
 };
@@ -413,8 +354,5 @@ export default {
 <style scoped>
 ::v-deep .header-title {
   margin-top: 15px;
-}
-::v-deep .quick-chat-container .container-message-display .message-image {
-  height: 150px;
 }
 </style>
