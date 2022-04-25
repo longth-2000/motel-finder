@@ -73,6 +73,8 @@ import ImageInfor from "../../components/seller/createPost/imageInfor.vue";
 import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
 import parentValidationMixin from "../../mixins/validation/postValidation/parentValidation";
 import { RepositoryFactory } from "../../repository/factory";
+import { userState } from "../../constants/userState";
+import VueJwtDecode from "vue-jwt-decode";
 
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
@@ -95,7 +97,21 @@ export default {
       deletedImageList: [],
       images: [],
       destination: "",
+      userInfor: {},
     };
+  },
+  props: {
+    user: {
+      type: Object,
+    },
+  },
+  watch: {
+    user: {
+      handler: function (newVal) {
+        this.userInfor = newVal;
+      },
+      deep: true,
+    },
   },
   created() {
     window.onbeforeunload = function (event) {
@@ -112,6 +128,7 @@ export default {
 
   methods: {
     ...mapActions("article", ["getArticle"]),
+    ...mapActions("user", ["getUserInfor"]),
     ...mapMutations("app", ["onSpinning", "offSpinning"]),
     ...mapMutations("modal", ["showModal"]),
     async getArticleByID() {
@@ -129,131 +146,148 @@ export default {
       this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
     async callApi(status) {
-      this.onSpinning();
-      this.formValidation.status = status;
-      let lengthImage = Object.keys(this.imageMotel).length > 1;
-      if (!lengthImage) {
-        if (status == "posted") {
-          this.openNotification(
-            "Cảnh báo",
-            "Bạn phải tải từ hai ảnh trở lên",
-            "warn"
-          );
+        this.onSpinning();
+        this.formValidation.status = status;
+        let lengthImage = Object.keys(this.imageMotel).length > 1;
+        if (!lengthImage) {
+          if (status == "waiting") {
+            this.openNotification(
+              "Cảnh báo",
+              "Bạn phải tải từ hai ảnh trở lên",
+              "warn"
+            );
+          } else {
+            const MotelRes = await RepositoryFactory.get(
+              "article"
+            ).createArticle(this.formValidation);
+            console.log(MotelRes);
+          }
         } else {
+          let formData = new FormData();
+          this.imageMotel.forEach((image) => formData.append("file", image));
+          const { data } = await RepositoryFactory.get("app").uploadImage(
+            formData
+          );
+          this.formValidation.images = data;
           const MotelRes = await RepositoryFactory.get("article").createArticle(
             this.formValidation
           );
           console.log(MotelRes);
+          window.onbeforeunload = function () {
+            return null;
+          };
+          window.location.href = "ho-so?type=manage-post&sortByDate=-1";
         }
-      } else {
-        let formData = new FormData();
-        this.imageMotel.forEach((image) => formData.append("file", image));
-        const { data } = await RepositoryFactory.get("app").uploadImage(
-          formData
-        );
-        this.formValidation.images = data;
-        const MotelRes = await RepositoryFactory.get("article").createArticle(
-          this.formValidation
-        );
-        console.log(MotelRes);
-        window.onbeforeunload = function () {
-          return null;
-        };
-        /* window.location.href = "ho-so?type=manage-post&sortByDate=-1"; */
-      }
-      if (status === "draft") {
-        window.onbeforeunload = function () {
-          return null;
-        };
-        window.location.href = this.destination;
-      }
-      this.offSpinning();
+        if (status === "draft") {
+          window.onbeforeunload = function () {
+            return null;
+          };
+          window.location.href = this.destination;
+        }
+        this.offSpinning();
     },
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      this.callApi("posted");
+      this.callApi("waiting");
     },
     async updatePost() {
-       this.onSpinning();
       let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      this.formValidation.status = "posted";
-      let lengthImage = Object.keys(this.imageMotel).length > 0;
-      if (lengthImage) {
-        let formData = new FormData();
-        this.imageMotel.forEach((image) => formData.append("file", image));
-        const image = await RepositoryFactory.get("app").uploadImage(formData);
-        if (image.data.public_id !== undefined) {
-          this.formValidation.images.push(image.data);
-        } else {
-          image.data.forEach((element) => {
-            this.formValidation.images.push(element);
-          });
-        }
-      }
-      this.formValidation.images = this.formValidation.images.filter(
-        (image) =>
-          !this.deletedImageList.some((item) => item === image.public_id)
-      );
-      if (this.formValidation.images.length < 2) {
-        this.openNotification(
-          "Cảnh báo",
-          "Bạn cần đăng ít nhất 2 ảnh",
-          "warning"
-        );
-      } else {
-        if (this.deletedImageList.length !== 0) {
-          const deletedImage = await RepositoryFactory.get("app").deleteImage(
-            this.deletedImageList
+      else {
+        this.onSpinning();
+        this.formValidation.status = "waiting";
+        let lengthImage = Object.keys(this.imageMotel).length > 0;
+        if (lengthImage) {
+          let formData = new FormData();
+          this.imageMotel.forEach((image) => formData.append("file", image));
+          const image = await RepositoryFactory.get("app").uploadImage(
+            formData
           );
-          console.log(deletedImage);
+          if (image.data.public_id !== undefined) {
+            this.formValidation.images.push(image.data);
+          } else {
+            image.data.forEach((element) => {
+              this.formValidation.images.push(element);
+            });
+          }
         }
-        delete this.formValidation.state;
-        delete this.formValidation.createdAt;
-        delete this.formValidation.updatedAt;
-        delete this.formValidation.point;
-        delete this.formValidation.likes;
-        delete this.formValidation.view;
-        delete this.formValidation.isPaid;
-        delete this.formValidation.userLiked;
-        const { data } = await RepositoryFactory.get("article").updateArticle(
-          this.formValidation,
-          this.idArticle
+        this.formValidation.images = this.formValidation.images.filter(
+          (image) =>
+            !this.deletedImageList.some((item) => item === image.public_id)
         );
-        console.log(data.message)
-        window.onbeforeunload = function () {
-          return null;
-        };
-        window.location.href = "/ho-so?type=manage-post"
+        if (this.formValidation.images.length < 2) {
+          this.openNotification(
+            "Cảnh báo",
+            "Bạn cần đăng ít nhất 2 ảnh",
+            "warning"
+          );
+        } else {
+          if (this.deletedImageList.length !== 0) {
+            const deletedImage = await RepositoryFactory.get("app").deleteImage(
+              this.deletedImageList
+            );
+            console.log(deletedImage);
+          }
+          delete this.formValidation.state;
+          delete this.formValidation.createdAt;
+          delete this.formValidation.updatedAt;
+          delete this.formValidation.point;
+          delete this.formValidation.likes;
+          delete this.formValidation.view;
+          delete this.formValidation.isPaid;
+          delete this.formValidation.userLiked;
+          this.formValidation.ownerId = this.formValidation.ownerId._id;
+          const { data } = await RepositoryFactory.get("article").updateArticle(
+            this.formValidation,
+            this.idArticle
+          );
+          console.log(data.message);
+          window.onbeforeunload = function () {
+            return null;
+          };
+          /* window.location.href = "/ho-so?type=manage-post"; */
+        }
       }
     },
     createDraft() {
       let status = this.$route.query.status;
-      if (status === "posted" || status === "draft") {
+      if (status === "waiting" || status === "draft") {
         window.onbeforeunload = function () {
           return null;
         };
-         window.location.href = this.destination;
+        window.location.href = this.destination;
       } else {
         this.callApi("draft");
       }
     },
     setEXpiredDate(mess) {
-      console.log(mess)
+      console.log(mess);
       const DATE = 60 * 60 * 1000 * 24;
-      let duration = mess.time === 1 ? DATE : mess.time === 2 ? 30 * DATE : 60 * DATE;
+      let duration =
+        mess.time === 1 ? DATE : mess.time === 2 ? 30 * DATE : 60 * DATE;
       this.formValidation.postExpired = new Date(Date.now() + duration);
-      this.formValidation.moneyPayment = mess.value
+      this.formValidation.moneyPayment = mess.value;
     },
     deleteImage(public_id) {
       this.deletedImageList.push(public_id);
-    }
+    },
   },
 
   beforeRouteLeave(to) {
     this.destination = to.path;
     this.showModal("alert");
+  },
+  async beforeRouteEnter(to, from, next) {
+    let accessToken = localStorage.getItem("accessToken");
+    const { id } = VueJwtDecode.decode(accessToken);
+    const { data } = await RepositoryFactory.get("user").getUser(id);
+    let state = data.state;
+    if (state === userState.agree) next();
+    else {
+      alert("Tài khoản của bạn chưa được duyệt");
+      next(from.fullPath);
+    }
   },
 };
 </script>

@@ -1,10 +1,9 @@
 import { RepositoryFactory } from "./factory";
-import cookie from "../helper/cookie"
 
 const setup = (axiosInstance) => {
     axiosInstance.interceptors.request.use(
         (config) => {
-            let accessToken = cookie.getCookie("accessToken");
+            let accessToken = localStorage.getItem("accessToken");
             if (accessToken) {
                 config.headers["Authorization"] = 'Bearer ' + accessToken;
             }
@@ -44,7 +43,7 @@ const setup = (axiosInstance) => {
                 const {
                     data
                 } = await RepositoryFactory.get('app').refreshToken()
-                document.cookie = `accessToken=${data.accessToken}`;
+                localStorage.setItem('accessToken', data.accessToken)
                 originalConfig.headers['Authorization'] = 'Bearer ' + data.accessToken
                 return axiosInstance(originalConfig);
             }

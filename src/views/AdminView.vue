@@ -7,22 +7,22 @@
       </div>
       <ul class="nav-links">
         <li
-          :class="{ adminActive: isActive.ManageUser }"
           @click="changeComponent('ManageUser', 'manage-user')"
+          :class="{ adminActive: isActive.ManageUser }"
         >
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-user" />
           <span class="links_name">Quản lí người dùng</span>
         </li>
         <li
-          :class="{ adminActive: isActive.ManagePost }"
           @click="changeComponent('ManagePost', 'manage-post')"
+          :class="{ adminActive: isActive.ManagePost }"
         >
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-book" />
           <span class="links_name">Quản lí bài đăng</span>
         </li>
         <li
-          :class="{ adminActive: isActive.Statistics }"
           @click="changeComponent('Statistics', 'statistics')"
+          :class="{ adminActive: isActive.Statistics }"
         >
           <font-awesome-icon
             class="icon-dashboard"
@@ -46,7 +46,6 @@
     <section class="home-section">
       <nav>
         <div class="sidebar-button">
-          
           <span class="dashboard">Dashboard</span>
         </div>
         <div class="search-box">
@@ -56,13 +55,32 @@
           <!--<img src="images/profile.jpg" alt="">-->
           <span class="admin_name">test@outlook.com</span>
           <i class="bx bx-chevron-down">
-            <font-awesome-icon icon="fa-solid fa-envelope" style="margin-left:20px"/>
+            <font-awesome-icon
+              icon="fa-solid fa-envelope"
+              style="margin-left: 20px"
+            />
           </i>
         </div>
       </nav>
 
       <div class="home-content">
         <component :is="component"></component>
+        <div>
+          <div class="icon-chat" @click="handleChat()" v-if="displayChatIcon">
+            <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
+            <div>Chat</div>
+          </div>
+          <div class="content-chat" v-if="isOpen">
+            <Chat
+              role="admin"
+              :owner="conversation.id"
+              chatTitle="Trò chuyện với chủ trọ"
+            />
+          </div>
+        </div>
+        <div class="frame-chat" v-if="displayChatList">
+          <Frame @hide-chat="hideChatList" :conversations="conversations" />
+        </div>
       </div>
     </section>
   </div>
@@ -71,12 +89,17 @@
 import ManageUser from "../components/admin/ManageUser.vue";
 import ManagePost from "../components/admin/ManagePost.vue";
 import Statistics from "../components/admin/Statistics.vue";
-
+import Chat from "../components/chat/VueChat.vue";
+import Frame from "../components/chat/FrameChat.vue";
+import { mapGetters } from "vuex";
+import { RepositoryFactory } from "../repository/factory";
 export default {
   components: {
     ManageUser,
     ManagePost,
     Statistics,
+    Chat,
+    Frame,
   },
   data() {
     return {
@@ -87,6 +110,10 @@ export default {
         Statistics: false,
       },
       urlParams: "",
+      displayChatIcon: true,
+      displayChatList: false,
+      conversations: [],
+      owner_id: null,
     };
   },
   watch: {
@@ -94,10 +121,48 @@ export default {
       this.isActive[newVal] = true;
       this.isActive[oldVal] = false;
     },
+    chat(val) {
+      console.log(this);
+      /* val.forEach(item => {
+        if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
+            this.conversations.push(item)
+        }
+      }); */
+      let conversation = val.filter(
+        (value, index, self) =>
+          index === self.findIndex((item) => item.owner_id === value.owner_id)
+      );
+      console.log(conversation);
+      conversation.forEach(async (value) => {
+        const { data } = await RepositoryFactory.get("user").getUser(
+          value.owner_id
+        );
+        let message = val
+          .filter((message) => message.owner_id === value.owner_id)
+          .map((item) => ({
+            message: item.message,
+            date: item.created_at,
+          }))
+          .sort(function (before, after) {
+            return after.date - before.date;
+          });
+        this.conversations.push({
+          id: value.owner_id,
+          name: data.email,
+          avatar: data.avatar.url,
+          message: message,
+        });
+      });
+      
+    },
   },
   created() {
     this, this.setURL();
   },
+  computed: {
+    ...mapGetters("chat", ["chat", "isOpen", "conversation"]),
+  },
+
   methods: {
     setURL() {
       var query = this.$route.query;
@@ -133,7 +198,16 @@ export default {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
     
+    handleChat() {
+      this.displayChatList = true;
+      this.displayChatIcon = false;
+    },
+    hideChatList(mess) {
+      this.displayChatList = mess;
+      this.displayChatIcon = true;
+    },
   },
+  mounted() {},
 };
 </script>
 <style>
@@ -160,6 +234,7 @@ export default {
   height: 80px;
   display: flex;
   align-items: center;
+  position: relative;
 }
 .sidebar .logo-details i {
   font-size: 28px;
@@ -182,6 +257,7 @@ export default {
   height: 80px;
   line-height: 80px;
   cursor: pointer;
+  position: relative;
 }
 .sidebar .nav-links li a {
   height: 100%;
@@ -203,6 +279,7 @@ export default {
   font-size: 18px;
   font-weight: 400;
   white-space: nowrap;
+  position: absolute;
 }
 .sidebar .nav-links .log_out {
   position: absolute;
@@ -390,7 +467,6 @@ nav .profile-details i {
 .home-content .sales-boxes {
   display: flex;
   justify-content: space-between;
-  /* padding: 0 20px; */
 }
 
 /* left box */
@@ -494,8 +570,39 @@ nav .profile-details i {
   display: flex;
   justify-content: right;
 }
+.icon-chat {
+  width: 50px;
+  height: auto;
+  background: #096dd9;
+  position: fixed;
+  z-index: 2;
+  right: 30px;
+  top: 600px;
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  font-size: 15px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#icon {
+  font-size: 20px;
+}
+.content-chat {
+  width: 400px;
+  position: fixed;
+  top: 200px;
+  z-index: 2;
+  right: 20px;
+}
+.frame-chat {
+  position: absolute;
+  bottom: 40px;
+  right: 20px;
+}
 /* Responsive Media Query */
-@media (max-width: 1240px) {
+@media (max-width: 1260px) {
   .sidebar {
     width: 60px;
   }

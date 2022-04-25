@@ -103,7 +103,7 @@ export default {
         const regexAvatarGoogle = /googleusercontent/;
         this.onSpinning();
         let checkImageEmpty = Object.keys(this.imageAvatar).length === 0;
-        this.manageProfile.id = JSON.parse(localStorage.getItem("user")).id;
+        this.manageProfile.id = this.checkLogged().id;
         if (!checkImageEmpty) {
           let formData = new FormData();
           formData.append("file", this.imageAvatar);

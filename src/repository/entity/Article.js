@@ -19,9 +19,9 @@ export default {
     updateStateArticle(articleID) {
         return BaseRepository.put(`/accomodations/update-state/${articleID}`, {});
     },
-    filterArticle(page, status, query) {
-        let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id + '&status=' + status
-        let paramsArray = ['isRented', 'state', 'sortByDate', 'sortByTitle', 'title', 'isExpired']
+    filterArticle(page, query) {
+        let endpoint = '/accomodations/user/accomod?page=' + page + '&limit=' + query.limit + '&id=' + query.id
+        let paramsArray = ['isRented', 'state', 'sortByDate', 'sortByTitle', 'title', 'isExpired', 'status']
         paramsArray.forEach(element => {
             if (query[element] !== undefined)
                 endpoint += '&' + element + '=' + query[element]
@@ -29,7 +29,7 @@ export default {
         return BaseRepository.get(endpoint);
     },
     filterArticleByUser(id) {
-        return BaseRepository.get(`/accomodations/user/accomod?id=${id}&status=posted`)
+        return BaseRepository.get(`/accomodations/user/accomod?id=${id}&status=approved`)
     },
     deleteMultiple(idArr) {
         return BaseRepository.post('accomodations/delete-multiple', {

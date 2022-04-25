@@ -14,12 +14,11 @@ import VueNotifycation from "../src/plugins/notifycation"
 import VueValidation from "../src/plugins/validation"
 import VueImage from "../src/plugins/image"
 import VueCookie from "../src/plugins/cookie"
-
+import VueLogged from "../src/plugins/logged"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-// get Firestore database instance
 import { firestorePlugin } from 'vuefire'
 
 Vue.use(firestorePlugin)
@@ -44,6 +43,7 @@ Vue.use(VueNotifycation)
 Vue.use(VueValidation)
 Vue.use(VueCookie)
 Vue.use(VueImage)
+Vue.use(VueLogged)
 
 Vue.config.productionTip = false
 

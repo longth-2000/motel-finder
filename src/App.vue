@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    
-    <component :is="layout">
-      <router-view></router-view>
+    <component :is="layout" :user="user" >
+      <router-view :user="user" ></router-view>
     </component>
   </div>
 </template>
@@ -18,18 +17,31 @@ export default {
     DefaultLayout,
   },
   data() {
-    return {};
+    return {
+      user:{},
+      isLogged:false
+    };
   },
   computed: {
     layout() {
       return (this.$route.meta.layout || "default") + "-layout";
     },
   },
+  created() {
+     this.getUser()
+  },
   mounted() {
     this.notifications()
+    this.chat()
   },
   methods: {
     ...mapActions("notifications", ["notifications"]),
+    ...mapActions("chat", ["chat"]),
+    ...mapActions("user", ["getUserInfor"]),
+    async getUser() {
+      const user = await this.getUserInfor();
+      this.user = user;
+    }
 
   }
 };

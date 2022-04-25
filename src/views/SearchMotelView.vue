@@ -17,18 +17,19 @@
           <span style="font-weight: bold; color: red">{{ posts.total }}</span>
           nhà trọ phù hợp với kết quả tìm kiếm
         </span>
+        
         <br />
         <div class="motel-result">
           <div class="motel-card-detail">
             <a
-              :href="'phong-tro/' + post._id"
+              :href="'/bat-dong-san/' + post._id"
               class="motel-link router-link"
               v-for="(post, index) in posts.data"
               :key="index"
             >
               <div class="motel-content">
                 <div class="motel-card-image">
-                  <img alt="" />
+                  <img :src="post.images[0].url" />
                 </div>
                 <div class="motel-card-info">
                   <div class="motel-card-info-content">
@@ -145,8 +146,8 @@ export default {
       posts: [],
       current: 1,
       isStorage: [],
-      user: localStorage.getItem("user"),
       districts: [],
+      user:this.checkLogged()
     };
   },
   created() {
@@ -224,17 +225,15 @@ export default {
         query
       );
       this.posts = data;
-      if (this.user !== null) {
-        const id = JSON.parse(this.user).id;
+      if (this.user) {
+        const { id } = this.user;
         this.posts.data.forEach((element) => {
           if (element.userLiked.includes(id)) {
             this.isStorage.push(element._id);
           }
         });
       }
-      console.log(this.isStorage);
 
-      console.log(data);
     },
     async getDistricts() {
       const { data } = await RepositoryFactory.get("address").getDistrict();
@@ -247,7 +246,7 @@ export default {
       this.openNotification("Thàng công", "Thông tin đã được copy", "success");
     },
     async storageFavorite(articleID) {
-      if (this.user === null) {
+      if (!this.user) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
       } else {
         if (this.isStorage.includes(articleID)) {
@@ -304,7 +303,7 @@ export default {
   border: 1px solid #f2f2f2;
 }
 .main-content {
-  width: 1000px;
+  width: 75%;
   margin-right: 30px;
   display: inline-block;
   padding-bottom: 50px;
@@ -318,6 +317,7 @@ export default {
   text-decoration: none solid rgb(44, 44, 44) auto;
 }
 .motel-result {
+  width: 100%;
   margin-bottom: 50px;
 }
 .motel-card-image {
@@ -492,7 +492,6 @@ export default {
   float: right;
   width: 240px;
   height: auto;
-  display: block;
   border-radius: 5px;
   background-color: #f5f5f5;
 }
@@ -517,6 +516,9 @@ export default {
 @media screen and (max-width: 1400px) {
   .main-sidebar {
     display: none;
+  }
+  .motel-result {
+    width: 135%
   }
 }
 </style>

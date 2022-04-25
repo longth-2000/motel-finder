@@ -1,7 +1,7 @@
 <template>
   <div id="default-layout">
     <div class="header">
-      <Header :openNav="openNav" :user="user" :isLogged="isLogged"></Header>
+      <Header :openNav="openNav" :user="user"></Header>
     </div>
     <div class="sidebar">
       <Sidebar id="sidebar" :closeNav="closeNav"></Sidebar>
@@ -13,9 +13,9 @@
         </div>
         <div>Chat</div>
       </div>
-      <slot></slot>
+      <slot ></slot>
       <div class="content-chat" v-if="displayChat === true">
-        <Chat @change-display="changeDisplay" />
+        <Chat chatTitle="Trò chuyện với admin" @change-display="changeDisplay" role="owner" />
       </div>
     </div>
     <div class="footer">
@@ -30,13 +30,20 @@ import Footer from "../components/app/Footer.vue";
 import Chat from "../components/chat/VueChat.vue";
 import { subject } from "@casl/ability";
 
-import { mapActions } from "vuex";
 export default {
   components: {
     Header,
     Sidebar,
     Footer,
     Chat,
+  },
+  props: {
+    user:{
+      type:Object,
+      default: () => {
+        return {}
+      }
+    }
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
@@ -48,8 +55,6 @@ export default {
       offsetHeight,
       refreshScrollableArea: undefined,
       displayChat: false,
-      user: {},
-      isLogged: false,
       isDisplayChat:false
     };
   },
@@ -60,23 +65,18 @@ export default {
         this.closeNav();
       }
     },
+    user: {
+      handler: function (newVal) {
+        let checkPermission = this.$can("chat", subject("User", newVal));
+        this.isDisplayChat = (checkPermission) ? true :false
+      },
+      deep: true,
+    },
   },
   created() {
-    this.getUser()
+    
   },
   methods: {
-    ...mapActions("user", ["getUserInfor"]),
-    async getUser() {
-      try {
-        const user = await this.getUserInfor();
-        this.user = user;
-        this.isLogged = true;
-        let checkPermission = this.$can("chat", subject("User", this.user));
-        this.isDisplayChat = (this.isLogged && checkPermission) ? true :false
-      } catch (error) {
-        console.log(error.response);
-      }
-    },
     openNav() {
       document.getElementById("sidebar").style.width = "300px";
       document.getElementById("default-layout").style.marginRight = "250px";

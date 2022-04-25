@@ -23,9 +23,9 @@ const stateMotel = [
   { name: "Đã cho thuê", value:true },
 ];
 const stateApproved = [
-  { name: "Chấp nhận", value: 2 },
-  { name: "Từ chối", value: 3 },
-  { name: "Đợi duyệt", value: 1 },
+  { name: "Chấp nhận", value: 'approved' },
+  { name: "Từ chối", value: 'rejected' },
+  { name: "Đợi duyệt", value: 'waiting' },
 ];
 
 export default {
@@ -40,7 +40,7 @@ export default {
       value:{
         stateExpired: true,
         stateMotel:true,
-        stateApproved:1
+        stateApproved:"waiting"
       },
       radioStyle: {
         display: "block",
