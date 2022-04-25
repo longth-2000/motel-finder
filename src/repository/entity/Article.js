@@ -88,5 +88,8 @@ export default {
     },
     getRate(id) {
         return BaseRepository.get(`/report/evaluation/${id}`)
+    },
+    getPrivateFavouriteArticle(page, id, limit) {
+        return BaseRepository.get(`/user/favorite/accomod?page=${page}&limit=${limit}&id=${id}`)
     }
 }

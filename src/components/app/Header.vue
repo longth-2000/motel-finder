@@ -95,7 +95,7 @@
                 </div>
               </div>
               <template #overlay>
-                <a-menu v-if="notificationItems.length === 0">
+                <a-menu v-if="notificationItems.length > 0">
                   <a-menu-item
                     v-for="(item, index) in notificationShow"
                     :key="index"
@@ -103,9 +103,10 @@
                     <div class="notify-menu">
                       <div
                         class="notify-icon"
-                        v-if="item.state == notificationState.refuse"
+                        v-if="item.state == notificationState.refuse || item.state === 0"
                         style="color: red"
-                      >
+                      > 
+                      
                         <font-awesome-icon
                           icon="fa-solid fa-circle-exclamation"
                         />
@@ -113,8 +114,9 @@
                       <div
                         class="notify-icon"
                         style="color: green"
-                        v-if="item.state == notificationState.agree"
+                        v-if="item.state == notificationState.agree || item.state === 2"
                       >
+                      
                         <font-awesome-icon icon="fa-solid fa-circle-check" />
                       </div>
 
@@ -155,15 +157,15 @@
           </li>
           <li class="menu-items" style="display: flex" v-if="isLogin">
             <div class="abbreviation-username">
-              <span v-if="user.hasOwnProperty('email')">{{
-                user.email.charAt(0).toUpperCase()
+              <span >{{
+                userInfor.email.charAt(0).toUpperCase()
               }}</span>
             </div>
             <div class="fullwrite-username">
               <p>
                 <a-tooltip>
-                  <template slot="title"> {{ user.email }}</template>
-                  <span class="email-title-tooltip">{{ user.email }}</span>
+                  <template slot="title"> {{ userInfor.email }}</template>
+                  <span class="email-title-tooltip">{{ userInfor.email }}</span>
                 </a-tooltip>
               </p>
               <a-dropdown>
@@ -185,7 +187,7 @@
                     ></a-menu-item
                   >
                   <a-menu-item style="padding-left: 10px" v-else
-                    ><a href="/ho-so?type=manage-post" class="router-link"
+                    ><a :href="'/bai-dang-yeu-thich/' + userInfor.id" class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
                         class="icon-user"
@@ -262,7 +264,7 @@ import { formatDate } from "./../..//helper/utils";
 import { collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./../../fire";
 export default {
-  props: ["openNav", "user"],
+  props: ["openNav"],
   mixins: [authenticationMixin],
 
   data() {
@@ -286,6 +288,9 @@ export default {
   computed: {
     ...mapGetters("modal", ["isVisible"]),
     ...mapGetters("notifications", ["notifications"]),
+    userInfor() {
+      return this.checkLogged()
+    }
   },
   methods: {
     createPost() {
@@ -304,9 +309,15 @@ export default {
   watch: {
     notifications(val) {
       if (val) {
-        this.notificationItems = val.filter(
-          (item) => item.is_read == false && item.user_id == this.user._id
-        );
+        this.notificationItems = val.filter((item) => {
+          let checkRead = item.is_read == false;
+          return item.user
+            ? checkRead &&
+                (item.user_id == this.userInfor.id ||
+                  item.user._id == this.userInfor.id)
+            : checkRead && item.user_id == this.userInfor.id;
+        });
+        console.log(this.notificationItems);
         if (this.notificationItems.length > 3) {
           this.notificationShow = this.notificationItems.slice(0, 3);
         } else {
@@ -314,16 +325,18 @@ export default {
         }
       }
     },
-    "user._id"(val) {
+  
+    /* "user._id"(val) {
       this.notificationItems = this.notifications.filter(
         (item) => item.is_read == false && item.user_id == val
       );
+      console.log(this.notificationItems)
       if (this.notificationItems.length > 3) {
         this.notificationShow = this.notificationItems.slice(0, 3);
       } else {
         this.notificationShow = this.notificationItems;
       }
-    },
+    },  */
   },
 };
 </script>

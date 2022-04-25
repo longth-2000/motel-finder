@@ -104,5 +104,8 @@ ul {
 .ant-pagination {
   margin-right: 2% !important;
 }
+.ant-popover-inner-content {
+  min-width: 250px;
+}
 
 </style>

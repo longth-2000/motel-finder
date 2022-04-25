@@ -1,7 +1,7 @@
 <template>
   <div id="default-layout">
     <div class="header">
-      <Header :openNav="openNav" :user="user"></Header>
+      <Header :openNav="openNav" ></Header>
     </div>
     <div class="sidebar">
       <Sidebar id="sidebar" :closeNav="closeNav"></Sidebar>
@@ -43,7 +43,7 @@ export default {
       default: () => {
         return {}
       }
-    }
+    },
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
@@ -55,7 +55,7 @@ export default {
       offsetHeight,
       refreshScrollableArea: undefined,
       displayChat: false,
-      isDisplayChat:false
+      isDisplayChat:false,
     };
   },
   watch: {

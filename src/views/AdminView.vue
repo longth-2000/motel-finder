@@ -227,7 +227,6 @@ export default {
 };
 </script>
 <style>
-/* Googlefont Poppins CDN Link */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 .admin-view {
   margin: 0;
@@ -333,7 +332,7 @@ export default {
   left: 60px;
   width: calc(100% - 60px);
 }
-.admin-view .home-section nav .sidebar-admin-button {
+.home-section nav .sidebar-admin-button {
   display: flex;
   align-items: center;
   font-size: 24px;
@@ -485,7 +484,6 @@ nav .profile-details i {
   justify-content: space-between;
 }
 
-/* left box */
 .home-content .sales-boxes .recent-sales {
   width: 100%;
   background: #fff;
@@ -537,7 +535,6 @@ nav .profile-details i {
   background: #0d3073;
 }
 
-/* Right box */
 .home-content .sales-boxes .top-sales {
   width: 35%;
   background: #fff;
@@ -617,7 +614,6 @@ nav .profile-details i {
   bottom: 20px;
   right: 20px;
 }
-/* Responsive Media Query */
 @media (max-width: 1260px) {
   .sidebar-admin {
     width: 60px;
@@ -630,7 +626,6 @@ nav .profile-details i {
     left: 60px;
   }
   .sidebar-admin.active ~ .home-section {
-    /* width: calc(100% - 220px); */
     overflow: hidden;
     left: 220px;
   }
@@ -711,5 +706,5 @@ nav .profile-details i {
     left: 60px;
     width: calc(100% - 60px);
   }
-}
+}  
 </style>

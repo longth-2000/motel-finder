@@ -472,7 +472,6 @@ export default {
   object-fit: cover;
   z-index: -1;
 }
-/*search box css start here*/
 .homepage .search-sec {
   padding: 2rem;
 }

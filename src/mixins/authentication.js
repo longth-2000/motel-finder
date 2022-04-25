@@ -12,7 +12,7 @@ var authenticationMixin = {
     },
     computed: {
         setCheckPermisson() {
-            return this.$can("create", subject("User", this.user));
+            return this.$can("create", subject("User", this.userInfor));
         },
     },
     methods: {

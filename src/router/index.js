@@ -61,6 +61,12 @@ export const router = new Router({
                 import ("../views/PurchaseView.vue"),
         },
         {
+            path: "/bai-dang-yeu-thich/:id",
+            name: "FavouritePost",
+            component: () =>
+                import ("../views/FavouritePostView.vue"),
+        },
+        {
             path: "/admin/manage",
             name: "Admin",
             meta: {

@@ -51,6 +51,7 @@
             <thead>
               <tr>
                 <th><a-checkbox></a-checkbox></th>
+                <th></th>
                 <th>Tiêu đề</th>
                 <th>Ngày đăng</th>
                 <th>Người đăng bài</th>
@@ -61,56 +62,55 @@
               </tr>
             </thead>
             <tbody>
-            
-                <tr
-                  v-for="(article, index) in articleArray"
-                  :key="index"
-                  class="table-article"
-                  @click="redirectDetail(article._id)"
-                >
-                  <td><a-checkbox></a-checkbox></td>
-                  <td>
-                    <span class="title-article">{{
-                      article.detailedPost.title
-                    }}</span>
-                  </td>
-                  <td>{{ formatDate(article.createdAt) }}</td>
-                  <td>{{ article.ownerId.name }}</td>
-                  <td>{{ formatDate(article.postExpired) }}</td>
-                  <td>
-                    <a-tag color="green" v-if="article.isPaid"
-                      >Đã thanh toán</a-tag
-                    >
-                    <a-tag color="red" v-if="!article.isPaid"
-                      >Chưa thanh toán</a-tag
-                    >
-                  </td>
-                  <td v-if="article.status == postStatus.reject">
-                    <a-tag color="red"> Từ chối </a-tag>
-                  </td>
-                  <td v-if="article.status == postStatus.agree">
-                    <a-tag color="green"> Đã duyệt </a-tag>
-                  </td>
-                  <td
-                    v-if="article.status == postStatus.waiting"
-                    class="action-approve"
+              <tr
+                v-for="(article, index) in articleArray"
+                :key="index"
+                class="table-article"
+              >
+                <td><a-checkbox></a-checkbox></td>
+                <td><a :href="'/bat-dong-san/'+ article._id" class="router-link">Xem chi tiết</a></td>
+                <td>
+                  <span class="title-article">{{
+                    article.detailedPost.title
+                  }}</span>
+                </td>
+                <td>{{ formatDate(article.createdAt) }}</td>
+                <td>{{ article.ownerId.name }}</td>
+                <td>{{ formatDate(article.postExpired) }}</td>
+                <td>
+                  <a-tag color="green" v-if="article.isPaid"
+                    >Đã thanh toán</a-tag
                   >
-                    <a-button
-                      type="danger"
-                      class="button-reject"
-                      @click.prevent="
-                        handleApprove(article, { status: `rejected` })
-                      "
-                      >Từ chối</a-button
-                    ><a-button
-                      type="primary"
-                      @click.prevent="
-                        handleApprove(article, { status: `approved` })
-                      "
-                      >Đồng ý</a-button
-                    >
-                  </td>
-                </tr>
+                  <a-tag color="red" v-if="!article.isPaid"
+                    >Chưa thanh toán</a-tag
+                  >
+                </td>
+                <td v-if="article.status == postStatus.reject">
+                  <a-tag color="red"> Từ chối </a-tag>
+                </td>
+                <td v-if="article.status == postStatus.agree">
+                  <a-tag color="green"> Đã duyệt </a-tag>
+                </td>
+                <td
+                  v-if="article.status == postStatus.waiting"
+                  class="action-approve"
+                >
+                  <a-button
+                    type="danger"
+                    class="button-reject"
+                    @click.prevent="
+                      handleApprove(article, { status: `rejected` })
+                    "
+                    >Từ chối</a-button
+                  ><a-button
+                    type="primary"
+                    @click.prevent="
+                      handleApprove(article, { status: `approved` })
+                    "
+                    >Đồng ý</a-button
+                  >
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -127,11 +127,7 @@
     </div>
   </div>
 </template>
-<style scoped>
-.icon-static {
-  font-size: 30px;
-}
-</style>
+
 <script>
 import { RepositoryFactory } from "../../repository/factory";
 import { collection, addDoc } from "firebase/firestore";
@@ -219,8 +215,8 @@ export default {
       this.updateTime = Date.now();
     },
     redirectDetail(id) {
-      window.location.href = `/bat-dong-san/${id}`
-    }
+      window.location.href = `/bat-dong-san/${id}`;
+    },
   },
   watch: {
     current(value) {
@@ -244,10 +240,10 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.table-article:hover {
+/* .table-article:hover {
   background: rgba(0, 0, 0, 0.1);
   cursor: pointer;
-}
+} */
 .button-reject {
   margin-right: 10px;
 }
