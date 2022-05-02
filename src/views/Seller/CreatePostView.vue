@@ -75,6 +75,7 @@ import parentValidationMixin from "../../mixins/validation/postValidation/parent
 import { RepositoryFactory } from "../../repository/factory";
 import { userState } from "../../constants/userState";
 import VueJwtDecode from "vue-jwt-decode";
+import cookie from "../../helper/cookie"
 
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
@@ -146,45 +147,45 @@ export default {
       this.images = JSON.parse(JSON.stringify(this.formValidation.images));
     },
     async callApi(status) {
-        this.onSpinning();
-        this.formValidation.status = status;
-        let lengthImage = Object.keys(this.imageMotel).length > 1;
-        if (!lengthImage) {
-          if (status == "waiting") {
-            this.openNotification(
-              "Cảnh báo",
-              "Bạn phải tải từ hai ảnh trở lên",
-              "warn"
-            );
-          } else {
-            const MotelRes = await RepositoryFactory.get(
-              "article"
-            ).createArticle(this.formValidation);
-            console.log(MotelRes);
-          }
-        } else {
-          let formData = new FormData();
-          this.imageMotel.forEach((image) => formData.append("file", image));
-          const { data } = await RepositoryFactory.get("app").uploadImage(
-            formData
+      this.onSpinning();
+      this.formValidation.status = status;
+      let lengthImage = Object.keys(this.imageMotel).length > 1;
+      if (!lengthImage) {
+        if (status == "waiting") {
+          this.openNotification(
+            "Cảnh báo",
+            "Bạn phải tải từ hai ảnh trở lên",
+            "warn"
           );
-          this.formValidation.images = data;
+        } else {
           const MotelRes = await RepositoryFactory.get("article").createArticle(
             this.formValidation
           );
           console.log(MotelRes);
-          window.onbeforeunload = function () {
-            return null;
-          };
-          /* window.location.href = "ho-so?type=manage-post&sortByDate=-1"; */
         }
-        if (status === "draft") {
-          window.onbeforeunload = function () {
-            return null;
-          };
-          window.location.href = this.destination;
-        }
-        this.offSpinning();
+      } else {
+        let formData = new FormData();
+        this.imageMotel.forEach((image) => formData.append("file", image));
+        const { data } = await RepositoryFactory.get("app").uploadImage(
+          formData
+        );
+        this.formValidation.images = data;
+        const MotelRes = await RepositoryFactory.get("article").createArticle(
+          this.formValidation
+        );
+        console.log(MotelRes);
+        window.onbeforeunload = function () {
+          return null;
+        };
+        /* window.location.href = "ho-so?type=manage-post&sortByDate=-1"; */
+      }
+      if (status === "draft") {
+        window.onbeforeunload = function () {
+          return null;
+        };
+        window.location.href = this.destination;
+      }
+      this.offSpinning();
     },
     createPost() {
       let validation = this.checkValidation(this.check, this.$v);
@@ -279,14 +280,18 @@ export default {
     this.showModal("alert");
   },
   async beforeRouteEnter(to, from, next) {
-    let accessToken = localStorage.getItem("accessToken");
-    const { id } = VueJwtDecode.decode(accessToken);
-    const { data } = await RepositoryFactory.get("user").getUser(id);
-    let state = data.state;
-    if (state === userState.agree) next();
-    else {
-      alert("Tài khoản của bạn chưa được duyệt");
-      next(from.fullPath);
+    try {
+      let accessToken = cookie.getCookie("accessToken");
+      const { id } = VueJwtDecode.decode(accessToken);
+      const { data } = await RepositoryFactory.get("user").getUser(id);
+      let state = data.state;
+      if (state === userState.agree) next();
+      else {
+        alert("Tài khoản của bạn chưa được duyệt");
+        next(from.fullPath);
+      }
+    } catch (err) {
+      console.log(err.response);
     }
   },
 };

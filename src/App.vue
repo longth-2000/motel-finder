@@ -52,7 +52,7 @@ export default {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-width: 1000px;
+
 }
 .router-link {
   text-decoration: none;

@@ -100,6 +100,7 @@ export default {
 <style scoped>
 #default-layout {
   transition: margin-left 0.5s;
+  /* min-width: 1000px; */
 }
 .icon-chat {
   width: 50px;

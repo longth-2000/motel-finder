@@ -97,9 +97,10 @@ export default {
     ...mapMutations("user", ["GET_USER"]),
     ...mapActions("user", ["getUserInfor"]),
     async createProfile() {
-      let validation = this.checkValidation(this.check, this.$v);
+     let validation = this.checkValidation(this.check, this.$v);
       if (!validation) return;
-      else {
+      else { 
+      try {
         const regexAvatarGoogle = /googleusercontent/;
         this.onSpinning();
         let checkImageEmpty = Object.keys(this.imageAvatar).length === 0;
@@ -151,7 +152,12 @@ export default {
         this.GET_USER(this.manageProfile);
         this.offSpinning();
         this.openNotification("Thành công", data.message, "success");
+       } 
+       catch(err) {
+        console.log(err.response)
+       }
       }
+      
     },
     async getUser() {
       const data = await this.getUserInfor();

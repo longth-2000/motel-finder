@@ -21,7 +21,8 @@ const setup = (axiosInstance) => {
                     "updatedAt",
                     "status",
                     "date",
-                    "resetToken"
+                    "resetToken",
+                    "isApproved"
                 ];
                 deletedArray.forEach((item) => {
                     delete data[item];

@@ -122,17 +122,11 @@ export default {
       this.isActive[oldVal] = false;
     },
     chat(val) {
-      console.log(this);
-      /* val.forEach(item => {
-        if(!this.conversations.find((i) => i.owner_id === item.owner_id)) {
-            this.conversations.push(item)
-        }
-      }); */
       let conversation = val.filter(
         (value, index, self) =>
-          index === self.findIndex((item) => item.owner_id === value.owner_id)
+          index === self.findIndex((item) => item.owner_id === value.owner_id) 
       );
-      console.log(conversation);
+      
       conversation.forEach(async (value) => {
         const { data } = await RepositoryFactory.get("user").getUser(
           value.owner_id
@@ -148,7 +142,7 @@ export default {
           });
         this.conversations.push({
           id: value.owner_id,
-          name: data.email,
+          name: data.name,
           avatar: data.avatar.url,
           message: message,
         });

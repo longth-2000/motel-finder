@@ -455,6 +455,7 @@ export default {
 };
 </script>
 <style scoped>
+
 .manage-content {
   background: red;
 }
