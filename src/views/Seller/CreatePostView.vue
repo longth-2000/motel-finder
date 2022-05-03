@@ -177,7 +177,7 @@ export default {
         window.onbeforeunload = function () {
           return null;
         };
-        /* window.location.href = "ho-so?type=manage-post&sortByDate=-1"; */
+         window.location.href = "ho-so?type=manage-post&sortByDate=-1"; 
       }
       if (status === "draft") {
         window.onbeforeunload = function () {
@@ -247,7 +247,7 @@ export default {
           window.onbeforeunload = function () {
             return null;
           };
-          /* window.location.href = "/ho-so?type=manage-post"; */
+          window.location.href = "/ho-so?type=manage-post"; 
         }
       }
     },

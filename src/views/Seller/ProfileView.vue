@@ -19,7 +19,7 @@
               <div id="post">
                 <ul>
                   <li>
-                    Số bài đã đăng: <span>{{ posts.length }}</span>
+                    Số bài đang chờ: <span>{{ posts.filter((element) => element.state === 1).length }}</span>
                   </li>
                   <li>Số lượt yêu thích: <span>0</span></li>
                   <li>
@@ -202,6 +202,7 @@ export default {
       const { data } = await RepositoryFactory.get(
         "article"
       ).filterArticleByUser(id);
+      console.log(data)
       this.posts = data.data.data;
     },
     changeComponent(component, params) {

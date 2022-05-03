@@ -29,7 +29,7 @@ export default {
         return BaseRepository.get(endpoint);
     },
     filterArticleByUser(id) {
-        return BaseRepository.get(`/accomodations/user/accomod?id=${id}&status=approved`)
+        return BaseRepository.get(`/accomodations/user/accomod?id=${id}`)
     },
     deleteMultiple(idArr) {
         return BaseRepository.post('accomodations/delete-multiple', {

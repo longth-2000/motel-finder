@@ -65,10 +65,7 @@
 
       <div class="home-content">
         <component :is="component">
-          <p>bvhjsgbvsdb</p>
-        <!--   <a-modal  v-model="isVisible.rejected">
-            hellllllo
-          </a-modal> -->
+       
         </component>
         <div>
           <div class="icon-chat" @click="handleChat()" v-if="displayChatIcon">

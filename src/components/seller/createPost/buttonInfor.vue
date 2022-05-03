@@ -1,6 +1,6 @@
 <template>
   <div class="button">
-    <a-button type="danger" @click="handlePost()"> {{title}} </a-button>
+    <a-button type="primary" @click="handlePost()" style="background:#0d6efd"> {{title}} </a-button>
   </div>
 </template>
 <script>
