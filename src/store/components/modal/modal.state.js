@@ -11,6 +11,7 @@ export const state = () => ({
         stateMotel: false,
         stateApproved: false,
         rate: false,
-        role: false
+        role: false,
+        rejected: false
     }
 })

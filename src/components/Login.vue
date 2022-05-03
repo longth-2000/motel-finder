@@ -119,7 +119,6 @@
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
-import VueJwtDecode from "vue-jwt-decode";
 
 
 export default {
@@ -155,16 +154,7 @@ export default {
       else {
         try {
           const { data } = await RepositoryFactory.get("user").login(this.user);
-          let { accessToken, refreshToken } = data.data;
-            let decodeToken = VueJwtDecode.decode(accessToken);
-            document.cookie = `accessToken=${accessToken}`;
-            localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("accessToken", accessToken);
-            const { role } = decodeToken;
-            let endpoint =
-                role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
-            console.log(endpoint)
-            window.location.href = endpoint;
+          this.handleAfterSign(data.data)
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
@@ -179,14 +169,7 @@ export default {
         id_token,
         this.role
       );
-      let { accessToken, refreshToken } = data.data;
-      let decodeToken = VueJwtDecode.decode(accessToken);
-      document.cookie = `accessToken=${accessToken}`;
-      localStorage.setItem("refreshToken", refreshToken);
-      const { role } = decodeToken;
-      let endpoint = role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
-      console.log(endpoint);
-      window.location.href = endpoint;
+      this.handleAfterSign(data.data)
     },
   },
 };

@@ -102,7 +102,9 @@
                       handleApprove(article, { status: `rejected` })
                     "
                     >Từ chối</a-button
-                  ><a-button
+                  >
+                   <slot></slot>
+                  <a-button
                     type="primary"
                     @click.prevent="
                       handleApprove(article, { status: `approved` })

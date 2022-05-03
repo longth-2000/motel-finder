@@ -150,7 +150,6 @@
 <script>
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
-import VueJwtDecode from "vue-jwt-decode";
 
 import {
   required,
@@ -194,15 +193,7 @@ export default {
             role: this.user.role,
           });
           console.log(data);
-          let { accessToken, refreshToken } = data.data;
-          let decodeToken = VueJwtDecode.decode(accessToken);
-          document.cookie = `accessToken=${accessToken}`;
-          localStorage.setItem("refreshToken", refreshToken);
-          const { role } = decodeToken;
-          let endpoint =
-            role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
-          console.log(endpoint);
-          window.location.href = endpoint;
+          this.handleAfterSign(data.data)
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");

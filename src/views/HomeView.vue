@@ -19,6 +19,7 @@
               <div style="flex: 7">
                 <a-input
                   placeholder="Tìm kiếm theo địa điểm công cộng gần đó...."
+                  v-model="search.public_location"
                 />
               </div>
               <div style="flex: 1; padding: 10px 15px">
@@ -397,9 +398,8 @@ export default {
         });
     },
     searchMotel() {
-      let searchArr = ["type", "district", "bedRoom", "Price", "Area"];
+      let searchArr = ["type", "district", "bedRoom", "Price", "Area", "public_location"];
       let endpoint = "/tim-kiem?handle=search";
-      console.log9;
       searchArr.forEach((element) => {
         if (this.search[element] !== undefined) {
           if (element === "Area" || element === "Price") {
@@ -537,7 +537,7 @@ export default {
 .homepage .ant-select-selection-selected-value {
   margin-top: 5px;
 }
-h4 {
+.homepage h4 {
   background: #bfbfbf;
   padding: 10px;
   color: white;

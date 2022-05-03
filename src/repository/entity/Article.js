@@ -47,7 +47,7 @@ export default {
     },
     searchByKeyword(page, limit, query) {
         let endpoint = '/accomodations/renter/list?page=' + page + '&limit=' + limit
-        let paramsArray = ['district', 'minArea', 'maxArea', 'bedRoom', 'type', 'minPrice', 'maxPrice']
+        let paramsArray = ['district', 'minArea', 'maxArea', 'bedRoom', 'type', 'minPrice', 'maxPrice', 'public_location']
         paramsArray.forEach(element => {
             if (query[element] !== undefined)
                 endpoint += '&' + element + '=' + query[element]

@@ -64,7 +64,12 @@
       </nav>
 
       <div class="home-content">
-        <component :is="component"></component>
+        <component :is="component">
+          <p>bvhjsgbvsdb</p>
+        <!--   <a-modal  v-model="isVisible.rejected">
+            hellllllo
+          </a-modal> -->
+        </component>
         <div>
           <div class="icon-chat" @click="handleChat()" v-if="displayChatIcon">
             <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
