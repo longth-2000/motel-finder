@@ -80,8 +80,8 @@
                   </a-tag>
                 </td>
                 <td v-if="owner.state == userState.waiting" class="action-approve">
-                  <a-button type="danger" @click="handleApprove(owner, {state: 0})">Từ chối</a-button
-                  ><a-button type="primary" class="button-approve" @click="handleApprove(owner, {state: 2})">Đồng ý</a-button>
+                  <a-button type="danger" class="button-reject" @click="handleApprove(owner, {state: 0})">Từ chối</a-button
+                  ><a-button type="primary"  @click="handleApprove(owner, {state: 2})">Đồng ý</a-button>
                 </td>
               </tr>
             </tbody>
@@ -173,7 +173,5 @@ export default {
 .action-approve {
   display: flex;
 }
-.button-approve {
-  margin-left: 10px;
-}
+
 </style>

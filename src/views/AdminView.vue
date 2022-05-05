@@ -1,11 +1,18 @@
 <template>
   <div>
-    <div class="sidebar">
+    <div class="sidebar-admin">
       <div class="logo-details">
         <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-house" />
         <span class="logo_name">Motel Finder</span>
       </div>
       <ul class="nav-links">
+        <li
+          @click="changeComponent('ManageMotel', 'manage-motel')"
+          :class="{ adminActive: isActive.ManageMotel }"
+        >
+          <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-house" />
+          <span class="links_name">Quản lí nhà thuê</span>
+        </li>
         <li
           @click="changeComponent('ManageUser', 'manage-user')"
           :class="{ adminActive: isActive.ManageUser }"
@@ -21,6 +28,13 @@
           <span class="links_name">Quản lí bài đăng</span>
         </li>
         <li
+          @click="changeComponent('ManageReport', 'manage-report')"
+          :class="{ adminActive: isActive.ManageReport }"
+        >
+          <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-flag" />
+          <span class="links_name">Quản lí report</span>
+        </li>
+        <li
           @click="changeComponent('Statistics', 'statistics')"
           :class="{ adminActive: isActive.Statistics }"
         >
@@ -34,25 +48,25 @@
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-heart" />
           <span class="links_name">Phân tích thị hiếu</span>
         </li>
-
-        <li class="log_out">
-          <a href="#">
-            <i class="bx bx-log-out"></i>
-            <span class="links_name">Log out</span>
-          </a>
+        <li class="log_out"  @click="logoutAdmin()">
+          <font-awesome-icon
+            class="icon-dashboard"
+           
+            icon="fa-solid fa-circle-left"
+          />
+          <span class="links_name">Đăng xuất</span>
         </li>
       </ul>
     </div>
     <section class="home-section">
       <nav>
-        <div class="sidebar-button">
+        <div class="sidebar-admin-button">
           <span class="dashboard">Dashboard</span>
         </div>
         <div class="search-box">
           <img src="../assets/logo.png" alt="" />
         </div>
         <div class="profile-details">
-          <!--<img src="images/profile.jpg" alt="">-->
           <span class="admin_name">test@outlook.com</span>
           <i class="bx bx-chevron-down">
             <font-awesome-icon
@@ -64,9 +78,7 @@
       </nav>
 
       <div class="home-content">
-        <component :is="component">
-       
-        </component>
+        <component :is="component"> </component>
         <div>
           <div class="icon-chat" @click="handleChat()" v-if="displayChatIcon">
             <font-awesome-icon id="icon" icon="fa-solid fa-comment-dots" />
@@ -91,10 +103,17 @@
 import ManageUser from "../components/admin/ManageUser.vue";
 import ManagePost from "../components/admin/ManagePost.vue";
 import Statistics from "../components/admin/Statistics.vue";
+import ManageMotel from "../components/admin/ManageMotel.vue";
+import ManageReport from "../components/admin/ManageReport.vue";
+
 import Chat from "../components/chat/VueChat.vue";
 import Frame from "../components/chat/FrameChat.vue";
 import { mapGetters } from "vuex";
 import { RepositoryFactory } from "../repository/factory";
+import { userRole } from "../constants/userRole"
+import cookie from "../helper/cookie"
+import VueJwtDecode from "vue-jwt-decode";
+
 export default {
   components: {
     ManageUser,
@@ -102,6 +121,8 @@ export default {
     Statistics,
     Chat,
     Frame,
+    ManageMotel,
+    ManageReport,
   },
   data() {
     return {
@@ -110,6 +131,8 @@ export default {
         ManageUser: false,
         ManagePost: false,
         Statistics: false,
+        ManageMotel: false,
+        ManageReport: false,
       },
       urlParams: "",
       displayChatIcon: true,
@@ -126,9 +149,9 @@ export default {
     chat(val) {
       let conversation = val.filter(
         (value, index, self) =>
-          index === self.findIndex((item) => item.owner_id === value.owner_id) 
+          index === self.findIndex((item) => item.owner_id === value.owner_id)
       );
-      
+
       conversation.forEach(async (value) => {
         const { data } = await RepositoryFactory.get("user").getUser(
           value.owner_id
@@ -149,7 +172,6 @@ export default {
           message: message,
         });
       });
-      
     },
   },
   created() {
@@ -193,7 +215,7 @@ export default {
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
-    
+
     handleChat() {
       this.displayChatList = true;
       this.displayChatIcon = false;
@@ -202,8 +224,22 @@ export default {
       this.displayChatList = mess;
       this.displayChatIcon = true;
     },
+    logoutAdmin() {
+      cookie.deleteCookie("accessToken");
+      window.location.href = "/";
+    },
   },
   mounted() {},
+   async beforeRouteEnter(to, from , next) {
+    let accessToken = cookie.getCookie("accessToken");
+    const { id } = VueJwtDecode.decode(accessToken);
+    const { data } = await RepositoryFactory.get("user").getUser(id);
+
+    if (data.role === userRole.admin) next();
+    else {
+      next('/');
+    }
+  },
 };
 </script>
 <style>
@@ -216,46 +252,46 @@ export default {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-.sidebar {
+.sidebar-admin {
   position: fixed;
   height: 100%;
   width: 240px;
   background: #0a2558;
   transition: all 0.5s ease;
 }
-.sidebar.active {
+.sidebar-admin.active {
   width: 60px;
 }
-.sidebar .logo-details {
+.sidebar-admin .logo-details {
   height: 80px;
   display: flex;
   align-items: center;
   position: relative;
 }
-.sidebar .logo-details i {
+.sidebar-admin .logo-details i {
   font-size: 28px;
   font-weight: 500;
   color: #fff;
   min-width: 60px;
   text-align: center;
 }
-.sidebar .logo-details .logo_name {
+.sidebar-admin .logo-details .logo_name {
   color: #fff;
   font-size: 24px;
   font-weight: 500;
 }
-.sidebar .nav-links {
+.sidebar-admin .nav-links {
   margin-top: 30px;
   padding: 0;
 }
-.sidebar .nav-links li {
+.sidebar-admin .nav-links li {
   list-style: none;
   height: 80px;
   line-height: 80px;
   cursor: pointer;
   position: relative;
 }
-.sidebar .nav-links li a {
+.sidebar-admin .nav-links li a {
   height: 100%;
   width: 100%;
   display: flex;
@@ -264,20 +300,20 @@ export default {
   transition: all 0.4s ease;
 }
 
-.sidebar .nav-links li i {
+.sidebar-admin .nav-links li i {
   min-width: 60px;
   text-align: center;
   font-size: 18px;
   color: #fff;
 }
-.sidebar .nav-links li .links_name {
+.sidebar-admin .nav-links li .links_name {
   color: #fff;
   font-size: 18px;
   font-weight: 400;
   white-space: nowrap;
   position: absolute;
 }
-.sidebar .nav-links .log_out {
+.sidebar-admin .nav-links .log_out {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -290,7 +326,7 @@ export default {
   left: 240px;
   transition: all 0.5s ease;
 }
-.sidebar.active ~ .home-section {
+.sidebar-admin.active ~ .home-section {
   width: calc(100% - 60px);
   left: 60px;
 }
@@ -309,17 +345,17 @@ export default {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   transition: all 0.5s ease;
 }
-.sidebar.active ~ .home-section nav {
+.sidebar-admin.active ~ .home-section nav {
   left: 60px;
   width: calc(100% - 60px);
 }
-.home-section nav .sidebar-button {
+.home-section nav .sidebar-admin-button {
   display: flex;
   align-items: center;
   font-size: 24px;
   font-weight: 500;
 }
-nav .sidebar-button i {
+nav .sidebar-admin-button i {
   font-size: 35px;
   margin-right: 10px;
 }
@@ -597,19 +633,22 @@ nav .profile-details i {
   bottom: 20px;
   right: 20px;
 }
+.button-reject {
+  margin-right: 10px;
+}
 /* Responsive Media Query */
 @media (max-width: 1260px) {
-  .sidebar {
+  .sidebar-admin {
     width: 60px;
   }
-  .sidebar.active {
+  .sidebar-admin.active {
     width: 220px;
   }
   .home-section {
     width: calc(100% - 60px);
     left: 60px;
   }
-  .sidebar.active ~ .home-section {
+  .sidebar-admin.active ~ .home-section {
     /* width: calc(100% - 220px); */
     overflow: hidden;
     left: 220px;
@@ -618,11 +657,11 @@ nav .profile-details i {
     width: calc(100% - 60px);
     left: 60px;
   }
-  .sidebar.active ~ .home-section nav {
+  .sidebar-admin.active ~ .home-section nav {
     width: calc(100% - 220px);
     left: 220px;
   }
-  .sidebar .nav-links li .links_name {
+  .sidebar-admin .nav-links li .links_name {
     opacity: 0;
   }
 }
@@ -646,7 +685,7 @@ nav .profile-details i {
   }
 }
 @media (max-width: 700px) {
-  nav .sidebar-button .dashboard,
+  nav .sidebar-admin-button .dashboard,
   nav .profile-details .admin_name,
   nav .profile-details i {
     display: none;
@@ -664,22 +703,22 @@ nav .profile-details i {
     width: 100%;
     margin-bottom: 15px;
   }
-  .sidebar.active ~ .home-section nav .profile-details {
+  .sidebar-admin.active ~ .home-section nav .profile-details {
     display: none;
   }
 }
 @media (max-width: 400px) {
-  .sidebar {
+  .sidebar-admin {
     width: 0;
   }
-  .sidebar.active {
+  .sidebar-admin.active {
     width: 60px;
   }
   .home-section {
     width: 100%;
     left: 0;
   }
-  .sidebar.active ~ .home-section {
+  .sidebar-admin.active ~ .home-section {
     left: 60px;
     width: calc(100% - 60px);
   }
@@ -687,7 +726,7 @@ nav .profile-details i {
     width: 100%;
     left: 0;
   }
-  .sidebar.active ~ .home-section nav {
+  .sidebar-admin.active ~ .home-section nav {
     left: 60px;
     width: calc(100% - 60px);
   }

@@ -12,6 +12,7 @@ export const state = () => ({
         stateApproved: false,
         rate: false,
         role: false,
-        rejected: false
+        rejected: false,
+        report: false
     }
 })

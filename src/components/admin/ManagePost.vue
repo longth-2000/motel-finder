@@ -52,6 +52,7 @@
               <tr>
                 <th><a-checkbox></a-checkbox></th>
                 <th></th>
+                <th>Số hiệu bài đăng</th>
                 <th>Tiêu đề</th>
                 <th>Ngày đăng</th>
                 <th>Người đăng bài</th>
@@ -69,6 +70,7 @@
               >
                 <td><a-checkbox></a-checkbox></td>
                 <td><a :href="'/bat-dong-san/'+ article._id" class="router-link">Xem chi tiết</a></td>
+                <td>{{ article._id }}</td>
                 <td>
                   <span class="title-article">{{
                     article.detailedPost.title
@@ -242,13 +244,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* .table-article:hover {
-  background: rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-} */
-.button-reject {
-  margin-right: 10px;
-}
+
+
 @media screen and (max-width: 1024px) {
   .button-reject {
     margin-bottom: 10px;

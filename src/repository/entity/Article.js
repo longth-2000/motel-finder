@@ -91,5 +91,15 @@ export default {
     },
     getPrivateFavouriteArticle(page, id, limit) {
         return BaseRepository.get(`/user/favorite/accomod?page=${page}&limit=${limit}&id=${id}`)
+    },
+    report(idArticle, detail, moreDetail) {
+        return BaseRepository.post('report', {
+            id: idArticle,
+            type: 'report',
+            content: {
+                detail: detail,
+                moreDetail: moreDetail
+            }
+        });
     }
 }

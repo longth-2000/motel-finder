@@ -57,12 +57,13 @@
                 !isStorage ? "Lưu tin" : "Xóa tin đã lưu"
               }}</span>
             </div>
-            <div class="short-info-share" v-if="preventRenter">
+            <div class="short-info-share" v-if="preventRenter" @click="openModalReport(motel._id)">
               <font-awesome-icon
                 icon="fa-solid fa-flag"
                 style="margin: 5px 5px 0 0; color: green"
               />
               <span class="share-label" style="padding-left: 5px">Báo cáo</span>
+              <a-modal v-model="isVisible.report" :footer="null"><Report :reportID="reportID"/> </a-modal>
             </div>
             <div class="short-info-share" v-if="preventRenter">
               <font-awesome-icon
@@ -251,6 +252,7 @@
 <script>
 import moment from "moment";
 import Carousel from "../components/home/Carousel.vue";
+import Report from "../components/home/Report.vue"
 import { RepositoryFactory } from "../repository/factory";
 import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
@@ -260,6 +262,7 @@ export default {
   name: "MotelDetailView",
   components: {
     Carousel,
+    Report
   },
   props: {
     user: {
@@ -282,6 +285,7 @@ export default {
       rateSend: 0,
       preventRenter: false,
       logged: this.checkLogged(),
+      reportID:null
     };
   },
   created() {
@@ -298,7 +302,6 @@ export default {
       },
       deep: true,
     },
-    
   },
   mounted() {
     window.addEventListener("resize", this.onResponsive);
@@ -351,7 +354,9 @@ export default {
             this.rate = parseFloat((Math.round(rateStar * 2) / 2).toFixed(1));
             if (this.logged) {
               const { _id } = this.user;
-              this.isStorage = this.motel.userLiked.includes(_id) ? true : false;
+              this.isStorage = this.motel.userLiked.includes(_id)
+                ? true
+                : false;
             }
           })
         )
@@ -433,6 +438,10 @@ export default {
     },
     openModalRate() {
       this.showModal("rate");
+    },
+    openModalReport(id) {
+      this.reportID = id 
+      this.showModal("report");
     },
   },
 };
@@ -732,7 +741,7 @@ span.section-title {
   vertical-align: 0.2rem;
 }
 ::v-deep .ant-modal-body {
-  width: 35%;
+  /* width: 35%; */
   margin: 0 auto;
 }
 ::v-deep .ant-comment {
