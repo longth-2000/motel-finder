@@ -258,6 +258,13 @@
         </div>
       </div>
     </div>
+    <div class="report-modal-form" v-show="isReportModalOpened">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -294,6 +301,7 @@ export default {
       },
       rate: 0,
       rateSend: 0,
+      isReportModalOpened: false,
       preventRenter: false,
       logged: this.checkLogged(),
       reportID: null,
@@ -476,7 +484,7 @@ export default {
   margin: 24px 0px 8px 0px;
 }
 .main-content {
-  width: 1000px;
+  width: 75%;
   margin-right: 30px;
   display: inline-block;
 }
@@ -489,6 +497,7 @@ export default {
   margin-top: 8px;
 }
 .product-short-info {
+  display: block;
   height: auto;
   width: 100%;
   margin: 0 0 24px 0;
@@ -528,7 +537,7 @@ export default {
   color: #505050;
   display: block;
 }
-.short-info-save {
+.short-info-save, .short-info-report {
   align-content: center;
   display: flex;
   float: right;
@@ -764,9 +773,24 @@ span.section-title {
 ::v-deep .ant-comment {
   width: 90%;
 }
+.report-modal-form {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
 @media screen and (max-width: 1400px) {
   .main-sidebar {
     display: none;
+  }
+  .main-content {
+    width: 100%;
   }
 }
 @media screen and (max-width: 992px) {

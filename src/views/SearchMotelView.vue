@@ -303,6 +303,7 @@ export default {
   text-decoration: none solid rgb(44, 44, 44) auto;
 }
 .motel-result {
+  width: 100%;
   margin-bottom: 50px;
 }
 .motel-card-image {
@@ -476,7 +477,6 @@ export default {
   float: right;
   width: 240px;
   height: auto;
-  display: block;
   border-radius: 5px;
   background-color: #f5f5f5;
 }
@@ -504,6 +504,9 @@ export default {
 @media screen and (max-width: 1400px) {
   .main-sidebar {
     display: none;
+  }
+  .motel-result {
+    width: 135%
   }
 }
 @media screen and (max-width: 768px) {

@@ -23,6 +23,9 @@ export default {
     },
     updateState(id, query) {
         return BaseRepository.put(`/user/manage/update-state/${id}`, query)
-    }
+    },
+    getStatistic() {
+        return BaseRepository.get(`/user/manage/statistic`)
+    },
 
 }

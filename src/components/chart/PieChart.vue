@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { Pie } from 'vue-chartjs/legacy'
+import { Pie } from "vue-chartjs/legacy";
 
 import {
   Chart as ChartJS,
@@ -21,62 +21,67 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale
-} from 'chart.js'
+  CategoryScale,
+} from "chart.js";
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
-  name: 'PieChart',
+  name: "PieChart",
   components: {
-    Pie
+    Pie,
   },
   props: {
     chartId: {
       type: String,
-      default: 'pie-chart'
+      default: "pie-chart",
     },
     datasetIdKey: {
       type: String,
-      default: 'label'
+      default: "label",
     },
     width: {
       type: Number,
-      default: 400
+      default: 400,
     },
     height: {
       type: Number,
-      default: 400
+      default: 400,
     },
     cssClasses: {
-      default: '',
-      type: String
+      default: "",
+      type: String,
     },
     styles: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     plugins: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
+    areas: {
+      type: Array,
+    },
   },
   data() {
+    let chartData = {
+      labels: ["< 50m2", "50m2 - 100m2", "100m2 - 200m2", "> 200m2"],
+      datasets: [
+        {
+          backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
+          data: [],
+        },
+      ],
+    };
+    chartData.datasets[0].data = this.areas;
     return {
-      chartData: {
-        labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
-        datasets: [
-          {
-            backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-            data: [40, 20, 80, 10]
-          }
-        ]
-      },
+      chartData,
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: false
-      }
-    }
-  }
-}
+        maintainAspectRatio: false,
+      },
+    };
+  },
+};
 </script>
