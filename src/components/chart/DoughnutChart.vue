@@ -1,19 +1,21 @@
 <template>
-  <Doughnut
-    :chart-options="chartOptions"
-    :chart-data="chartData"
-    :chart-id="chartId"
-    :dataset-id-key="datasetIdKey"
-    :plugins="plugins"
-    :css-classes="cssClasses"
-    :styles="styles"
-    :width="width"
-    :height="height"
-  />
+  <div>
+    <Doughnut
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    />
+  </div>
 </template>
 
 <script>
-import { Doughnut } from 'vue-chartjs/legacy'
+import { Doughnut } from "vue-chartjs/legacy";
 
 import {
   Chart as ChartJS,
@@ -21,62 +23,80 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale
-} from 'chart.js'
+  CategoryScale,
+} from "chart.js";
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
-  name: 'DoughnutChart',
+  name: "DoughnutChart",
   components: {
-    Doughnut
+    Doughnut,
   },
   props: {
     chartId: {
       type: String,
-      default: 'doughnut-chart'
+      default: "doughnut-chart",
     },
     datasetIdKey: {
       type: String,
-      default: 'label'
+      default: "label",
     },
     width: {
       type: Number,
-      default: 400
+      default: 400,
     },
     height: {
       type: Number,
-      default: 400
+      default: 400,
     },
     cssClasses: {
-      default: '',
-      type: String
+      default: "",
+      type: String,
     },
     styles: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     plugins: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
+    prices: {
+      type: Array,
+    },
   },
   data() {
+    console.log('prices', this.prices)
+    let chartData = {
+      labels: ['< 1 triệu', '1 - 2 triệu', '2 - 3 triệu', '> 3 triệu'],
+      datasets: [
+        {
+          backgroundColor: ["#41B883", "#E46651", "#00D8FF", "#DD1B16"],
+          data: [],
+        },
+      ],
+    };
+    chartData.datasets[0].data = this.prices;
     return {
-      chartData: {
-        labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
-        datasets: [
-          {
-            backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-            data: [40, 20, 80, 10]
-          }
-        ]
-      },
+      chartData,
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: false
-      }
+        maintainAspectRatio: false,
+      },
+      type: '0'
+    };
+  },
+  watch: {
+    prices(val) {
+      console.log('price', val)
+      this.chartData.datasets[0].data = val;
+      console.log('data set', this.chartData.datasets)
+    },
+    updated(val) {
+        this.chartData.datasets[0].data = val;
     }
   }
-}
+
+};
 </script>

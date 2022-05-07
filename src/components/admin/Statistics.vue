@@ -4,7 +4,7 @@
       <div class="chart-district chart-component">
         <div class="chart-title"><span>Theo quận/huyện</span></div>
         <div class="chart-content">
-          <BarChart :districts="statistic.district"/>
+          <BarChart :districts="statistic.district" />
         </div>
       </div>
       <div class="chart-price-area">
@@ -15,9 +15,18 @@
           </div>
         </div>
         <div class="chart-area chart-child chart-component">
-          <div class="chart-title"><span>Theo giá</span></div>
+          <div class="chart-title" style="display: flex; justify-content: space-between">
+            <span>Theo giá</span>
+            <div style="text-align: right">
+              <a-select v-model="type" style="width: 100px">
+                <a-select-option value="0"> Tháng </a-select-option>
+                <a-select-option value="1"> Quý </a-select-option>
+                <a-select-option value="2"> Năm </a-select-option>
+              </a-select>
+            </div>
+          </div>
           <div class="chart-content">
-            <DoughnutChart />
+            <DoughnutChart :prices="price" :updated="updated" />
           </div>
         </div>
       </div>
@@ -39,19 +48,28 @@ export default {
   data() {
     return {
       statistic: null,
-      updated: null
-    }
+      updated: null,
+      type: '0',
+      price: []
+    };
   },
   methods: {
     async getStatistic() {
       const { data } = await RepositoryFactory.get("user").getStatistic();
-      this.statistic = data
-      this.updated = Date.now()
-    }
+      this.statistic = data;
+      this.price = data.price[0]
+      this.updated = Date.now();
+    },
   },
   mounted() {
     this.getStatistic();
   },
+  watch: {
+    type(val) {
+      this.price = this.statistic.price[Number(val)]
+      this.updated = Date.now();
+    }
+  }
 };
 </script>
 <style scoped>
