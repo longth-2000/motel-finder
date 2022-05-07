@@ -6,9 +6,9 @@
           <h2>About Us</h2>
           <div class="content">
             <p>
-              MultiWebPress is a educational blog where we post blogs related to
-              Website Development, Technology, Tips & Hacks and much more
-              creative coding stuff.
+                Website là một địa chỉ uy tín giúp mọi người, 
+                đặc biệt là các bạn sinh viên tìm được nơi thuê phòng phù hợp và 
+                có giá cả hợp lí nhất 
             </p>
           </div>
         </div>
@@ -66,9 +66,7 @@
           <div>
             <span
               >Powered By
-              <a href="https://multiwebpress.com"
-                >© 2021 | All Rights Reserved | Made By UET</a
-              ></span
+              © 2022 | All Rights Reserved | Made By UET</span
             >
           </div>
         </center>

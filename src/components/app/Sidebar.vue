@@ -122,7 +122,7 @@
     <div class="menu">
       <ul>
         <li class="menu-items" @click="redirectPage('/lien-he')">
-          <font-awesome-icon class="icon" icon="fa-solid fa-id-card" /><span
+          <font-awesome-icon class="icon" icon="fa-solid fa-phone" /><span
             >Liên hệ</span
           >
         </li>

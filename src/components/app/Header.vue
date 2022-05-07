@@ -13,7 +13,7 @@
             <li class="menu-items">
               <router-link to="/lien-he"> <span>Liên hệ</span></router-link>
             </li>
-            <li class="menu-items">
+            <!-- <li class="menu-items">
               <a-dropdown>
                 <a class="ant-dropdown-link"> Dự án </a>
                 <a-menu slot="overlay">
@@ -47,7 +47,7 @@
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>

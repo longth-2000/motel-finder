@@ -89,6 +89,15 @@ export const router = new Router({
                 import ("../components/password/ResetPassword.vue"),
         },
         {
+            path: "/permission",
+            name: "Permission",
+            meta: {
+                layout: 'error',
+            },
+            component: () =>
+                import ("../views/NotPermissionView.vue"),
+        },
+        {
             path: "*",
             name: "Remain",
             meta: {
@@ -103,9 +112,10 @@ router.beforeEach((to, from, next) => {
     const publicPages = ['Contact', 'Home', 'Auth', 'Admin', 'MotelSearch', 'ResetPassword', 'MotelDetail'];
     const authRequired = !publicPages.includes(to.name);
     const loggedIn = cookie.getCookie('accessToken');
+
     if (to.path === "/ho-so") {
-        const LIMIT = 5
         const { id } = VueJwtDecode.decode(loggedIn);
+        const LIMIT = 5
         to.query.id = id;
         to.query.limit = LIMIT;
         next();

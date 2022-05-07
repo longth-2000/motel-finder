@@ -43,7 +43,7 @@
           <!-- Displaying text at
                     the center of the box-->
           <p class="center">
-            Email: 18020853@vnu.edu.com
+            Email: test@outlook.com
           </p>
         </div>
         <div class="box">

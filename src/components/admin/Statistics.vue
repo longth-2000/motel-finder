@@ -8,13 +8,13 @@
         </div>
       </div>
       <div class="chart-price-area">
-        <div class="chart-price chart-child chart-component">
+        <div class="chart-price chart-child chart-component" >
           <div class="chart-title"><span>Theo diện tích</span></div>
-          <div class="chart-content">
+          <div class="chart-content" >
             <PieChart />
           </div>
         </div>
-        <div class="chart-area chart-child chart-component">
+        <div class="chart-area chart-child chart-component" >
           <div class="chart-title"><span>Theo giá</span></div>
           <div class="chart-content">
             <DoughnutChart />
@@ -59,6 +59,7 @@ export default {
 }
 .chart-child {
   width: 45%;
+  margin-bottom:100px
 }
 .chart-area {
 }

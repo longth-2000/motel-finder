@@ -126,7 +126,7 @@
         <p style="margin: 0; color: black">
           Để được trợ giúp, vui lòng liên hệ tổng đài CSKH
           <span style="color: red">1234556667</span> hoặc email
-          <span style="color: red"> hotro@batdongsan.com.vn</span>
+          <span style="color: red"> test@outlook.com</span>
         </p>
       </div>
       <div

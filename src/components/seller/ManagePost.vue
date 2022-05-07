@@ -107,11 +107,11 @@
                 @change="handleCheckAll"
               ></a-checkbox>
             </th>
+            <th>Số hiệu</th>
             <th>Tiêu đề</th>
             <th>Phê duyệt</th>
             <th>Đã cho thuê</th>
             <th>Thời hạn đăng</th>
-            <th>Ngày đăng</th>
             <th></th>
           </tr>
         </thead>
@@ -124,6 +124,7 @@
                 :checked="postArr.includes(post._id)"
               ></a-checkbox>
             </td>
+            <td>{{ post._id }}</td>
             <td>
               <span class="title-article">{{ post.detailedPost.title }}</span>
             </td>
@@ -203,7 +204,6 @@
                 </div>
               </a-modal>
             </td>
-            <td>{{ formatDate(post.createdAt) }}</td>
             <td>
               <div class="normal-action">
                 <a-popconfirm

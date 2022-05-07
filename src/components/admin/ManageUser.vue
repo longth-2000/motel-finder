@@ -70,14 +70,30 @@
                 <td>{{owner.email}}</td>
                 <td>{{owner.phoneNumber}}</td>
                 <td v-if="owner.state == userState.reject">     
-                  <a-tag color="red">
-                    Từ chối
-                  </a-tag>
+                 <a-tooltip placement="top">
+                    <template slot="title">
+                      <span>Khôi phục phê duyệt</span>
+                    </template>
+                    <a-tag
+                      color="red"
+                      @click="owner.state = userState.waiting"
+                    >
+                      Từ chối
+                    </a-tag>
+                  </a-tooltip>
                 </td>
                 <td v-if="owner.state == userState.agree">     
-                  <a-tag color="green">
-                    Đã duyệt
-                  </a-tag>
+                  <a-tooltip placement="top">
+                    <template slot="title">
+                      <span>Khôi phục phê duyệt</span>
+                    </template>
+                    <a-tag
+                      color="green"
+                      @click="owner.state = userState.waiting"
+                    >
+                      Đã duyệt
+                    </a-tag>
+                  </a-tooltip>
                 </td>
                 <td v-if="owner.state == userState.waiting" class="action-approve">
                   <a-button type="danger" class="button-reject" @click="handleApprove(owner, {state: 0})">Từ chối</a-button

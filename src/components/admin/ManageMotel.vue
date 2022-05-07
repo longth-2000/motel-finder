@@ -20,26 +20,27 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="type in typeMotels" :key="type.id">
+              <tr v-for="type in typeMotels" :key="type._id">
                 <td><a-checkbox></a-checkbox></td>
-                <td>{{ type.name }}</td>
+                <td>{{ type.type }}</td>
                 <td class="action-approve">
                   <a-button
                     type="danger"
                     class="button-reject"
-                    @click.prevent="deleteTypeMotel(type.id)"
+                    @click.prevent="deleteTypeMotel(type._id)"
                     >Xóa</a-button
                   >
                   <slot></slot>
                   <a-button
                     type="primary"
-                    @click="showModalEdit(type.id, type.name)"
+                    @click="showModalEdit(type._id, type.type)"
                     >Sửa</a-button
                   >
                   <a-modal
                     title="Title"
                     :visible="visible"
-                    @ok="editTypeMotel(type.id)"
+                    @ok="editTypeMotel(type._id)"
+                    @cancel="visible = false"
                   >
                     <p>
                       <a-input
@@ -64,58 +65,58 @@ import { RepositoryFactory } from "../../repository/factory";
 export default {
   data() {
     return {
-      typeMotels: [
-        {
-          id: 1,
-          name: "nvsnvlsdvnsv",
-        },
-        {
-          id: 2,
-          name: "22222",
-        },
-        {
-          id: 3,
-          name: "33333",
-        },
-        {
-          id: 4,
-          name: "44444",
-        },
-      ],
+      typeMotels: [],
       visible: false,
       typeID: null,
       type: "",
+      long: "",
+      inputType: {},
     };
   },
-  computed: {
-    inputType() {
-      return this.typeMotels.reduce(
-        (a, v) => ({ ...a, ["input_" + v.id]: "" }),
+  created() {
+    this.getTypeMotel();
+  },
+  
+ 
+  methods: {
+    async deleteTypeMotel(id) {
+      const data = await RepositoryFactory.get("type").deleteType(id);
+      console.log(data);
+      this.typeMotels = this.typeMotels.filter((element) => element._id !== id);
+    },
+    async insertTypeMotel() {
+      const { data } = await RepositoryFactory.get("type").insertType(
+        this.type
+      );
+      console.log(data);
+      this.typeMotels.push({
+        type: this.type,
+        _id: data.data._id,
+      });
+      this.type = "";
+    },
+    async getTypeMotel() {
+      const { data } = await RepositoryFactory.get("type").getType();
+      console.log(data);
+      this.typeMotels = data;
+      this.inputType = this.typeMotels.reduce(
+        (a, v) => ({ ...a, ["input_" + v._id]: "" }),
         {}
       );
     },
-  },
-  methods: {
-    async deleteTypeMotel(id) {
-      console.log(id)
-      const data = await RepositoryFactory.get("type").deleteType(id);
-      console.log(data);
-      this.typeMotels = this.typeMotels.filter((element) => element.id !== id); 
-    },
-    async insertTypeMotel() {
-      this.typeMotels.push({
-        id: 5,
-        name: this.type,
-      });
-    },
-    showModalEdit(id, name) {
+    showModalEdit(id , name ) {
       this.visible = true;
       this.typeID = id;
-      this.inputType["input_" + this.typeID] = name;
+     this.inputType["input_" + this.typeID] = name ;  
     },
-    async editTypeMotel(id) {
-      /*       const data = await RepositoryFactory.get("type").editType(id);
-       */ console.log(id);
+    async editTypeMotel() {
+      let inputType = this.inputType["input_" + this.typeID];
+      await RepositoryFactory.get("type").editType(this.typeID, inputType);
+      this.typeMotels.forEach((element) => {
+        if (element._id === this.typeID) {
+          element.type = inputType;
+        }
+      });
       this.visible = false;
     },
   },

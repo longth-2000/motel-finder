@@ -85,7 +85,7 @@
     </div>
     <div class="login-seperate">Hoặc</div>
     <div class="login-Oauth">
-      <div class="login-google" @click="showModal('role')">
+      <div class="login-google" @click="authGoogle">
         <div class="image">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1024px-Google_%22G%22_Logo.svg.png"
@@ -96,7 +96,11 @@
           <h3>Google</h3>
         </div>
       </div>
-      <a-modal v-model="isVisible.role" title="Bạn là " @ok="authGoogle">
+      <a-modal
+        v-model="isVisible.role"
+        title="Bạn là "
+        @ok="handleAfterLoginByGoogle"
+      >
         <a-radio-group name="radioGroup" v-model="role">
           <a-radio :value="2"> Chủ trọ </a-radio>
           <a-radio :value="3"> Người thuê trọ </a-radio>
@@ -119,8 +123,7 @@
 import { RepositoryFactory } from "../repository/factory";
 import signMixin from "../mixins/sign";
 import { required, email, minLength, alphaNum } from "vuelidate/lib/validators";
-
-
+import VueJwtDecode from "vue-jwt-decode";
 export default {
   props: {
     isAuthenticated: {
@@ -137,6 +140,9 @@ export default {
     return {
       name: "login",
       role: 2,
+      tokenEmail: null,
+      tokenID: null,
+      googleToken: [],
     };
   },
   validations: {
@@ -154,7 +160,7 @@ export default {
       else {
         try {
           const { data } = await RepositoryFactory.get("user").login(this.user);
-          this.handleAfterSign(data.data)
+          this.handleAfterSign(data.data);
         } catch (error) {
           console.log(error.response);
           this.openNotification("Error", error.response.data.message, "error");
@@ -164,12 +170,51 @@ export default {
     async authGoogle() {
       const google = await this.$gAuth.signIn();
       console.log(google);
+      this.tokenEmail = google.Lu.Bv;
       const { id_token } = google.xc ? google.xc : google.wc;
+      this.tokenID = id_token;
+      let googleToken = JSON.parse(localStorage.getItem("googleToken"));
+      if (googleToken !== null) {
+        var existGoogle = googleToken.filter(
+          (element) => element.email === this.tokenEmail
+        );
+        if (existGoogle.length === 0) {
+          this.showModal("role");
+        } else {
+          const { data } = await RepositoryFactory.get("app").loginGoogle(
+            this.tokenID,
+            this.role
+          );
+          let { accessToken, refreshToken } = data.data;
+          document.cookie = `accessToken=${accessToken}`;
+          localStorage.setItem("refreshToken", refreshToken);
+          let endpoint = existGoogle[0].role === 3 ? "/" : "/ho-so";
+          window.location.href = endpoint;
+        }
+      } else {
+        this.showModal("role");
+      }
+    },
+    async handleAfterLoginByGoogle() {
       const { data } = await RepositoryFactory.get("app").loginGoogle(
-        id_token,
+        this.tokenID,
         this.role
       );
-      this.handleAfterSign(data.data)
+      let { accessToken, refreshToken } = data.data;
+      let decodeToken = VueJwtDecode.decode(accessToken);
+      document.cookie = `accessToken=${accessToken}`;
+      localStorage.setItem("refreshToken", refreshToken);
+      const { role } = decodeToken;
+      let googleToken = localStorage.getItem("googleToken");
+      let googleTokenArr = googleToken === null ? [] : JSON.parse(googleToken);
+      googleTokenArr.push({
+        email: this.tokenEmail,
+        role: this.role,
+      });
+      console.log(googleTokenArr);
+      localStorage.setItem("googleToken", JSON.stringify(googleTokenArr));
+      let endpoint = role === 3 ? "/" : role === 2 ? "/ho-so" : "/admin/manage";
+      window.location.href = endpoint;
     },
   },
 };

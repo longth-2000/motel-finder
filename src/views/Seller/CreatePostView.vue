@@ -74,8 +74,10 @@ import ButtonInfor from "../../components/seller/createPost/buttonInfor.vue";
 import parentValidationMixin from "../../mixins/validation/postValidation/parentValidation";
 import { RepositoryFactory } from "../../repository/factory";
 import { userState } from "../../constants/userState";
+import { userRole } from "../../constants/userRole";
+
 import VueJwtDecode from "vue-jwt-decode";
-import cookie from "../../helper/cookie"
+import cookie from "../../helper/cookie";
 
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
@@ -177,7 +179,7 @@ export default {
         window.onbeforeunload = function () {
           return null;
         };
-         window.location.href = "ho-so?type=manage-post&sortByDate=-1"; 
+        window.location.href = "ho-so?type=manage-post&sortByDate=-1";  
       }
       if (status === "draft") {
         window.onbeforeunload = function () {
@@ -247,7 +249,7 @@ export default {
           window.onbeforeunload = function () {
             return null;
           };
-          window.location.href = "/ho-so?type=manage-post"; 
+          window.location.href = "/ho-so?type=manage-post";
         }
       }
     },
@@ -282,13 +284,16 @@ export default {
   async beforeRouteEnter(to, from, next) {
     try {
       let accessToken = cookie.getCookie("accessToken");
-      const { id } = VueJwtDecode.decode(accessToken);
+      const { id, role } = VueJwtDecode.decode(accessToken);
       const { data } = await RepositoryFactory.get("user").getUser(id);
       let state = data.state;
-      if (state === userState.agree) next();
+      if (role !== userRole.renter) next('/permission');
       else {
-        alert("Tài khoản của bạn chưa được duyệt");
-        next(from.fullPath);
+        if (state === userState.agree) next()
+        else {
+          alert("Tài khoản của bạn chưa được duyệt");
+          next(from.fullPath);
+        }
       }
     } catch (err) {
       console.log(err.response);

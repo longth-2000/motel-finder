@@ -1,14 +1,17 @@
 import BaseRepository from "../BaseRepository";
 export default {
     insertType(name) {
-        return BaseRepository.post('/user/log-in', { name: name });
+        return BaseRepository.post('/categories', { type: name });
     },
     deleteType(id) {
-        alert(id)
-        return BaseRepository.delete('/user/log-in');
+        return BaseRepository.delete(`/categories/${id}`);
     },
-    editType(id) {
-        alert(id)
-        return BaseRepository.edit('/user/log-in');
+    editType(id, name) {
+        return BaseRepository.put(`/categories/${id}`, {
+            type: name
+        });
+    },
+    getType() {
+        return BaseRepository.get('/categories');
     }
 }

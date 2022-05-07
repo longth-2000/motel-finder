@@ -1,6 +1,6 @@
 <template lang="">
   <div class="motel-detail" v-if="motel">
-    <div class="container">
+    <div class="container" >
       <div class="main-content">
         <div class="picture-carousel">
           <Carousel :images="motel.images" />
@@ -46,42 +46,52 @@
                 >{{ motel.bedRoom }} PN</span
               >
             </div>
-            <div class="short-info-save">
-              <font-awesome-icon
-                icon="fa-solid fa-heart"
-                style="margin: 5px 5px 0 0"
-                :class="{ colorHeart: isStorage }"
-                @click="storageFavorite(motel._id)"
-              />
-              <span class="heart-label" style="padding-left: 5px">{{
-                !isStorage ? "Lưu tin" : "Xóa tin đã lưu"
-              }}</span>
-            </div>
-            <div class="short-info-share" v-if="preventRenter" @click="openModalReport(motel._id)">
-              <font-awesome-icon
-                icon="fa-solid fa-flag"
-                style="margin: 5px 5px 0 0; color: green"
-              />
-              <span class="share-label" style="padding-left: 5px">Báo cáo</span>
-              <a-modal v-model="isVisible.report" :footer="null"><Report :reportID="reportID"/> </a-modal>
-            </div>
-            <div class="short-info-share" v-if="preventRenter">
-              <font-awesome-icon
-                icon="fa-solid fa-star"
-                style="margin: 0 5px 0 0; color: #faad14; font-size: 20px"
-                @click="openModalRate()"
-              />
-              <a-modal
-                v-model="isVisible.rate"
-                centered
-                title="Đánh giá bài đăng"
-                @ok="sendRate(motel._id)"
+            <div class="short-info-item short-share">
+              <div class="short-info-share">
+                <font-awesome-icon
+                  icon="fa-solid fa-heart"
+                  style="margin: 10px 5px 0 0"
+                  :class="{ colorHeart: isStorage }"
+                  @click="storageFavorite(motel._id)"
+                />
+                <span class="heart-label" style="padding-left: 5px">{{
+                  !isStorage ? "Lưu tin" : "Xóa tin đã lưu"
+                }}</span>
+              </div>
+              <div
+                class="short-info-share"
+                v-if="preventRenter"
+                @click="openModalReport(motel._id)"
               >
-                <a-rate v-model="rateSend" />
-              </a-modal>
-              <span class="share-label" style="padding-left: 5px"
-                >Đánh giá</span
-              >
+                <font-awesome-icon
+                  icon="fa-solid fa-flag"
+                  style="margin: 10px 5px 0 0; color: green"
+                />
+                <span class="share-label" style="padding-left: 5px"
+                  >Báo cáo</span
+                >
+                <a-modal v-model="isVisible.report" :footer="null"
+                  ><Report :reportID="reportID" />
+                </a-modal>
+              </div>
+              <div class="short-info-share" v-if="preventRenter">
+                <font-awesome-icon
+                  icon="fa-solid fa-star"
+                  style="margin: 5px 0; color: #faad14; font-size: 20px"
+                  @click="openModalRate()"
+                />
+                <a-modal
+                  v-model="isVisible.rate"
+                  centered
+                  title="Đánh giá bài đăng"
+                  @ok="sendRate(motel._id)"
+                >
+                  <a-rate v-model="rateSend" />
+                </a-modal>
+                <span class="share-label" style="padding-left: 5px"
+                  >Đánh giá</span
+                >
+              </div>
             </div>
           </div>
           <div class="product-full-description">
@@ -90,6 +100,7 @@
             {{ motel.address.district }}
             <br />
             I. Thông tin cơ bản
+            
             <br />
             {{ setType(motel.type) }}. Diện tích {{ motel.area }} m2. Giá tiền
             {{ motel.price.quantity }}VND/{{ motel.price.unit }}
@@ -189,10 +200,10 @@
               <span class="title">Loại tin</span>
               <span class="value" style="display: inline">Cho thuê </span>
             </div>
-            <div class="short-info-item">
+            <div class="short-info-item" id="index-article">
               <span class="title">Mã tin</span>
               <span class="value" style="display: inline">{{ motel._id }}</span>
-            </div>
+            </div> 
           </div>
         </div>
       </div>
@@ -252,7 +263,7 @@
 <script>
 import moment from "moment";
 import Carousel from "../components/home/Carousel.vue";
-import Report from "../components/home/Report.vue"
+import Report from "../components/home/Report.vue";
 import { RepositoryFactory } from "../repository/factory";
 import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
@@ -262,7 +273,7 @@ export default {
   name: "MotelDetailView",
   components: {
     Carousel,
-    Report
+    Report,
   },
   props: {
     user: {
@@ -285,7 +296,8 @@ export default {
       rateSend: 0,
       preventRenter: false,
       logged: this.checkLogged(),
-      reportID:null
+      reportID: null,
+      types:[]
     };
   },
   created() {
@@ -324,17 +336,21 @@ export default {
       let articleAPI = `https://backend-api-production.up.railway.app/accomodations/${this.$route.params.id}`;
       let commentAPI = `https://backend-api-production.up.railway.app/report/comment/${this.$route.params.id}`;
       let evalAPI = `https://backend-api-production.up.railway.app/report/evaluation/${this.$route.params.id}`;
-
+      let typeAPI =  "https://backend-api-production.up.railway.app/categories";
       const requestArticle = axios.get(articleAPI);
       const requestComment = axios.get(commentAPI);
       const requestEval = axios.get(evalAPI);
+      const requestType = axios.get(typeAPI)
       axios
-        .all([requestArticle, requestComment, requestEval])
+        .all([requestArticle, requestComment, requestEval, requestType])
         .then(
           axios.spread((...responses) => {
             const responseArticle = responses[0];
             const responseComment = responses[1];
             const responseEval = responses[2];
+            const responseType = responses[3];
+            this.types = responseType.data
+            console.log(this.types)
             this.motel = responseArticle.data;
             responseComment.data.forEach((element) => {
               this.comments.push({
@@ -365,10 +381,7 @@ export default {
         });
     },
     setType(type) {
-      if (type === 1) return "phòng trọ";
-      if (type === 2) return "nhà nguyên căn";
-      if (type === 3) return "chung cư nguyên căn";
-      if (type === 4) return "chung cư mini";
+       return this.types.filter(item => item._id === type)[0].type
     },
     async sendComment(articleID) {
       if (!this.logged) {
@@ -440,7 +453,7 @@ export default {
       this.showModal("rate");
     },
     openModalReport(id) {
-      this.reportID = id 
+      this.reportID = id;
       this.showModal("report");
     },
   },
@@ -731,6 +744,10 @@ span.section-title {
 .changeSize {
   height: 50px;
 }
+.short-share {
+  float: right;
+  margin-top: -15px;
+}
 ::v-deep .ant-carousel .slick-slider {
   height: 400px;
 }
@@ -750,6 +767,30 @@ span.section-title {
 @media screen and (max-width: 1400px) {
   .main-sidebar {
     display: none;
+  }
+}
+@media screen and (max-width: 992px) {
+  .product-short-info {
+  }
+  .main-content {
+    width: 100%;
+  }
+  .short-share {
+    padding: 0;
+    float: left;
+    margin-top: 10px;
+  }
+  #index-article {
+    display: none;
+  }
+  .container {
+    max-width: 100%;
+  }
+ 
+}
+@media screen and (max-width: 492px) {
+  .short-info-item {
+    padding-left: 0;
   }
 }
 </style>

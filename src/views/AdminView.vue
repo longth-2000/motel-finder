@@ -44,10 +44,10 @@
           />
           <span class="links_name">Thống kê</span>
         </li>
-        <li>
+       <!--  <li>
           <font-awesome-icon class="icon-dashboard" icon="fa-solid fa-heart" />
           <span class="links_name">Phân tích thị hiếu</span>
-        </li>
+        </li> -->
         <li class="log_out"  @click="logoutAdmin()">
           <font-awesome-icon
             class="icon-dashboard"
@@ -237,7 +237,7 @@ export default {
 
     if (data.role === userRole.admin) next();
     else {
-      next('/');
+      next('/permission');
     }
   },
 };

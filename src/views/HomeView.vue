@@ -46,11 +46,11 @@
                     v-model="search.type"
                   >
                     <a-select-option
-                      v-for="(type, index) in types"
-                      :key="index"
-                      :value="type.id"
+                      v-for="type in types"
+                      :key="type._id"
+                      :value="type._id"
                     >
-                      {{ type.name }}
+                      {{ type.type }}
                     </a-select-option>
                   </a-select>
                 </div>
@@ -352,10 +352,7 @@ export default {
       newArticle: [],
       search: {},
       types: [
-        { name: "Phòng trọ", id: 1 },
-        { name: "Nhà nguyên căn", id: 2 },
-        { name: "Chung cư nguyên căn", id: 3 },
-        { name: "Chung cư mini", id: 4 },
+      
       ],
     };
   },
@@ -376,21 +373,24 @@ export default {
         "https://backend-api-production.up.railway.app/accomodations/renter/list?sortByLike=true&limit=20";
       let newAPI =
         "https://backend-api-production.up.railway.app/accomodations/renter/list?limit=20";
-
+      let typeAPI =  "https://backend-api-production.up.railway.app/categories";
       const requestAddress = axios.get(addressAPI);
       const requestFavorite = axios.get(favouriteAPI);
       const requestNew = axios.get(newAPI);
-
+      const requestType = axios.get(typeAPI)
       axios
-        .all([requestAddress, requestFavorite, requestNew])
+        .all([requestAddress, requestFavorite, requestNew, requestType])
         .then(
           axios.spread((...responses) => {
             const responseAddress = responses[0];
             const responseFavorite = responses[1];
             const responseNew = responses[2];
+            const responseType = responses[3]
+            
             this.districts = responseAddress.data.districts;
             this.favoriteArticle = responseFavorite.data.data;
             this.newArticle = responseNew.data.data;
+            this.types = responseType.data
           })
         )
         .catch((error) => {
@@ -459,7 +459,6 @@ export default {
 }
 .homepage .search-dropdown i {
   float: right;
-  padding-top: 5px;
 }
 .homepage .banner-image {
   width: 100%;

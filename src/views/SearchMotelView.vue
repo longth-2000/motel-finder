@@ -5,7 +5,7 @@
         <div class="bread-crumb">
           <a-breadcrumb>
             <a-breadcrumb-item>Cho thuê</a-breadcrumb-item>
-            <a-breadcrumb-item>{{ resultType }}</a-breadcrumb-item>
+            <a-breadcrumb-item></a-breadcrumb-item>
             <a-breadcrumb-item>Tìm kiếm</a-breadcrumb-item>
             <a-breadcrumb-item>Chi tiết</a-breadcrumb-item>
           </a-breadcrumb>
@@ -17,7 +17,7 @@
           <span style="font-weight: bold; color: red">{{ posts.total }}</span>
           nhà trọ phù hợp với kết quả tìm kiếm
         </span>
-        
+
         <br />
         <div class="motel-result">
           <div class="motel-card-detail">
@@ -28,83 +28,92 @@
               :key="index"
             >
               <div class="motel-content">
-                <div class="motel-card-image">
-                  <img :src="post.images[0].url" />
-                </div>
-                <div class="motel-card-info">
-                  <div class="motel-card-info-content">
-                    <h4 class="card-title">
-                      <span>
-                        <a-icon type="star" theme="filled" />
-                        {{ post.detailedPost.title }}
-                      </span>
-                    </h4>
-                    <div class="card-config" style="display: flex">
-                      <div class="card-config-area">{{ post.area }} m²</div>
-                      <div
-                        class="ard-config-bedroom"
-                        style="display: flex; margin-left: 25px"
-                      >
-                        <div>
-                          <span> {{ post.bedRoom }} </span>
-                        </div>
-                        <div><font-awesome-icon icon="fa-solid fa-bed" /></div>
-                      </div>
-                      <div
-                        class="ard-config-toilet"
-                        style="display: flex; margin-left: 35px"
-                      >
-                        <div><span> 3 </span></div>
-                        <div><font-awesome-icon icon="fa-solid fa-bath" /></div>
-                      </div>
-                    </div>
-                    <div class="card-description">
-                      {{ post.detailedPost.content }}
-                    </div>
-                    <div style="clear: left"></div>
-                    <div class="card-contact-area">
-                      <div class="card-publish">
-                        <span class="card-published-info-contact-name">
-                          <span>Đăng bởi </span>
-                          <span>{{ post.ownerId.name }}</span>
+                <div class="card-title motel-content-responsive">{{ post.detailedPost.title }}</div>
+                <div style="display: flex">
+                  <div class="motel-card-image">
+                    <img :src="post.images[0].url" />
+                  </div>
+                  <div class="motel-card-info">
+                    <div class="motel-card-info-content">
+                      <h4 class="card-title">
+                        <span>
+                          <a-icon type="star" theme="filled" />
+                          {{ post.detailedPost.title }}
                         </span>
-                        <span class="card-published-info-published-at">
-                          {{ post.createdAt.match(/(\w+\-?)+(?=T)/)[0] }}
-                        </span>
-                      </div>
-                      <div class="card-contact">
-                        <span
-                          class="phone-number-contact"
-                          style="position: relative"
+                      </h4>
+                      <div class="card-config" style="display: flex">
+                        <div class="card-config-area">{{ post.area }} m²</div>
+                        <div
+                          class="ard-config-bedroom"
+                          style="display: flex; margin-left: 25px"
                         >
-                          <font-awesome-icon icon="fa-solid fa-phone" />
-                          <span>&nbsp;&nbsp;</span>
-                          <input
-                            type="text"
-                            :value="post.ownerId.phoneNumber"
-                            id="copy-phone"
-                            style="
-                              position: absolute;
-                              top: 1px;
-                              left: 3px;
-                              z-index: -1;
-                              width: 20%;
-                            "
-                          />
-                          <span @click="copyInfor('phone')"
-                            >{{ post.ownerId.phoneNumber }} · Sao chép</span
+                          <div>
+                            <span> {{ post.bedRoom }} </span>
+                          </div>
+                          <div>
+                            <font-awesome-icon icon="fa-solid fa-bed" />
+                          </div>
+                        </div>
+                        <div
+                          class="ard-config-toilet"
+                          style="display: flex; margin-left: 35px"
+                        >
+                          <div><span> 3 </span></div>
+                          <div>
+                            <font-awesome-icon icon="fa-solid fa-bath" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-description">
+                        {{ post.detailedPost.content }}
+                      </div>
+                      <div style="clear: left"></div>
+                      <div class="card-contact-area">
+                        <div class="card-publish">
+                          <span class="card-published-info-contact-name">
+                            <span class="created-by" style="width:150px; display:block">Đăng bởi </span>
+                            <span class="created-by">{{
+                              post.ownerId.name
+                            }}</span>
+                          </span>
+                          <span class="card-published-info-published-at">
+                            {{ post.createdAt.match(/(\w+\-?)+(?=T)/)[0] }}
+                          </span>
+                        </div>
+                        <div class="card-contact" style="float: none">
+                          <span
+                            class="phone-number-contact"
+                            style="position: relative"
                           >
-                        </span>
-                        <span class="add-to-favorite">
-                          <font-awesome-icon
-                            icon="fa-solid fa-heart"
-                            color="#bfbfbf"
-                            :class="{
-                              colorHeart: isStorage.includes(post._id),
-                            }"
-                            @click.prevent="storageFavorite(post._id)"
-                          />
-                        </span>
+                            <font-awesome-icon icon="fa-solid fa-phone" />
+                            <span>&nbsp;&nbsp;</span>
+                            <input
+                              type="text"
+                              :value="post.ownerId.phoneNumber"
+                              id="copy-phone"
+                              style="
+                                position: absolute;
+                                top: 1px;
+                                left: 3px;
+                                z-index: -1;
+                                width: 20%;
+                              "
+                            />
+                            <span @click="copyInfor('phone')"
+                              >{{ post.ownerId.phoneNumber }} · Sao chép</span
+                            >
+                          </span>
+                          <span class="add-to-favorite" style="margin-left: 0">
+                            <font-awesome-icon
+                              icon="fa-solid fa-heart"
+                              color="#bfbfbf"
+                              :class="{
+                                colorHeart: isStorage.includes(post._id),
+                              }"
+                              @click.prevent="storageFavorite(post._id)"
+                            />
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -147,7 +156,7 @@ export default {
       current: 1,
       isStorage: [],
       districts: [],
-      user:this.checkLogged()
+      user: this.checkLogged(),
     };
   },
   created() {
@@ -155,27 +164,6 @@ export default {
     this.getDistricts();
   },
   computed: {
-    resultType() {
-      let type = "";
-      const { query } = this.$route;
-      if (query.type) {
-        switch (query.type) {
-          case "1":
-            type = "Phòng trọ";
-            break;
-          case "2":
-            type = "Nhà nguyên căn";
-            break;
-          case "3":
-            type = "Chung cư nguyên căn";
-            break;
-          case "4":
-            type = "Chung cư mini";
-            break;
-        }
-      } else type = "Bất động sản";
-      return type;
-    },
     resultSearch() {
       const { query } = this.$route;
       let baseTitle = "Cho thuê nhà trọ";
@@ -233,7 +221,6 @@ export default {
           }
         });
       }
-
     },
     async getDistricts() {
       const { data } = await RepositoryFactory.get("address").getDistrict();
@@ -283,8 +270,8 @@ export default {
 * {
   font-family: "Roboto";
 }
-.search-result{
-    height: 1150px;
+.search-result {
+  height: 1150px;
 }
 .motel-card-detail {
   padding: 0px;
@@ -298,12 +285,11 @@ export default {
 .motel-card-detail a .motel-content {
   margin-bottom: 20px;
   box-shadow: 0px 4px 6px 0px rgb(44 44 44 / 4%);
-  display: flex;
   margin-bottom: 20px;
   border: 1px solid #f2f2f2;
 }
 .main-content {
-  width: 1000px;
+  width: 100%;
   margin-right: 30px;
   display: inline-block;
   padding-bottom: 50px;
@@ -343,7 +329,6 @@ export default {
 }
 .motel-card-info {
   font-size: 14px;
-  height: 200px;
   width: calc(100% - 240px);
   padding: 14px 16px 16px 24px;
   box-sizing: border-box;
@@ -482,7 +467,7 @@ export default {
 }
 .motel-card-image img {
   vertical-align: middle;
-  width: 240px;
+  width: 100%;
   height: 200px;
 }
 .main-sidebar {
@@ -513,9 +498,43 @@ export default {
 .colorHeart {
   color: red;
 }
+.motel-content-responsive {
+  display: none;
+}
 @media screen and (max-width: 1400px) {
   .main-sidebar {
     display: none;
+  }
+}
+@media screen and (max-width: 768px) {
+  .motel-content-responsive {
+    display: block;
+  }
+  .motel-content {
+    padding: 10px 20px;
+  }
+  .motel-card-image {
+    width: 140px;
+  }
+  .motel-card-image img {
+    height: 100px;
+  }
+  .motel-card-info {
+    padding-top: 0;
+    width: 100%;
+  }
+  .motel-card-info .card-title,
+  .card-description {
+    display: none;
+  }
+  .phone-number-contact {
+    display: none;
+  }
+  .card-published-info-published-at {
+    display: none;
+  }
+  .card-published-info-published-at .created-by {
+    display: block;
   }
 }
 </style>

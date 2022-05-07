@@ -69,7 +69,11 @@
                 class="table-article"
               >
                 <td><a-checkbox></a-checkbox></td>
-                <td><a :href="'/bat-dong-san/'+ article._id" class="router-link">Xem chi tiết</a></td>
+                <td>
+                  <a :href="'/bat-dong-san/' + article._id" class="router-link"
+                    >Xem chi tiết</a
+                  >
+                </td>
                 <td>{{ article._id }}</td>
                 <td>
                   <span class="title-article">{{
@@ -88,10 +92,30 @@
                   >
                 </td>
                 <td v-if="article.status == postStatus.reject">
-                  <a-tag color="red"> Từ chối </a-tag>
+                  <a-tooltip placement="top">
+                    <template slot="title">
+                      <span>Khôi phục phê duyệt</span>
+                    </template>
+                    <a-tag
+                      color="red"
+                      @click="article.status = postStatus.waiting"
+                    >
+                      Từ chối
+                    </a-tag>
+                  </a-tooltip>
                 </td>
                 <td v-if="article.status == postStatus.agree">
-                  <a-tag color="green"> Đã duyệt </a-tag>
+                  <a-tooltip placement="top">
+                    <template slot="title">
+                      <span>Khôi phục phê duyệt</span>
+                    </template>
+                    <a-tag
+                      color="green"
+                      @click="article.status = postStatus.waiting"
+                    >
+                      Đồng ý
+                    </a-tag>
+                  </a-tooltip>
                 </td>
                 <td
                   v-if="article.status == postStatus.waiting"
@@ -105,7 +129,7 @@
                     "
                     >Từ chối</a-button
                   >
-                   <slot></slot>
+                  <slot></slot>
                   <a-button
                     type="primary"
                     @click.prevent="
@@ -200,10 +224,8 @@ export default {
         await RepositoryFactory.get("article").updateState(article._id, state);
         await addDoc(collection(db, "notifications"), {
           user: article.ownerId,
-          detail: `Bài đăng của bạn đã ${
-            state.status == this.postStatus.agree
-              ? "được phê duyệt"
-              : "bị từ chối"
+          detail: `Bài đăng ${article._id} đã ${
+            state.status == this.postStatus.agree ? "được duyệt" : "bị từ chối"
           }`,
           state: state.status,
           type: notificationTypes.approveFromAdmin,
@@ -244,7 +266,6 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 
 @media screen and (max-width: 1024px) {
   .button-reject {

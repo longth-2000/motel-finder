@@ -15,11 +15,11 @@
           :class="{ 'is-invalid-form': isSubmit && validation.type.$error }"
         >
           <a-select-option
-            v-for="(type, index) in types"
-            :key="index"
-            :value="type.id"
+            v-for="type in types"
+            :key="type._id"
+            :value="type._id"
           >
-            {{ type.name }}
+            {{ type.type }}
           </a-select-option>
         </a-select>
         <div v-if="isSubmit && !validation.type.required" class="condition">
@@ -127,15 +127,14 @@
 <script>
 import addressMixin from "../../../mixins/address";
 import childrenValidationMixin from "../../../mixins/validation/childrenValidation";
+import { RepositoryFactory } from "../../../repository/factory";
+
 export default {
   mixins: [addressMixin, childrenValidationMixin],
   data() {
     return {
       types: [
-        { name: "Phòng trọ", id: 1 },
-        { name: "Nhà nguyên căn", id: 2 },
-        { name: "Chung cư nguyên căn", id: 3 },
-        { name: "Chung cư mini", id: 4 },
+       
       ],
       duration: [
         { name: "1 tuần", id: 1 },
@@ -154,7 +153,11 @@ export default {
     },
     getWards() {
       return this.value.address.ward;
-    },
+    }
+    
+  },
+  created() {
+    this.getType()
   },
   watch: {
     getDistrict(newVal, oldVal) {
@@ -172,7 +175,7 @@ export default {
           ward: newVal,
         };
       }
-    },
+    }
   },
   methods: {
     handleExpire(time) {
@@ -196,6 +199,10 @@ export default {
         value:this.money.value
       });
     },
+    async getType() {
+     const { data } = await RepositoryFactory.get('type').getType();
+     this.types = data
+    }
   },
 };
 </script>

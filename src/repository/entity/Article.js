@@ -101,5 +101,11 @@ export default {
                 moreDetail: moreDetail
             }
         });
+    },
+    getReport() {
+        return BaseRepository.get('/report/reports')
+    },
+    deleteReport(id) {
+        return BaseRepository.delete(`/report/${id}`);
     }
 }
