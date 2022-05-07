@@ -4,14 +4,14 @@
       <div class="chart-district chart-component">
         <div class="chart-title"><span>Theo quận/huyện</span></div>
         <div class="chart-content">
-          <BarChart />
+          <BarChart :districts="statistic.district"/>
         </div>
       </div>
       <div class="chart-price-area">
         <div class="chart-price chart-child chart-component">
           <div class="chart-title"><span>Theo diện tích</span></div>
           <div class="chart-content">
-            <PieChart />
+            <PieChart :areas="statistic.area" />
           </div>
         </div>
         <div class="chart-area chart-child chart-component">
@@ -28,12 +28,29 @@
 import BarChart from "../chart/BarChart.vue";
 import PieChart from "../chart/PieChart.vue";
 import DoughnutChart from "../chart/DoughnutChart.vue";
+import { RepositoryFactory } from "../../repository/factory";
 
 export default {
   components: {
     BarChart,
     PieChart,
-    DoughnutChart
+    DoughnutChart,
+  },
+  data() {
+    return {
+      statistic: null,
+      updated: null
+    }
+  },
+  methods: {
+    async getStatistic() {
+      const { data } = await RepositoryFactory.get("user").getStatistic();
+      this.statistic = data
+      this.updated = Date.now()
+    }
+  },
+  mounted() {
+    this.getStatistic();
   },
 };
 </script>

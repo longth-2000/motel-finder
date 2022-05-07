@@ -9,11 +9,12 @@
     :styles="styles"
     :width="width"
     :height="height"
+    :updated="updated"
   />
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs/legacy'
+import { Bar } from "vue-chartjs/legacy";
 
 import {
   Chart as ChartJS,
@@ -22,76 +23,81 @@ import {
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale
-} from 'chart.js'
+  LinearScale,
+} from "chart.js";
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
 
 export default {
-  name: 'BarChart',
+  name: "BarChart",
   components: {
-    Bar
+    Bar,
   },
   props: {
     chartId: {
       type: String,
-      default: 'bar-chart'
+      default: "bar-chart",
     },
     datasetIdKey: {
       type: String,
-      default: 'label'
+      default: "label",
     },
     width: {
       type: Number,
-      default: 400
+      default: 400,
     },
     height: {
       type: Number,
-      default: 400
+      default: 400,
     },
     cssClasses: {
-      default: '',
-      type: String
+      default: "",
+      type: String,
     },
     styles: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     plugins: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
+    districts: {
+      type: Array,
+    },
   },
   data() {
+    let chartData = {
+      labels: [],
+      datasets: [
+        {
+          label: "Số bài đăng",
+          backgroundColor: "#f87979",
+          data: [],
+        },
+      ],
+    };
+    this.districts.forEach((item) => {
+      if (item._id) {
+        chartData.labels.push(item._id);
+        chartData.datasets[0].data.push(item.count);
+      }
+    });
     return {
-      chartData: {
-        labels: [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
-        ],
-        datasets: [
-          {
-            label: 'Số lượt xem',
-            backgroundColor: '#f87979',
-            data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-          }
-        ]
-      },
+      chartData,
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: false
-      }
-    }
-  }
-}
+        maintainAspectRatio: false,
+      },
+      updated: Date.now(),
+    };
+  },
+};
 </script>
