@@ -117,6 +117,7 @@ export default {
     },
   },
   created() {
+   
     window.onbeforeunload = function (event) {
       event.returnValue = "Write something clever here..";
     };

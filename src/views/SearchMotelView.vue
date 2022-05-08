@@ -20,7 +20,20 @@
 
         <br />
         <div class="motel-result">
-          <div class="motel-card-detail">
+          <div class="motel-card-none" v-if="posts.total === 0 && !$route.query.status">
+            <div class="notify">
+              <span
+                >Nếu bạn muốn lưu kết quả tìm kiếm này, hệ thống sẽ thông báo
+                đến bạn khi có nhà trọ phù hợp</span
+              >
+            </div>
+            <div class="choice" style="margin: 40px auto; width: 30%">
+              <a-button @click="createPersonalFilter()" type="primary"
+                >Lưu lại</a-button
+              >
+            </div>
+          </div>
+          <div class="motel-card-detail" v-else>
             <a
               :href="'/bat-dong-san/' + post._id"
               class="motel-link router-link"
@@ -28,7 +41,9 @@
               :key="index"
             >
               <div class="motel-content">
-                <div class="card-title motel-content-responsive">{{ post.detailedPost.title }}</div>
+                <div class="card-title motel-content-responsive">
+                  {{ post.detailedPost.title }}
+                </div>
                 <div style="display: flex">
                   <div class="motel-card-image">
                     <img :src="post.images[0].url" />
@@ -71,7 +86,11 @@
                       <div class="card-contact-area">
                         <div class="card-publish">
                           <span class="card-published-info-contact-name">
-                            <span class="created-by" style="width:150px; display:block">Đăng bởi </span>
+                            <span
+                              class="created-by"
+                              style="width: 150px; display: block"
+                              >Đăng bởi
+                            </span>
                             <span class="created-by">{{
                               post.ownerId.name
                             }}</span>
@@ -122,7 +141,7 @@
             </a>
           </div>
         </div>
-        <div class="motel-pagination">
+        <div class="motel-pagination" v-if="posts.total !== 0">
           <a-pagination
             v-model="current"
             :total="50"
@@ -261,6 +280,28 @@ export default {
             "success"
           );
         }
+      }
+    },
+    async createPersonalFilter() {
+      console.log(this.resultSearch);
+      const { query } = this.$route;
+      delete query.handle;
+      try {
+        await RepositoryFactory.get("user").createFilter(
+          this.resultSearch,
+          query
+        );
+        this.openNotification(
+          "Thông báo",
+          "Kết quả tìm kiếm đã được lưu lại",
+          "success"
+        );
+      } catch (error) {
+        this.openNotification(
+          "Thông báo",
+          "Kết quả tìm kiếm này đã được lưu trước đó",
+          "warning"
+        );
       }
     },
   },
@@ -506,7 +547,7 @@ export default {
     display: none;
   }
   .motel-result {
-    width: 135%
+    width: 135%;
   }
 }
 @media screen and (max-width: 768px) {

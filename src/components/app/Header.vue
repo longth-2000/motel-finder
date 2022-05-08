@@ -103,10 +103,12 @@
                     <div class="notify-menu">
                       <div
                         class="notify-icon"
-                        v-if="item.state == notificationState.refuse || item.state === 0"
+                        v-if="
+                          item.state == notificationState.refuse ||
+                          item.state === 0
+                        "
                         style="color: red"
-                      > 
-                      
+                      >
                         <font-awesome-icon
                           icon="fa-solid fa-circle-exclamation"
                         />
@@ -114,9 +116,11 @@
                       <div
                         class="notify-icon"
                         style="color: green"
-                        v-if="item.state == notificationState.agree || item.state === 2"
+                        v-if="
+                          item.state == notificationState.agree ||
+                          item.state === 2
+                        "
                       >
-                      
                         <font-awesome-icon icon="fa-solid fa-circle-check" />
                       </div>
 
@@ -157,9 +161,7 @@
           </li>
           <li class="menu-items" style="display: flex" v-if="isLogin">
             <div class="abbreviation-username">
-              <span >{{
-                userInfor.email.charAt(0).toUpperCase()
-              }}</span>
+              <span>{{ userInfor.email.charAt(0).toUpperCase() }}</span>
             </div>
             <div class="fullwrite-username">
               <p>
@@ -187,7 +189,9 @@
                     ></a-menu-item
                   >
                   <a-menu-item style="padding-left: 10px" v-else
-                    ><a :href="'/bai-dang-yeu-thich/' + userInfor.id" class="router-link"
+                    ><a
+                      :href="'/bai-dang-yeu-thich/' + userInfor.id"
+                      class="router-link"
                       ><font-awesome-icon
                         icon="fa-solid fa-list"
                         class="icon-user"
@@ -203,6 +207,26 @@
                       />Quản lí thông tin cá nhân</a
                     ></a-menu-item
                   >
+                  <a-menu-item
+                    ><a class="router-link" @click="visible = true"
+                      ><font-awesome-icon
+                        class="icon-user"
+                        icon="fa-solid fa-lightbulb"
+                      />Bài đăng đề xuất cho bạn</a
+                    >
+                    <a-modal v-model="visible" :footer="null">
+                      <div style="margin-top: 20px">
+                        <div
+                          class="suggest-items"
+                          v-for="sugg in suggest"
+                          :key="sugg._id"
+                          @click="insertQuery(sugg.query)"
+                        >
+                          {{ sugg.name }}
+                        </div>
+                      </div>
+                    </a-modal>
+                  </a-menu-item>
                   <a-menu-item
                     ><a href="/ho-so?type=change-password" class="router-link"
                       ><font-awesome-icon
@@ -261,8 +285,10 @@ import authenticationMixin from "../../mixins/authentication";
 import { notificationState } from "./../../constants/notificationState";
 import { notificationTypes } from "./../../constants/notificationTypes";
 import { formatDate } from "./../..//helper/utils";
-import { collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc,  updateDoc } from "firebase/firestore";
 import { db } from "./../../fire";
+import { RepositoryFactory } from "../../repository/factory";
+
 export default {
   props: ["openNav"],
   mixins: [authenticationMixin],
@@ -278,6 +304,8 @@ export default {
       notificationState: notificationState,
       notificationTypes: notificationTypes,
       formatDate: formatDate,
+      visible: false,
+      suggest: [],
     };
   },
 
@@ -289,8 +317,11 @@ export default {
     ...mapGetters("modal", ["isVisible"]),
     ...mapGetters("notifications", ["notifications"]),
     userInfor() {
-      return this.checkLogged()
-    }
+      return this.checkLogged();
+    },
+  },
+  created() {
+    this.getSuggestArticle();
   },
   methods: {
     createPost() {
@@ -304,8 +335,20 @@ export default {
     async handleDeleteNoti(id) {
       await deleteDoc(doc(collection(db, "notifications"), id));
     },
+    async getSuggestArticle() {
+      const { data } = await RepositoryFactory.get("user").getFilter();
+      this.suggest = data;
+    },
+    insertQuery(queries) {
+      console.log("query", queries);
+      var queryString = ''
+      for(const query in queries) {
+        queryString += `&${query}=${queries[query]}`
+      }
+      window.location.href = "/tim-kiem?handle=search&status=recommend" + queryString
+    },
   },
-  
+
   watch: {
     notifications(val) {
       if (val) {
@@ -325,7 +368,7 @@ export default {
         }
       }
     },
-  
+
     /* "user._id"(val) {
       this.notificationItems = this.notifications.filter(
         (item) => item.is_read == false && item.user_id == val
@@ -405,7 +448,14 @@ img {
   width: 80px;
   font-size: 20px;
 }
-
+.suggest-items:hover {
+  cursor: pointer;
+  background: #d9d9d9;
+}
+.suggest-items {
+  padding: 20px 5px;
+  border-bottom: 1px solid #bfbfbf;
+}
 @media screen and (min-width: 800px) {
   .header-left {
     flex: 7;

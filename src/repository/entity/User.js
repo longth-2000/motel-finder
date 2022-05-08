@@ -27,5 +27,14 @@ export default {
     getStatistic() {
         return BaseRepository.get(`/user/manage/statistic`)
     },
+    createFilter(name, query) {
+        return BaseRepository.post(`/personal-filters`, {
+            name: name,
+            query: query
+        })
+    },
+    getFilter() {
+        return BaseRepository.get('/personal-filters')
+    }
 
 }

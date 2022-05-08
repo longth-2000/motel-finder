@@ -5,7 +5,7 @@
         <div>
           <div class="manage-column">
             <div id="title-column">
-              <span>TRANG CÁ NHÂN</span>
+              <span>TRANG CÁ NHÂN {{userInfor.role}}</span>
             </div>
             <div id="infor-column">
               <div id="avatar">
@@ -57,12 +57,13 @@
                   </li>
                 </ul>
               </div>
-              <div class="choice-infor">
+              <div class="choice-infor" v-if="userInfor.role === 2">
                 <div id="title">Quản lí bài đăng</div>
                 <ul>
                   <li
                     :class="{ active: isActive.ManagePost }"
                     @click="changeComponent('ManagePost', 'manage-post')"
+                    
                   >
                     Tin đã đăng
                   </li>
@@ -74,7 +75,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="choice-infor">
+              <div class="choice-infor" v-if="userInfor.role === 2">
                 <div id="title">Tiện ích</div>
                 <ul>
                   <li
