@@ -25,11 +25,12 @@
       <div id="action" style="display: flex; align-items: center" v-if="(notificationItems.filter(ele => ele.is_read === isRead)).length">
         <div id="box" style="margin-left: 20px">
           <a-checkbox
-            @change="(checked) => handleCheck(noti.id, checked)"
+            @change="(checked) => handleCheckAll(checked)"
+            :checked="checkAll"
           ></a-checkbox>
         </div>
-        <div id="delete" class="action-handle" @click="deleteNotify()"><span>Xóa</span></div>
-        <div id="mark" class="action-handle" @click="markNotify()"><span>Đánh dấu đã đọc</span></div>
+        <div id="delete" class="action-handle" @click="handleDeleteNotify()"><span>Xóa</span></div>
+        <div id="mark" class="action-handle" @click="markNotify()" v-if="!isRead"><span>Đánh dấu đã đọc</span></div>
       </div>
       <div class="manage-content" v-if="!(notificationItems.filter(ele => ele.is_read === isRead)).length">
             <div>
@@ -55,6 +56,7 @@
             <div id="box">
               <a-checkbox
                 @change="(checked) => handleCheck(noti.id, checked)"
+                :checked="checkNotify.includes(noti.id)"
               ></a-checkbox>
             </div>
             <div id="text">
@@ -70,7 +72,9 @@
             :key="notify.id"
           >
             <div id="box">
-              <a-checkbox></a-checkbox>
+              <a-checkbox @change="(checked) => handleCheck(notify.id, checked)"
+                :checked="checkNotify.includes((notify.id))"
+                ></a-checkbox>
             </div>
             <div id="text" @click="handleReadNoti(notify.id)">
               <span>{{notify.detail}}</span>
@@ -102,7 +106,9 @@ export default {
       notificationItems: [],
       isRead: true,
       formatDate: formatDate,
-      user: {}
+      user: {},
+      isSelect: [],
+      checkAll: false
     };
   },
   methods: {
@@ -112,14 +118,12 @@ export default {
       else {
         this.checkNotify = this.checkNotify.filter((item) => item !== notify);
       }
-      console.log(this.checkNotify)
     },
     markNotify() {
-      this.read.forEach(notify => {
-        let checkNotify = this.checkNotify.some(element => element === notify.id)
-        if(checkNotify) notify.unRead = false
-      })
-      console.log(this.read)
+      this.checkNotify.forEach(noti => {
+        this.handleReadNoti(noti)
+      });
+      this.checkNotify = []
     },
     ...mapActions("user", ["getUserInfor"]),
     async userInfo() {
@@ -133,6 +137,24 @@ export default {
     },
     async handleDeleteNoti(id) {
       await deleteDoc(doc(collection(db, "notifications"), id))
+    },
+    handleDeleteNotify() {
+      this.checkNotify.forEach(noti => {
+        this.handleDeleteNoti(noti)
+      });
+      this.checkNotify = []
+    },
+    handleCheckAll() {
+      this.checkAll = !this.checkAll
+      if(this.checkAll) {
+        const deletedItems = this.notificationItems.filter((item) => item.is_read == this.isRead)
+        deletedItems.forEach(item => {
+          this.checkNotify.push(item.id)
+        });
+      } else {
+        this.checkNotify = []
+      }
+
     }
 
   },
@@ -154,8 +176,9 @@ export default {
         this.notificationItems = this.notifications.filter((item) => item.user_id == val)
         console.log('noti', this.notificationItems)
     },
-    isRead(val) {
-      console.log('isRead', val)
+    isRead() {
+      this.checkNotify = []
+      this.checkAll = false
     }
   },
   mounted() {
