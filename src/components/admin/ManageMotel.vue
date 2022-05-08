@@ -25,13 +25,6 @@
                 <td>{{ type.type }}</td>
                 <td class="action-approve">
                   <a-button
-                    type="danger"
-                    class="button-reject"
-                    @click.prevent="deleteTypeMotel(type._id)"
-                    >Xóa</a-button
-                  >
-                  <slot></slot>
-                  <a-button
                     type="primary"
                     @click="showModalEdit(type._id, type.type)"
                     >Sửa</a-button
