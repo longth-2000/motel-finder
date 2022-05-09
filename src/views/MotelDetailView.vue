@@ -55,7 +55,7 @@
                   @click="storageFavorite(motel._id)"
                 />
                 <span class="heart-label" style="padding-left: 5px">{{
-                  !isStorage ? "Lưu tin" : "Xóa tin đã lưu"
+                  !isStorage ? "Lưu tin" : "Bỏ lưu"
                 }}</span>
               </div>
               <div
@@ -173,7 +173,7 @@
               </div>
               <div>
                 <a-comment v-for="(comment, index) in comments" :key="index">
-                  <a slot="author">{{ comment.username }}</a>
+                  <a slot="author">{{ (comment.username === '') ? "vhdkjshdbfv" : comment.username }}</a>
                   <a-avatar slot="avatar" :src="comment.avatar.url" />
                   <p slot="content">
                     {{ comment.coment }}

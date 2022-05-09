@@ -1,6 +1,6 @@
 <template>
   <div class="search-result">
-    <div class="container">
+    <div class="container" style="display:flex">
       <div class="main-content">
         <div class="bread-crumb">
           <a-breadcrumb>

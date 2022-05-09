@@ -188,12 +188,12 @@
                       />Quản lí tin đăng</a
                     ></a-menu-item
                   >
-                  <a-menu-item style="padding-left: 10px" v-else
+                  <a-menu-item style="padding-left: 10px" 
                     ><a
                       :href="'/bai-dang-yeu-thich/' + userInfor.id"
                       class="router-link"
                       ><font-awesome-icon
-                        icon="fa-solid fa-list"
+                        icon="fa-solid fa-heart"
                         class="icon-user"
                       />Tin đăng yêu thích</a
                     ></a-menu-item
@@ -278,109 +278,10 @@
   </div>
 </template>
 <script>
-import Login from "../Login.vue";
-import Register from "../Register.vue";
-import { mapGetters } from "vuex";
+
 import authenticationMixin from "../../mixins/authentication";
-import { notificationState } from "./../../constants/notificationState";
-import { notificationTypes } from "./../../constants/notificationTypes";
-import { formatDate } from "./../..//helper/utils";
-import { collection, deleteDoc, doc,  updateDoc } from "firebase/firestore";
-import { db } from "./../../fire";
-import { RepositoryFactory } from "../../repository/factory";
-
 export default {
-  props: ["openNav"],
   mixins: [authenticationMixin],
-
-  data() {
-    const regexEmail = /(\w)+(?=@gmail.com)/;
-    return {
-      regexEmail: regexEmail,
-      checkPermission: false,
-      notificationItems: [],
-      isCreatePost: false,
-      notificationShow: [],
-      notificationState: notificationState,
-      notificationTypes: notificationTypes,
-      formatDate: formatDate,
-      visible: false,
-      suggest: [],
-    };
-  },
-
-  components: {
-    Login,
-    Register,
-  },
-  computed: {
-    ...mapGetters("modal", ["isVisible"]),
-    ...mapGetters("notifications", ["notifications"]),
-    userInfor() {
-      return this.checkLogged();
-    },
-  },
-  created() {
-    this.getSuggestArticle();
-  },
-  methods: {
-    createPost() {
-      this.$router.push({ path: "/dang-tin" });
-    },
-    async handleReadNoti(id) {
-      await updateDoc(doc(collection(db, "notifications"), id), {
-        is_read: true,
-      });
-    },
-    async handleDeleteNoti(id) {
-      await deleteDoc(doc(collection(db, "notifications"), id));
-    },
-    async getSuggestArticle() {
-      const { data } = await RepositoryFactory.get("user").getFilter();
-      this.suggest = data;
-    },
-    insertQuery(queries) {
-      console.log("query", queries);
-      var queryString = ''
-      for(const query in queries) {
-        queryString += `&${query}=${queries[query]}`
-      }
-      window.location.href = "/tim-kiem?handle=search&status=recommend" + queryString
-    },
-  },
-
-  watch: {
-    notifications(val) {
-      if (val) {
-        this.notificationItems = val.filter((item) => {
-          let checkRead = item.is_read == false;
-          return item.user
-            ? checkRead &&
-                (item.user_id == this.userInfor.id ||
-                  item.user._id == this.userInfor.id)
-            : checkRead && item.user_id == this.userInfor.id;
-        });
-        console.log(this.notificationItems);
-        if (this.notificationItems.length > 3) {
-          this.notificationShow = this.notificationItems.slice(0, 3);
-        } else {
-          this.notificationShow = this.notificationItems;
-        }
-      }
-    },
-
-    /* "user._id"(val) {
-      this.notificationItems = this.notifications.filter(
-        (item) => item.is_read == false && item.user_id == val
-      );
-      console.log(this.notificationItems)
-      if (this.notificationItems.length > 3) {
-        this.notificationShow = this.notificationItems.slice(0, 3);
-      } else {
-        this.notificationShow = this.notificationItems;
-      }
-    },  */
-  },
 };
 </script>
 <style scoped>

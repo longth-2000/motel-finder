@@ -5,7 +5,7 @@
         <div>
           <div class="manage-column">
             <div id="title-column">
-              <span>TRANG CÁ NHÂN {{userInfor.role}}</span>
+              <span>TRANG CÁ NHÂN </span>
             </div>
             <div id="infor-column">
               <div id="avatar">

@@ -5,15 +5,13 @@
     </div>
     <div class="user-infor" v-if="isLogin">
       <div id="avatar">
-        <span v-if="user.hasOwnProperty('email')">{{
-          user.email.charAt(0).toUpperCase()
-        }}</span>
+        <span>{{ userInfor.email.charAt(0).toUpperCase() }}</span>
       </div>
       <div id="username">
         <p>
           <a-tooltip>
-            <template slot="title"> {{ user.email }} </template>
-            {{ user.email }}
+            <template slot="title"> {{ userInfor.email }} </template>
+            {{ userInfor.email }}
           </a-tooltip>
         </p>
       </div>
@@ -24,20 +22,41 @@
               icon="fa-regular fa-bell"
               style="font-size: 25px"
             />
-            <div class="nofifycation-data">1</div>
+            <div class="nofifycation-data">
+              {{ notificationItems.length }}
+            </div>
           </div>
           <template #overlay>
-            <a-menu>
-              <a-menu-item>
+            <a-menu v-if="notificationItems.length > 0">
+              <a-menu-item
+                v-for="(item, index) in notificationShow"
+                :key="index"
+              >
                 <div class="notify-menu">
-                  <div class="notify-icon" style="color: red">
+                  <div
+                    class="notify-icon"
+                    v-if="
+                      item.state == notificationState.refuse || item.state === 0
+                    "
+                    style="color: red"
+                  >
                     <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
                   </div>
-                  <div class="notify-content">
-                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
+                  <div
+                    class="notify-icon"
+                    style="color: green"
+                    v-if="
+                      item.state == notificationState.agree || item.state === 2
+                    "
+                  >
+                    <font-awesome-icon icon="fa-solid fa-circle-check" />
                   </div>
-                  <div class="notify-date">20/2/2020</div>
-                  <div class="notify-action">
+
+                  <div class="notify-content" @click="handleReadNoti(item.id)">
+                    {{ item.detail }}
+                  </div>
+                  <div class="notify-date">{{ formatDate(item.date) }}</div>
+                  <div class="notify-action" @click="handleDeleteNoti(item.id)">
                     <font-awesome-icon
                       style="color: red"
                       icon="fa-solid fa-delete-left"
@@ -46,40 +65,19 @@
                 </div>
               </a-menu-item>
               <a-menu-item>
-                <div class="notify-menu">
-                  <div class="notify-icon" style="color: green">
-                    <font-awesome-icon icon="fa-solid fa-circle-check" />
+                <a class="router-link" href="/ho-so?type=notification">
+                  <div
+                    style="text-align: center; color: blue"
+                    v-if="notificationItems.length > 3"
+                  >
+                    Xem tất cả
                   </div>
-                  <div class="notify-content">
-                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
-                  </div>
-                  <div class="notify-date">20/2/2020</div>
-                  <div class="notify-action">
-                    <font-awesome-icon
-                      style="color: red"
-                      icon="fa-solid fa-delete-left"
-                    />
-                  </div>
-                </div>
-              </a-menu-item>
-              <a-menu-item>
-                <div class="notify-menu">
-                  <div class="notify-icon" style="color: green">
-                    <font-awesome-icon icon="fa-solid fa-circle-check" />
-                  </div>
-                  <div class="notify-content">
-                    Bài đăng của bạn đã bị từ chối bởi quản trị viên
-                  </div>
-                  <div class="notify-date">20/2/2020</div>
-                  <div class="notify-action">
-                    <font-awesome-icon
-                      style="color: red"
-                      icon="fa-solid fa-delete-left"
-                    />
-                  </div>
-                </div>
+                </a>
               </a-menu-item>
             </a-menu>
+            <a-menu v-else
+              ><a-menu-item> Không có thông báo </a-menu-item></a-menu
+            >
           </template>
         </a-dropdown>
       </div>
@@ -120,7 +118,7 @@
       <Login />
     </a-modal>
     <div class="menu">
-      <ul>
+      <ul v-if="userInfor">
         <li class="menu-items" @click="redirectPage('/lien-he')">
           <font-awesome-icon class="icon" icon="fa-solid fa-phone" /><span
             >Liên hệ</span
@@ -135,10 +133,31 @@
             >Quản lí tin đăng</span
           >
         </li>
-        <li class="menu-items" v-else @click="redirectPage('/lien-he')">
-          <font-awesome-icon class="icon" icon="fa-solid fa-id-card" /><span
+
+        <li
+          class="menu-items"
+          @click="redirectPage(`/bai-dang-yeu-thich/${userInfor.id}`)"
+        >
+          <font-awesome-icon class="icon" icon="fa-solid fa-heart" /><span
             >Bài đăng yêu thích</span
           >
+        </li>
+        <li class="menu-items" @click="visible = true">
+          <font-awesome-icon class="icon" icon="fa-solid fa-lightbulb" /><span
+            >Bài đăng đề xuất</span
+          >
+          <a-modal v-model="visible" :footer="null">
+            <div style="margin-top: 20px">
+              <div
+                class="suggest-items"
+                v-for="sugg in suggest"
+                :key="sugg._id"
+                @click="insertQuery(sugg.query)"
+              >
+                {{ sugg.name }}
+              </div>
+            </div>
+          </a-modal>
         </li>
         <li
           class="menu-items"
@@ -172,37 +191,13 @@
   </div>
 </template>
 <script>
-import Login from "../Login.vue";
-import Register from "../Register.vue";
+
 import authenticationMixin from "../../mixins/authentication";
-import { mapActions } from "vuex";
 
 export default {
   props: ["closeNav"],
   mixins: [authenticationMixin],
-  components: {
-    Login,
-    Register,
-  },
-  data() {
-    return {
-      user: {},
-    };
-  },
-  created() {
-    this.getUser();
-  },
   methods: {
-    ...mapActions("user", ["getUserInfor"]),
-    async getUser() {
-      try {
-        const user = await this.getUserInfor();
-        this.user = user;
-        this.isLogged = true;
-      } catch (error) {
-        console.log(error.response);
-      }
-    },
     redirectPage(endpoint) {
       this.$router.push(endpoint);
       this.closeNav();

@@ -29,7 +29,7 @@
           <br />
 
           <p class="center">
-            Số điện thoại: +1800 200 300 400
+            +1800 200 300 400
           </p>
         </div>
         <div class="box">
@@ -43,7 +43,7 @@
           <!-- Displaying text at
                     the center of the box-->
           <p class="center">
-            Email: test@outlook.com
+            test@outlook.com
           </p>
         </div>
         <div class="box">
@@ -55,7 +55,7 @@
 
           <!-- Displaying text at
                     the center of the box-->
-          <p class="center">Địa chỉ: 144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội</p>
+          <p class="center">144 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội</p>
         </div>
       </div>
     </section>
@@ -223,5 +223,10 @@ html {
     font-family: "Ubuntu", sans-serif;
     display: flex;
     justify-content: center;
+}
+@media screen and (max-width: 592px) {
+  #service .box {
+    padding:0
+  }
 }
 </style>
