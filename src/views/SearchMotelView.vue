@@ -1,6 +1,6 @@
 <template>
   <div class="search-result">
-    <div class="container" style="display:flex">
+    <div class="container" style="display: flex">
       <div class="main-content">
         <div class="bread-crumb">
           <a-breadcrumb>
@@ -20,14 +20,22 @@
 
         <br />
         <div class="motel-result">
-          <div class="motel-card-none" v-if="posts.total === 0 && !$route.query.status">
-            <div class="notify">
-              <span
-                >Nếu bạn muốn lưu kết quả tìm kiếm này, hệ thống sẽ thông báo
-                đến bạn khi có nhà trọ phù hợp</span
-              >
+          <div
+            class="motel-card-none"
+            v-if="posts.total === 0 && !$route.query.status"
+          >
+            <div class="notify" style="width: 100%">
+              <p style="width: 100%">
+                Nếu bạn muốn lưu kết quả tìm kiếm này, hệ thống sẽ thông báo đến
+                bạn khi có nhà trọ phù hợp
+              </p>
             </div>
             <div class="choice" style="margin: 40px auto; width: 30%">
+              <a-input
+                style="margin-bottom: 10px"
+                placeholder="Nhập tên"
+                v-model="nameFilter"
+              ></a-input>
               <a-button @click="createPersonalFilter()" type="primary"
                 >Lưu lại</a-button
               >
@@ -176,6 +184,7 @@ export default {
       isStorage: [],
       districts: [],
       user: this.checkLogged(),
+      nameFilter:''
     };
   },
   created() {
@@ -283,12 +292,13 @@ export default {
       }
     },
     async createPersonalFilter() {
+      let nameFilter = (this.nameFilter === '') ? this.resultSearch : this.nameFilter
       console.log(this.resultSearch);
       const { query } = this.$route;
       delete query.handle;
       try {
         await RepositoryFactory.get("user").createFilter(
-          this.resultSearch,
+          nameFilter,
           query
         );
         this.openNotification(
@@ -302,7 +312,7 @@ export default {
           "Kết quả tìm kiếm này đã được lưu trước đó",
           "warning"
         );
-      }
+      } 
     },
   },
 };

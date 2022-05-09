@@ -2,19 +2,19 @@
   <div id="app">
     <component :is="layout" :user="user" >
       <router-view :user="user" ></router-view>
-    </component>
+    </component> 
   </div>
 </template>
 
 <script>
-import DefaultLayout from "./layouts/default.vue";
+import DefaultLayout from "./layouts/default.vue"; 
 
 import { mapActions } from "vuex";
 
 export default {
   name: "App",
   components: {
-    DefaultLayout,
+    DefaultLayout, 
   },
   data() {
     return {
@@ -48,11 +48,11 @@ export default {
 </script>
 
 <style>
+
 #app {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 .router-link {
   text-decoration: none;

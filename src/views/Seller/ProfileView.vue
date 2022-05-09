@@ -229,6 +229,7 @@ export default {
 <style scoped>
 .manage-profile {
   background: #f2f2f280;
+ /*  min-width: 1500px; */
 }
 .profile-content {
   width: 90%;

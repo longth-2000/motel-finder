@@ -186,24 +186,5 @@ export default {
 ::v-deep .ant-calendar-picker-input {
   width: 100% !important;
 }
-@media screen and (max-width: 1024px) {
-}
-@media screen and (max-width: 992px) {
-  .name input {
-    width: 90% !important;
-  }
-  .form-address {
-    display: block;
-  }
-  .address {
-    width: 112%;
-    margin-bottom: 20px;
-  }
-  .address input {
-    width: 100% !important;
-  }
-  ::v-deep .ant-calendar-picker {
-    width: 90%;
-  }
-}
+
 </style>

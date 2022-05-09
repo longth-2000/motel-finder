@@ -187,6 +187,7 @@ export default {
   text-overflow: ellipsis;
   max-width: 100%;
   margin-bottom: 10px;
+  height: 50px;
 }
 .motel-rate {
   display: flex;

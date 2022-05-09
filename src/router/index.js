@@ -80,7 +80,7 @@ export const router = new Router({
             path: "/draft",
             name: "Draft",
             component: () =>
-                import ("../components/chat/VueChat.vue"),
+                import ("../views/DraftView.vue"),
         },
         {
             path: "/thay-doi-mat-khau",

@@ -1,9 +1,11 @@
 <template>
   <div class="header">
     <div class="header-left">
-      <div class="header-logo">
-        <img src="../../assets/logo.png" alt="" />
-      </div>
+      <a href="/">
+        <div class="header-logo">
+          <img src="../../assets/logo.png" alt="" />
+        </div>
+      </a>
       <div class="header-menu">
         <div class="menu">
           <ul class="menu-list">
@@ -188,7 +190,7 @@
                       />Quản lí tin đăng</a
                     ></a-menu-item
                   >
-                  <a-menu-item style="padding-left: 10px" 
+                  <a-menu-item style="padding-left: 10px"
                     ><a
                       :href="'/bai-dang-yeu-thich/' + userInfor.id"
                       class="router-link"
@@ -278,7 +280,6 @@
   </div>
 </template>
 <script>
-
 import authenticationMixin from "../../mixins/authentication";
 export default {
   mixins: [authenticationMixin],

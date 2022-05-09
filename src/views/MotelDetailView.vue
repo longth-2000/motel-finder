@@ -816,5 +816,11 @@ span.section-title {
   .short-info-item {
     padding-left: 0;
   }
+  .short-share {
+    display: flex;
+  }
+  .short-info-share {
+    float: none;
+  }
 }
 </style>
