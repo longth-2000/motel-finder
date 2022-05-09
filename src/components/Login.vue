@@ -61,7 +61,6 @@
           </p>
         </a-form-item>
         <a-form-item>
-          <a-checkbox> Nhớ tài khoản </a-checkbox>
           <span
             to=""
             style="float: right; color: red; cursor: pointer"

@@ -56,7 +56,7 @@
         </div>
       </div>
       <div id="notification">
-        <div v-if="isRead">
+        <div v-if="isRead" style="height:700px; overflow-y: scroll">
           <div
             class="notify-content"
             v-for="(noti, index) in notificationItems.filter(
@@ -64,7 +64,7 @@
             )"
             :key="index"
           >
-            <div id="box">
+            <div id="box" >
               <a-checkbox
                 @change="(checked) => handleCheck(noti.id, checked)"
                 :checked="checkNotify.includes(noti.id)"
@@ -76,7 +76,7 @@
             <div id="date">{{ formatDate(noti.date) }}</div>
           </div>
         </div>
-        <div v-else>
+        <div v-else style="height:700px; overflow-y: scroll">
           <div
             class="notify-content"
             v-for="notify in notificationItems.filter(
@@ -84,7 +84,7 @@
             )"
             :key="notify.id"
           >
-            <div id="box">
+            <div id="box" >
               <a-checkbox @change="(checked) => handleCheck(notify.id, checked)"
                 :checked="checkNotify.includes((notify.id))"
                 ></a-checkbox>

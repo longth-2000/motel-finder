@@ -275,6 +275,7 @@ import { RepositoryFactory } from "../repository/factory";
 import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
 import { subject } from "@casl/ability";
+import cookies from "../helper/cookie"
 
 export default {
   name: "MotelDetailView",
@@ -309,6 +310,7 @@ export default {
     };
   },
   created() {
+    console.log(cookies.getCookie('G_AUTHUSER_H'))
     this.getDataArticle();
   },
   watch: {
@@ -462,6 +464,7 @@ export default {
     },
     openModalReport(id) {
       this.reportID = id;
+      console.log(cookies.getCookie('accessToken'))
       this.showModal("report");
     },
   },

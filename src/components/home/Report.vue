@@ -29,7 +29,6 @@
 </template>
 <script>
 import { RepositoryFactory } from "../../repository/factory";
-
 export default {
   props: ["reportID"],
   data() {
@@ -47,6 +46,9 @@ export default {
       moreDetail: "",
     };
   },
+  created() {
+    
+  },
   methods: {
     handleCheck(option, checked) {
       const checkedF = checked.target.checked;
@@ -60,7 +62,9 @@ export default {
         this.detail,
         this.moreDetail
       );
-      console.log(data);
+      console.log(data)
+      console.log(this.$route)
+    /*  window.location.href = this.$route.fullPath */
     },
   },
 };

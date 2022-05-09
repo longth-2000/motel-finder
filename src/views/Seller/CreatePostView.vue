@@ -226,6 +226,7 @@ export default {
             "Bạn cần đăng ít nhất 2 ảnh",
             "warning"
           );
+          this.offSpinning();
         } else {
           if (this.deletedImageList.length !== 0) {
             const deletedImage = await RepositoryFactory.get("app").deleteImage(

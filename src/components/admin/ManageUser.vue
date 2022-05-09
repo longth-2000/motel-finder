@@ -189,5 +189,8 @@ export default {
 .action-approve {
   display: flex;
 }
+td {
+  padding: 1.5rem 0.5rem
+}
 
 </style>

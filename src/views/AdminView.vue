@@ -172,10 +172,36 @@ export default {
           message: message,
         });
       });
+      
     },
   },
   created() {
-    this, this.setURL();
+    this.setURL();
+     let conversation = this.chat.filter(
+        (value, index, self) =>
+          index === self.findIndex((item) => item.owner_id === value.owner_id)
+      );
+
+      conversation.forEach(async (value) => {
+        const { data } = await RepositoryFactory.get("user").getUser(
+          value.owner_id
+        );
+        let message = this.chat
+          .filter((message) => message.owner_id === value.owner_id)
+          .map((item) => ({
+            message: item.message,
+            date: item.created_at,
+          }))
+          .sort(function (before, after) {
+            return after.date - before.date;
+          });
+        this.conversations.push({
+          id: value.owner_id,
+          name: data.name,
+          avatar: data.avatar.url,
+          message: message,
+        });
+      });
   },
   computed: {
     ...mapGetters("chat", ["chat", "isOpen", "conversation"]),

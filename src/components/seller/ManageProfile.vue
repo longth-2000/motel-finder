@@ -27,7 +27,7 @@
             <Avatar title="Avatar" />
           </div>
           <div id="button">
-            <a-button type="primary" @click="createProfile()"> Lưu </a-button>
+            <a-button type="primary" @click="createProfile()" :disabled="userInfor.state === 2"> Lưu </a-button>
           </div>
         </a-form>
       </div>
@@ -68,6 +68,7 @@ export default {
   },
   computed: {
     ...mapGetters("app", ["imageAvatar"]),
+    ...mapGetters("user", ['userInfor'])
   },
   validations: {
     manageProfile: {

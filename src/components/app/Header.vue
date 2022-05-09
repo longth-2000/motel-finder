@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="header-left">
-      <a href="/">
+      <a href="/" style="margin-left:30px">
         <div class="header-logo">
           <img src="../../assets/logo.png" alt="" />
         </div>
@@ -217,7 +217,8 @@
                       />Bài đăng đề xuất cho bạn</a
                     >
                     <a-modal v-model="visible" :footer="null">
-                      <div style="margin-top: 20px">
+                      <div style="margin-top: 20px; text-align:center" v-if="suggest.length === 0">Không có đề xuất nào</div>
+                      <div style="margin-top: 20px" v-else>
                         <div
                           class="suggest-items"
                           v-for="sugg in suggest"
