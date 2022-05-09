@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="chart-content" v-if="statistic">
-            <DoughnutChart  :prices="price" :updated="updated" />
+            <DoughnutChart  :prices="price" :updated="updated" :unit="type"/>
           </div>
         </div>
       </div>
@@ -50,7 +50,8 @@ export default {
       statistic: null,
       updated: null,
       type: '0',
-      price: []
+      price: [],
+      unit: 1,
     };
   },
   methods: {
@@ -68,7 +69,7 @@ export default {
     type(val) {
       this.price = this.statistic.price[Number(val)]
       this.updated = Date.now();
-    }
+    },
   }
 };
 </script>
