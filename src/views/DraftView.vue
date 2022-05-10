@@ -1,5 +1,8 @@
 <template>
-    <div>{{userInfor}}<button @click="a()">oke</button></div>
+    <form action="https://jsonplaceholder.typicode.com/posts" method="post">
+        <input type="text" />
+        <button type="submit" @click="submitForm(this)">submit</button>
+    </form>
     
 </template>
 <script>
@@ -15,6 +18,10 @@ export default {
       ...mapActions('user', ['getUserInfor']),
       a(){
           console.log(this.getUserInfor())
+      },
+      submitForm(e){
+          alert("mvdsvms")
+          console.log(e)
       }
     }
 }

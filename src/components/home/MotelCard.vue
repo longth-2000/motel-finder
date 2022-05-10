@@ -38,7 +38,9 @@
                 :class="{ colorHeart: isStorage }"
               />
             </div>
-            <div style="margin: 0px 10px 0px 3px">{{isStorage ? 'UNLIKE' : 'LIKE'}}</div>
+            <div style="margin: 0px 10px 0px 3px">
+              {{ isStorage ? "UNLIKE" : "LIKE" }}
+            </div>
           </div>
         </div>
         <div class="motel-detail" style="display: flex; margin: 20px 0">
@@ -57,7 +59,7 @@
             margin-top: 25px;
           "
         >
-          <span style="font-size: 27px">{{ card.price.quantity }}</span
+          <span style="font-size: 27px">{{ card.price.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}</span
           >/<span>{{ card.price.unit }}</span>
         </div>
       </div>
@@ -77,23 +79,28 @@ export default {
     },
     card: {
       type: Object,
-    }
+    },
   },
   data() {
     return {
       isStorage: false,
       rateStar: 0,
-      user:this.checkLogged()
+      user: this.checkLogged(),
     };
   },
   computed: {},
   created() {
     if (this.user) {
-      this.isStorage = this.card.userLiked.includes(this.user.id) ? true : false; 
+      this.isStorage = this.card.userLiked.includes(this.user.id)
+        ? true
+        : false;
     }
     this.getRate();
   },
   methods: {
+    formatCurrency(currency) {
+      return  currency.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g);
+    },
     async storageFavorite(articleID) {
       if (!this.user) {
         this.openNotification("Cảnh báo", "Bạn chưa đăng nhập", "warning");
@@ -219,6 +226,7 @@ export default {
   max-width: 100%;
   margin: 20px 0 10px 0;
   color: #6e798c;
+  height: 50px;
 }
 .extra-infor {
   font-weight: bold;
