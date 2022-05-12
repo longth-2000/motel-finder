@@ -67,6 +67,7 @@
                 v-for="(article, index) in articleArray"
                 :key="index"
                 class="table-article"
+                @click="redirectDetail(article._id)"
               >
                 <td><a-checkbox></a-checkbox></td>
                 <td>
@@ -125,7 +126,7 @@
                     type="danger"
                     class="button-reject"
                     @click.prevent="
-                      handleApprove(article, { status: `rejected` })
+                      handleApprove(article, { status: `rejected` }, $event)
                     "
                     >Từ chối</a-button
                   >
@@ -133,7 +134,7 @@
                   <a-button
                     type="primary"
                     @click.prevent="
-                      handleApprove(article, { status: `approved` })
+                      handleApprove(article, { status: `approved` }, $event)
                     "
                     >Đồng ý</a-button
                   >
@@ -196,6 +197,7 @@ export default {
       this.articleArray = data.filter((ele) => ele.status === "waiting");
       console.log(this.articleArray);
     },
+   
     formatDate(date) {
       let formatDate = new Date(date);
       return (
@@ -219,7 +221,8 @@ export default {
       this.articleArray = data.data;
       console.log(this.articleArray);
     },
-    async handleApprove(article, state) {
+    async handleApprove(article, state, event) {
+      event.stopPropagation()
       try {
         await RepositoryFactory.get("article").updateState(article._id, state);
         await addDoc(collection(db, "notifications"), {

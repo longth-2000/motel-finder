@@ -1,11 +1,12 @@
 <template>
     <form action="https://jsonplaceholder.typicode.com/posts" method="post">
         <input type="text" />
-        <button type="submit" @click="submitForm(this)">submit</button>
+        <button type="submit" @click="submitForm">submit</button>
     </form>
     
 </template>
 <script>
+import axios from 'axios'
 import { mapActions, mapGetters } from 'vuex'
 export default {
     computed:{
@@ -19,9 +20,10 @@ export default {
       a(){
           console.log(this.getUserInfor())
       },
-      submitForm(e){
-          alert("mvdsvms")
-          console.log(e)
+      submitForm(event,name = "long"){
+          console.log(event,name)
+          console.log(axios)
+          event.target.submit()
       }
     }
 }
