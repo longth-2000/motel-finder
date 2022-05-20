@@ -314,7 +314,7 @@ export default {
 img {
   width: 160px;
   height: 80%;
-  margin: 10px 30px;
+  margin: 0;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -360,6 +360,9 @@ img {
   border-bottom: 1px solid #bfbfbf;
 }
 @media screen and (min-width: 800px) {
+  img {
+    margin: 30px
+  }
   .header-left {
     flex: 7;
     display: flex;
