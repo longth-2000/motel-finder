@@ -78,9 +78,14 @@ export default {
     async handleForgotPassword() {
       let check = this.checkValidation(this.check, this.$v);
       if (!check) return;
-      const { data } = await RepositoryFactory.get('app').requestEmail(this.email)
-      console.log(data)
-      this.redirectTo("notifyPassword");  
+      try {
+        const { data } = await RepositoryFactory.get('app').requestEmail(this.email)
+        console.log(data)
+        this.redirectTo("notifyPassword");
+      } catch (error) {
+        this.openNotification('Cảnh báo', 'Vui lòng chờ 5 phút trước khi request lại', 'error')
+      }
+        
     },
   },
 };

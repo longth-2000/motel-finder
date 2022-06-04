@@ -168,10 +168,26 @@ export default {
     },
     async authGoogle() {
       const google = await this.$gAuth.signIn();
-      console.log(this.$gAuth, google);
-      this.tokenEmail = google.Ru.Iv;
-      const { id_token } = google.xc ? google.xc : google.zc;
-      this.tokenID = id_token;
+      console.log(google);
+      Object.keys(google).forEach((key, index) => {
+        if(index === 2) {
+          console.log(google[key])
+          const tokenEmail = google[key]
+          Object.keys(tokenEmail).forEach((key, index) => {
+            if(index === 5) {
+              console.log('email', tokenEmail[key])
+              this.tokenEmail = tokenEmail[key]
+            }
+          })
+        }
+        if(index === 1) {
+          const { id_token } = google[key];
+          console.log(id_token)
+          this.tokenID = id_token; 
+        }
+      });
+      
+      
       let googleToken = JSON.parse(localStorage.getItem("googleToken"));
       if (googleToken !== null) {
         var existGoogle = googleToken.filter(
