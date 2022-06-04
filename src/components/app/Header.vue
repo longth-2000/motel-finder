@@ -92,7 +92,7 @@
                   icon="fa-regular fa-bell"
                   style="font-size: 25px"
                 />
-                <div class="nofifycation-data">
+                <div class="nofifycation-data" v-if="notificationItems.length > 0">
                   {{ notificationItems.length }}
                 </div>
               </div>

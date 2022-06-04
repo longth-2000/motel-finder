@@ -63,8 +63,10 @@ export default {
         this.moreDetail
       );
       console.log(data)
-      console.log(this.$route)
-    /*  window.location.href = this.$route.fullPath */
+      this.openNotification('Thành công', 'Báo cáo của bạn đã được gửi', 'success')
+      setTimeout(() => {
+        window.location.href = this.$route.fullPath
+      }, 800);
     },
   },
 };
