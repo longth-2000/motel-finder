@@ -168,9 +168,9 @@ export default {
     },
     async authGoogle() {
       const google = await this.$gAuth.signIn();
-      console.log(google);
-      this.tokenEmail = google.Lu.Bv;
-      const { id_token } = google.xc ? google.xc : google.wc;
+      console.log(this.$gAuth, google);
+      this.tokenEmail = google.Ru.Iv;
+      const { id_token } = google.xc ? google.xc : google.zc;
       this.tokenID = id_token;
       let googleToken = JSON.parse(localStorage.getItem("googleToken"));
       if (googleToken !== null) {
